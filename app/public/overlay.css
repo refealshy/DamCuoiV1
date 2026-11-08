@@ -1977,4 +1977,5 @@ html, body {
 #couple-sprite.has-video.couple-idle,
 #couple-sprite.has-video.couple-kissing { animation: none !important; }
 .mc-host.has-video.talking .mc-sprite { animation: none; }
-.guest-walker.has-video.walking .actor-sprite { animation: none; }
+.guest-walker.has-video.walking .actor-sprite,
+.guest-walker.dance-video.dancer .actor-sprite { animation: none; }

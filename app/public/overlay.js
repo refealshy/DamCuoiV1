@@ -603,11 +603,14 @@ function guestGender(p) {
   return sp >= 3 && sp <= 5 ? 'female' : 'male'; // dữ liệu cũ: 0-2 nam, 3-5 nữ
 }
 
-function guestSprite(p) {
+function guestFile(p) {
   const g = theme.data.guests || LEGACY_THEME.guests;
   const own = g[guestGender(p)] || [];
   const pool = own.length ? own : [...(g.male || []), ...(g.female || [])];
-  return themeAsset(pool[(Number(p?.sprite) || 0) % pool.length]);
+  return pool[(Number(p?.sprite) || 0) % pool.length];
+}
+function guestSprite(p) {
+  return themeAsset(guestFile(p));
 }
 
 function guestBox() {
@@ -700,7 +703,9 @@ function renderTheme(c) {
   // Người đi lên + khách ngồi bàn
   setupActorMedia();
   const dp = $('.dp-couple');
-  if (dp) dp.style.backgroundImage = `url('${coupleStill('heart', 'kiss', 'idle')}')`;
+  if (dp) dp.style.backgroundImage = `url('${coupleStill('carry', 'heart', 'kiss', 'idle')}')`;
+  const room = $('.dp-inside');
+  if (room) room.style.background = t.dongphong ? `url('${themeAsset(t.dongphong)}') center / cover no-repeat` : '';
   if (currentState) renderGuests(currentState.people || []);
 }
 
@@ -1247,6 +1252,7 @@ function triggerKiss(silent = false) {
 }
 
 function triggerCheers(initiator = '') {
+  coupleActor.play('cheers', 4500);
   playClink();
   $$('.wedding-guest').forEach(g => {
     g.classList.add('cheering');
@@ -1274,6 +1280,7 @@ function guestsDance(ms) {
 
 function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
   const ms = big ? 8000 : 5000;
+  if (!big) coupleActor.play('dance', ms);
   guestsDance(ms);
   startDisco(ms + 200);
   playDanceBeat(ms / 1000);
@@ -1293,12 +1300,13 @@ function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
 function triggerCake() {
   playFanfare();
   spawnHearts(16, { emojis: ['🎂', '🍰', '💕', '✨'] });
-  triggerKiss(true);
+  if (!coupleActor.play('cake', 4800)) triggerKiss(true);
   showCeremonyBanner('🎂 NGHI THỨC CẮT BÁNH CƯỚI!', 'Tân lang & tân nương cùng cắt bánh ngọt ngào!', 'cake');
   showToast('🎂 Nghi thức cắt bánh cưới hạnh phúc viên mãn! 💕');
 }
 
 function triggerChampagne() {
+  coupleActor.play('cheers', 4500);
   playPop();
   setTimeout(playClink, 350);
   for (let i = 0; i < 18; i++) setTimeout(() => spawnBubbles(true), i * 90);
@@ -1800,6 +1808,7 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   if (dpActive) return;
   dpActive = true;
   sceneLock++;
+  coupleActor.play('carry', 3200);
   const g = groom || roleName('groom');
   const b = bride || roleName('bride');
   const root = $('#dong-phong');
@@ -1978,12 +1987,14 @@ function setActorLook(actor, item, mode, flip = false) {
   const person = { gender: item.gender, sprite: item.sprite };
   const w = theme.data.walker?.[guestGender(person)];
   const useWalker = w && mode !== 'dance';
-  const useVid = useWalker && w.video && cfg().themeVideo !== false;
+  const danceVid = mode === 'dance' ? theme.data.guests?.dance?.[guestFile(person)] : null;
+  const useVid = cfg().themeVideo !== false && ((useWalker && w.video) || danceVid);
   actor.classList.toggle('has-video', Boolean(useVid));
+  actor.classList.toggle('dance-video', Boolean(useVid && danceVid));
   if (useVid) {
-    const src = themeAsset(w.video);
+    const src = themeAsset(danceVid || w.video);
     if (vid.dataset.src !== src) { vid.dataset.src = src; vid.src = src; }
-    if (mode === 'walk') vid.play().catch(() => {});
+    if (mode === 'walk' || mode === 'dance') vid.play().catch(() => {});
     else vid.pause();
   } else {
     vid.pause();

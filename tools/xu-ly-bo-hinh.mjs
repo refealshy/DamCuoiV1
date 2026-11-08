@@ -12,6 +12,7 @@
 //   mc_<động tác>            MC: idle, talk
 //   walker_m, walker_f       người đi lên thảm đỏ (mặc định nhân vật hướng mặt sang phải)
 //   guest_m<số>, guest_f<số> khách nam, khách nữ
+//   guest_m<số>_dance        (video) khách đó nhảy trên sàn nhảy (tùy chọn)
 //
 // Mỗi nhóm (cặp đôi, MC, từng người đi lên, khách) dùng chung một khung cắt để
 // chuyển giữa ảnh và video không bị nhảy vị trí. Chạy lại bất cứ lúc nào khi thêm file.
@@ -37,7 +38,7 @@ const GROUPS = {
   mc: { test: n => /^mc_[a-z0-9]+$/.test(n), imgH: 560, vidH: 400 },
   walker_m: { test: n => n === 'walker_m', imgH: 640, vidH: 440 },
   walker_f: { test: n => n === 'walker_f', imgH: 640, vidH: 440 },
-  guest: { test: n => /^guest_[mf]\d+$/.test(n), imgH: 440 }
+  guest: { test: n => /^guest_[mf]\d+(_dance)?$/.test(n), imgH: 440, vidH: 440 }
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
@@ -301,11 +302,18 @@ async function main() {
   }
   manifest.walker = Object.keys(walker).length ? walker : null;
   if (groupOut.guest) {
-    const names = Object.keys(groupOut.guest.assets).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    const assets = groupOut.guest.assets;
+    const names = Object.keys(assets).filter(n => !n.endsWith('_dance')).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    const dance = {};
+    for (const n of names) {
+      const v = assets[`${n}_dance`]?.video || assets[n].video;
+      if (v && assets[n].img) dance[assets[n].img] = v;
+    }
     manifest.guests = {
       aspect: groupOut.guest.aspect,
-      male: names.filter(n => n.startsWith('guest_m')).map(n => groupOut.guest.assets[n].img).filter(Boolean),
-      female: names.filter(n => n.startsWith('guest_f')).map(n => groupOut.guest.assets[n].img).filter(Boolean)
+      male: names.filter(n => n.startsWith('guest_m')).map(n => assets[n].img).filter(Boolean),
+      female: names.filter(n => n.startsWith('guest_f')).map(n => assets[n].img).filter(Boolean),
+      dance
     };
   }
 
