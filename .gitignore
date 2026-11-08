@@ -1,0 +1,13 @@
+# Bí mật & dữ liệu phát sinh khi chạy (không đưa lên git)
+app/webhook_key.txt
+app/public/music/*
+!app/public/music/.gitkeep
+app/public/album/*
+!app/public/album/.gitkeep
+*.uploading
+*.bak
+
+# Bản sao lưu cục bộ
+app_backup_truoc_nang_cap/
+
+node_modules/

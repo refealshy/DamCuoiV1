@@ -721,3 +721,218 @@ body {
 .preview-controls {
   margin-top: 14px;
 }
+
+/* ================= NÂNG CẤP: ĐẤU GIÁ, LUẬT QUÀ, NHẠC ================= */
+[hidden] { display: none !important; }
+.muted { color: var(--text-muted); font-size: 12px; }
+.gold { color: #ffd87d; font-weight: 700; }
+.hint-text { color: var(--text-muted); font-size: 12px; }
+.hint-box {
+  background: rgba(255, 215, 0, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #e9dcc6;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.hint-box code, .guide-box code {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+  border-radius: 5px;
+  color: #2ecc71;
+  font-size: 12px;
+}
+.card-panel + .card-panel { margin-top: 18px; }
+.role-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.role-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.role-box.bride { border-color: rgba(255, 140, 190, 0.45); }
+.role-box h4 { font-size: 12px; letter-spacing: 1px; color: var(--primary-gold); margin-bottom: 4px; }
+.role-box.bride h4 { color: #ff9cc6; }
+.role-box .who { font-size: 20px; font-weight: 800; }
+.role-box .meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.45; }
+.sim-custom {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr 0.5fr 1.2fr auto;
+  gap: 8px;
+}
+.sim-custom input,
+.rules-table input,
+.rules-table select {
+  width: 100%;
+  min-width: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+}
+.rules-table td { padding: 6px 8px; vertical-align: middle; }
+.rules-table .col-min { width: 110px; }
+.rules-table .col-act { width: 250px; }
+.rules-table .col-move { width: 64px; white-space: nowrap; }
+.rules-table .col-del { width: 40px; }
+.icon-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 7px;
+  padding: 4px 7px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--primary-gold); background: rgba(226, 168, 75, 0.15); }
+.icon-btn.danger:hover { border-color: #ff453a; background: rgba(255, 69, 58, 0.15); }
+.music-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.music-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.music-item.active { border-color: var(--primary-gold); background: rgba(226, 168, 75, 0.12); }
+.music-item .name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.music-item .size { font-size: 11px; color: var(--text-muted); }
+.input-action-group input[type="file"] { padding: 7px 10px; }
+.warn-text { color: #ffb4a8; font-size: 12px; }
+.panel-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  max-width: 640px;
+  background: rgba(24, 21, 26, 0.97);
+  border: 1px solid var(--primary-gold);
+  color: var(--text-main);
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+.panel-toast.error { border-color: #ff453a; color: #ffd0cc; }
+.action-buttons-grid .action-btn small { text-align: center; }
+
+/* ================= LỜI THOẠI MC ================= */
+.mc-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.mc-toolbar input[type="search"] {
+  flex: 1;
+  min-width: 220px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: #fff;
+  font-size: 13px;
+}
+.mc-section {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--primary-gold);
+  text-transform: uppercase;
+}
+.mc-group {
+  border-bottom: 1px solid var(--border-color);
+}
+.mc-group summary {
+  cursor: pointer;
+  padding: 12px 4px;
+  font-size: 14px;
+  font-weight: 650;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mc-group summary::-webkit-details-marker { display: none; }
+.mc-group summary::before { content: '▸'; color: var(--text-muted); width: 12px; }
+.mc-group[open] summary::before { content: '▾'; color: var(--primary-gold); }
+.mc-group[open] summary { color: #ffd87d; }
+.mc-g-count { color: var(--text-muted); font-weight: 500; }
+.mc-g-dirty { color: #ff9f43; font-size: 12px; }
+.mc-g-empty { color: #ff6b6b; font-size: 12px; font-weight: 600; }
+.mc-g-body { padding: 0 4px 14px 22px; }
+.mc-g-vars { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.mc-g-vars code { color: #2ecc71; }
+.mc-line {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.mc-line textarea {
+  flex: 1;
+  min-height: 52px;
+  resize: vertical;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.45;
+  font-family: inherit;
+}
+.mc-line textarea:focus { border-color: var(--primary-gold); outline: none; }
+.mc-line .icon-btn { margin-top: 6px; }
+.mc-g-actions { display: flex; gap: 8px; }
+
+/* ================= ALBUM ẢNH CƯỚI ================= */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.album-item {
+  margin: 0;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.album-item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 900 / 1100;
+  object-fit: cover;
+  background: #222;
+}
+.album-item figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.album-actions { display: flex; gap: 6px; }
+.album-actions a.icon-btn { text-decoration: none; }
+.stats-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tiệc Cưới PRO • Bảng Điều Khiển Livestream Đám Cưới</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/panel.css">
 </head>
 <body>
@@ -26,23 +27,31 @@
         </button>
         <button class="nav-item" data-tab="tab-couple">
           <span class="nav-icon">👰🤵</span>
-          <span>Cô dâu & Chú rể</span>
+          <span>Cô dâu, Chú rể & Đấu giá</span>
+        </button>
+        <button class="nav-item" data-tab="tab-goals">
+          <span class="nav-icon">🎁</span>
+          <span>Luật Quà Tặng & Mục Tiêu</span>
         </button>
         <button class="nav-item" data-tab="tab-registry">
           <span class="nav-icon">📋</span>
           <span>Sổ Mừng Cưới & Khách</span>
         </button>
-        <button class="nav-item" data-tab="tab-goals">
-          <span class="nav-icon">🎁</span>
-          <span>Quà Tặng & Mục Tiêu</span>
+        <button class="nav-item" data-tab="tab-album">
+          <span class="nav-icon">📸</span>
+          <span>Album Ảnh Cưới</span>
         </button>
         <button class="nav-item" data-tab="tab-voice">
           <span class="nav-icon">🎙️</span>
-          <span>Âm Thanh & Giọng Đọc AI</span>
+          <span>Giọng MC</span>
+        </button>
+        <button class="nav-item" data-tab="tab-mclines">
+          <span class="nav-icon">📝</span>
+          <span>Lời Thoại MC</span>
         </button>
         <button class="nav-item" data-tab="tab-bgm">
           <span class="nav-icon">🎵</span>
-          <span>Nhạc Nền Cưới (YouTube)</span>
+          <span>Nhạc Nền Cưới</span>
         </button>
         <button class="nav-item" data-tab="tab-tikfinity">
           <span class="nav-icon">🔗</span>
@@ -50,23 +59,21 @@
         </button>
       </nav>
 
-      <!-- AUTHOR BANNER -->
       <div class="author-card">
         <div class="author-avatar">ĐQ</div>
         <div class="author-details">
           <strong>Đức Quân</strong>
           <span class="author-sub">Lập trình tools livestream</span>
-          <a href="https://zalo.me/0329024876" target="_blank" class="author-btn">⚡ Zalo: 0329 024 876</a>
+          <a href="https://zalo.me/0329024876" target="_blank" rel="noopener" class="author-btn">⚡ Zalo: 0329 024 876</a>
         </div>
       </div>
     </aside>
 
     <!-- KHU VỰC NỘI DUNG CHÍNH -->
     <main class="main-content">
-      <!-- TOP ACTION BAR -->
       <header class="topbar">
         <div class="topbar-left">
-          <span class="time-pill" id="live-clock">🕒 14:30:00</span>
+          <span class="time-pill" id="live-clock">🕒 --:--:--</span>
           <span id="global-status" class="status-pill offline">Chưa kết nối TikFinity</span>
         </div>
         <div class="topbar-right">
@@ -80,39 +87,29 @@
       </header>
 
       <div class="content-body">
-        <!-- ================= TAB 1: TỔNG QUAN & ĐIỀU KHIỂN ================= -->
+        <!-- ================= TAB 1: TỔNG QUAN ================= -->
         <section class="tab-pane active" id="tab-overview">
           <div class="section-heading">
-            <small>KHÔNG GIAN TIỆC CƯỚI • TƯƠNG TÁC TIKTOK LIVE STUDIO</small>
+            <small>KHÔNG GIAN TIỆC CƯỚI • TƯƠNG TÁC TIKTOK LIVE</small>
             <h2>Bảng Điều Khiển Tiệc Cưới Thời Gian Thực</h2>
-            <p>Điều khiển mọi hiệu ứng, kịch bản đám cưới và tương tác khách mời trực tiếp từ bảng điều khiển.</p>
+            <p>Điều khiển nghi thức, đấu giá cô dâu – chú rể và thử nghiệm tương tác trước khi LIVE.</p>
           </div>
 
-          <!-- THẺ KẾT NỐI TIKFINITY DESKTOP (1-CLICK NHƯ BẢN CHÙA) -->
           <article class="connection-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
               <div>
                 <span style="font-size:10px;font-weight:700;letter-spacing:1px;color:#ffd700;">BƯỚC ĐẦU TIÊN KHI LIVE</span>
-                <h3 style="margin:2px 0 0 0;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px;">
-                  ⚡ Kết Nối TikFinity Desktop
-                </h3>
+                <h3 style="margin:2px 0 0 0;font-size:18px;color:#fff;">⚡ Kết Nối TikFinity</h3>
               </div>
               <span id="status" class="status-pill offline">Chưa kết nối</span>
             </div>
-            <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.25); padding:10px 14px; border-radius:10px; margin-bottom:14px; border:1px solid rgba(255,255,255,0.06);">
-              <span style="font-size:24px;">🔗</span>
-              <div style="flex:1;">
-                <strong style="color:#fff;font-size:13px;">TikFinity Desktop (Windows)</strong>
-                <p style="margin:2px 0 0 0;font-size:12px;color:#bbb;">Tự động nhận bình luận, dâng hoa/quà và cướp rể từ TikTok LIVE vào tiệc cưới.</p>
-              </div>
-              <span style="background:rgba(255,215,0,0.15);color:#ffd700;font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.3);font-weight:700;">CỤC BỘ TRÊN MÁY</span>
-            </div>
             <p style="font-size:13px;color:#f0e6d6;margin-bottom:14px;line-height:1.5;">
-              Mở <b>TikFinity Desktop</b> trên máy tính và bấm kết nối phòng LIVE của bạn trước. Sau đó bấm nút <b>Kết nối TikFinity</b> dưới đây để nhận dữ liệu:
+              <b>TikFinity Desktop (Windows):</b> mở app, Connect phòng LIVE rồi bấm nút dưới đây.
+              <b>TikFinity Web (Linux/máy khác):</b> không cần bấm — xem hướng dẫn webhook ở tab <i>Kết Nối TikTok / TikFinity</i>.
             </p>
             <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
               <button id="connect" class="btn btn-connect-gold" type="button" style="padding:10px 22px;font-size:14px;">
-                ⚡ Kết nối TikFinity <span>➔</span>
+                ⚡ Kết nối TikFinity Desktop <span>➔</span>
               </button>
               <button id="disconnect" class="btn btn-secondary" type="button" disabled style="padding:10px 18px;font-size:13px;">
                 Ngắt kết nối
@@ -120,124 +117,160 @@
             </div>
             <div style="margin-top:14px; padding:9px 14px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:9px;">
               <span id="notice-dot" style="width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;"></span>
-              <p id="connection-message" style="margin:0;font-size:12px;color:#ccc;">Sẵn sàng kết nối. Hãy mở ứng dụng TikFinity Desktop trên máy này.</p>
+              <p id="connection-message" style="margin:0;font-size:12px;color:#ccc;">Sẵn sàng kết nối.</p>
             </div>
           </article>
 
-          <!-- 4 STATS CARDS -->
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-icon">👥</div>
-              <div class="stat-data">
-                <b id="card-guests">119</b>
-                <span>Khách dự tiệc</span>
-              </div>
+              <div class="stat-data"><b id="card-guests">0</b><span>Khách dự tiệc</span></div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">💌</div>
-              <div class="stat-data">
-                <b id="card-envelopes">588</b>
-                <span>Phong bì mừng cưới</span>
-              </div>
+              <div class="stat-data"><b id="card-envelopes">0</b><span>Phong bì mừng cưới</span></div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">✨</div>
-              <div class="stat-data">
-                <b id="card-wishes">175</b>
-                <span>Lời chúc phúc</span>
-              </div>
+              <div class="stat-icon">💒</div>
+              <div class="stat-data"><b id="card-couples">0</b><span>Cặp đã thành hôn</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-data"><b id="card-likes">0</b><span id="card-social">Tim · 0 chia sẻ</span></div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">👑</div>
-              <div class="stat-data">
-                <b id="card-top-giver">HOÀNG LONG</b>
-                <span>Top 1 mừng cưới</span>
+              <div class="stat-data"><b id="card-top-giver">Chưa có</b><span>Top 1 mừng cưới</span></div>
+            </div>
+          </div>
+
+          <!-- VAI HIỆN TẠI -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h3>👰🤵 Sân Khấu Hiện Tại</h3>
+              <small id="ceremony-status-text">Chờ đủ đôi để làm lễ</small>
+            </div>
+            <div class="role-status">
+              <div class="role-box">
+                <h4>🤵 CHÚ RỂ</h4>
+                <div class="who" id="rs-groom">—</div>
+                <div class="meta" id="rs-groom-meta"></div>
+              </div>
+              <div class="role-box bride">
+                <h4>👰 CÔ DÂU</h4>
+                <div class="who" id="rs-bride">—</div>
+                <div class="meta" id="rs-bride-meta"></div>
               </div>
             </div>
+            <p class="muted" id="rs-queue" style="margin-top:10px;"></p>
           </div>
 
-          <!-- BỘ NÚT ĐIỀU KHIỂN TỨC THÌ (1-CLICK INTERACTION BUTTONS) -->
+          <!-- NÚT NGHI THỨC -->
           <div class="card-panel">
             <div class="panel-header">
-              <h3>⚡ Kích Hoạt Nghi Thức Tiệc Cưới Tức Thì</h3>
-              <small>Bấm để kích hoạt trực tiếp hiệu ứng trên màn hình livestream</small>
+              <h3>⚡ Kích Hoạt Nghi Thức Tức Thì</h3>
+              <small>Bấm để chạy ngay trên màn hình LIVE</small>
             </div>
             <div class="action-buttons-grid">
-              <button class="action-btn btn-marry" id="btn-action-steal-groom" style="border-color:#ffd700;background:linear-gradient(135deg,rgba(255,180,0,0.2),rgba(200,40,70,0.3));">
-                <span class="act-icon">👑</span>
-                <b>Cướp Chú Rể (Đổi Rể)</b>
-                <small>Soán ngôi làm tân lang mới</small>
+              <button class="action-btn btn-marry" data-action="ceremony" style="border-color:#ffd700;background:linear-gradient(135deg,rgba(255,180,0,0.2),rgba(200,40,70,0.3));">
+                <span class="act-icon">💒</span><b>Làm lễ thành hôn ngay</b><small>Nhẫn → hôn → bánh → rượu → động phòng</small>
               </button>
-              <button class="action-btn btn-kiss" id="btn-action-kiss">
-                <span class="act-icon">💋</span>
-                <b>Cô dâu Chú rể hôn nhau</b>
-                <small>Bắn tim hồng & chuông hỷ</small>
+              <button class="action-btn" data-action="dongphong" style="border-color:#e8b34a;">
+                <span class="act-icon">🏮</span><b>Động phòng hoa chúc</b><small>Cặp đôi vào phòng hoa chúc</small>
               </button>
-              <button class="action-btn btn-cake" id="btn-action-cake">
-                <span class="act-icon">🎂</span>
-                <b>Cắt bánh cưới</b>
-                <small>Pháo hoa & nhạc rộn rã</small>
+              <button class="action-btn" data-action="ring">
+                <span class="act-icon">💍</span><b>Trao nhẫn cưới</b><small>Nhẫn bay từ 2 phía</small>
               </button>
-              <button class="action-btn btn-champagne" id="btn-action-champagne">
-                <span class="act-icon">🍾</span>
-                <b>Rót tháp sâm panh</b>
-                <small>Bật nắp rượu & bọt sâm panh</small>
+              <button class="action-btn btn-kiss" data-action="kiss">
+                <span class="act-icon">💋</span><b>Cô dâu chú rể hôn</b><small>Bắn tim & chuông hỷ</small>
               </button>
-              <button class="action-btn btn-cheers" id="btn-action-cheers">
-                <span class="act-icon">🍻</span>
-                <b>Cụng ly "1 2 3 DZÔ!"</b>
-                <small>Leng keng & cả hội trường hô</small>
+              <button class="action-btn btn-cake" data-action="cake">
+                <span class="act-icon">🎂</span><b>Cắt bánh cưới</b><small>Nhạc rộn rã</small>
               </button>
-              <button class="action-btn btn-dance" id="btn-action-dance">
-                <span class="act-icon">💃</span>
-                <b>Khách cùng nhảy múa</b>
-                <small>Quẩy tưng bừng trên nền nhạc</small>
+              <button class="action-btn" data-action="champagne">
+                <span class="act-icon">🍾</span><b>Rót tháp sâm panh</b><small>Bật nắp & bọt vàng</small>
               </button>
-              <button class="action-btn btn-petal" id="btn-action-petal">
-                <span class="act-icon">🌹</span>
-                <b>Mưa hoa hồng rực rỡ</b>
-                <small>Rải bão cánh hoa hồng</small>
+              <button class="action-btn btn-cheers" data-action="cheers">
+                <span class="act-icon">🍻</span><b>Cụng ly "1 2 3 DZÔ!"</b><small>Leng keng cả hội trường</small>
+              </button>
+              <button class="action-btn" data-action="dance">
+                <span class="act-icon">💃</span><b>Cả hội trường nhảy</b><small>Đèn disco & beat</small>
+              </button>
+              <button class="action-btn" data-action="petal">
+                <span class="act-icon">🌹</span><b>Mưa hoa hồng</b><small>Bão cánh hoa</small>
+              </button>
+              <button class="action-btn" data-action="steal_groom">
+                <span class="act-icon">🤵</span><b>Thử cướp chú rể</b><small>Khách ảo tặng vừa đủ xu</small>
+              </button>
+              <button class="action-btn" data-action="steal_bride">
+                <span class="act-icon">👰</span><b>Thử cướp cô dâu</b><small>Khách ảo tặng vừa đủ xu</small>
+              </button>
+              <button class="action-btn" data-action="reset_roles">
+                <span class="act-icon">🔄</span><b>Mở lại vai</b><small>Trả cô dâu chú rể gốc, lượt mới</small>
+              </button>
+              <button class="action-btn" data-action="photo" style="border-color:#ffd36b;">
+                <span class="act-icon">📸</span><b>Chụp ảnh cưới</b><small>Khung "Happy Wedding" + lưu album</small>
+              </button>
+              <button class="action-btn" data-action="quickwed">
+                <span class="act-icon">⚡</span><b>Động phòng luôn</b><small>Bỏ qua các bước lễ, thành hôn ngay</small>
+              </button>
+              <button class="action-btn" data-action="cancel">
+                <span class="act-icon">💔</span><b>Hủy hôn, phá đám</b><small>Cặp đôi xuống sân khấu</small>
+              </button>
+              <button class="action-btn" data-action="bouquet">
+                <span class="act-icon">💐</span><b>Tung hoa cưới</b><small>Một khách ngẫu nhiên bắt được</small>
+              </button>
+              <button class="action-btn" data-action="fireworks">
+                <span class="act-icon">🎆</span><b>Bắn pháo hoa</b><small>Pháo hoa rực rỡ</small>
+              </button>
+              <button class="action-btn" data-action="music">
+                <span class="act-icon">🎵</span><b>Đổi nhạc</b><small>Bài kế tiếp trong danh sách</small>
               </button>
             </div>
           </div>
 
-          <!-- MÔ PHỎNG TƯƠNG TÁC (DEMO SIMULATOR) -->
+          <!-- MÔ PHỎNG -->
           <div class="card-panel">
             <div class="panel-header">
-              <h3>🧪 Mô Phỏng Tương Tác Khách Mời (Test LIVE)</h3>
-              <small>Thử nghiệm ngay các tình huống khi có khách comment hoặc tặng quà</small>
+              <h3>🧪 Mô Phỏng Tương Tác (Test trước khi LIVE)</h3>
+              <button class="btn btn-primary btn-sm" id="btn-sim-full">🎬 Mô phỏng nguyên buổi (≈1 phút)</button>
             </div>
             <div class="simulator-row">
               <div class="sim-box">
-                <label>💬 Mô phỏng bình luận (Comment):</label>
+                <label>💬 Bình luận:</label>
                 <div class="input-action-group">
                   <input type="text" id="sim-comment-input" value="Chúc hai bạn trăm năm hạnh phúc! 🎉" placeholder="Nhập bình luận...">
-                  <button class="btn btn-secondary" id="btn-send-sim-comment">Gửi bình luận</button>
+                  <button class="btn btn-secondary" id="btn-send-sim-comment">Gửi</button>
                 </div>
                 <div class="quick-keywords">
                   <button class="tag-btn" data-cmt="Chúc mừng trăm năm hạnh phúc! 🎉">Chúc mừng</button>
-                  <button class="tag-btn" data-cmt="1 2 3 DZÔ DZÔ DZÔ! 🍻">Dzô</button>
+                  <button class="tag-btn" data-cmt="1 2 3 DZÔ! 🍻">Dzô</button>
                   <button class="tag-btn" data-cmt="Hôn đi hôn đi! 💋">Hôn đi</button>
                   <button class="tag-btn" data-cmt="Cắt bánh cưới đi nào! 🎂">Cắt bánh</button>
                   <button class="tag-btn" data-cmt="Nhảy lên quẩy tưng bừng nào! 💃">Nhảy</button>
+                  <button class="tag-btn" data-cmt="Cho em làm cô dâu với 👰">Xin làm cô dâu</button>
+                  <button class="tag-btn" data-cmt="nam">nam (đổi nhân vật)</button>
+                  <button class="tag-btn" data-cmt="nữ">nữ (đổi nhân vật)</button>
+                </div>
+                <label style="margin-top:6px;">❤️ Tim, chia sẻ, theo dõi:</label>
+                <div class="quick-keywords">
+                  <button class="tag-btn" data-sim="like" data-count="200">❤️ +200 tim</button>
+                  <button class="tag-btn" data-sim="like" data-count="2000">❤️ +2000 tim</button>
+                  <button class="tag-btn" data-sim="share">📤 Chia sẻ</button>
+                  <button class="tag-btn" data-sim="follow">➕ Theo dõi</button>
                 </div>
               </div>
 
               <div class="sim-box">
-                <label>🎁 Mô phỏng mừng quà cưới (Gift):</label>
-                <div class="sim-gift-buttons">
-                  <button class="btn-gift" data-gift="Mừng Phong Bì" data-count="1" data-coins="1">
-                    <span>💌</span> Mừng Phong Bì (1 xu)
-                  </button>
-                  <button class="btn-gift" data-gift="Mừng Chỉ Vàng" data-count="1" data-coins="5">
-                    <span>🍑</span> Mừng Chỉ Vàng (5 xu)
-                  </button>
-                  <button class="btn-gift" data-gift="Nhẫn Cưới Hỷ Sự" data-count="1" data-coins="10" style="border:1.5px solid #ffd700;font-weight:800;">
-                    <span>👑</span> Nhẫn Cưới (10 xu - CƯỚP RỂ)
-                  </button>
-                  <button class="btn-gift" data-gift="Nhẫn Kim Cương" data-count="1" data-coins="100">
-                    <span>💍</span> Trao Kim Cương (100 xu)
-                  </button>
+                <label>🎁 Quà theo luật đang cài (bấm để thử):</label>
+                <div class="quick-keywords" id="sim-rule-gifts"></div>
+                <label style="margin-top:6px;">🎁 Quà tùy chỉnh:</label>
+                <div class="sim-custom">
+                  <input type="text" id="sim-gift-name" placeholder="Tên quà (vd: Rose)" value="GG">
+                  <input type="number" id="sim-gift-coins" placeholder="Xu/quà" value="10" min="1" title="Số xu mỗi quà">
+                  <input type="number" id="sim-gift-count" placeholder="SL" value="1" min="1" title="Số lượng">
+                  <input type="text" id="sim-gift-sender" placeholder="Người tặng (để trống = ngẫu nhiên)">
+                  <button class="btn btn-secondary" id="btn-sim-gift">Tặng</button>
                 </div>
               </div>
             </div>
@@ -247,50 +280,196 @@
         <!-- ================= TAB 2: CÔ DÂU & CHÚ RỂ ================= -->
         <section class="tab-pane" id="tab-couple">
           <div class="section-heading">
-            <small>CẤU HÌNH THÔNG TIN TIỆC CƯỚI</small>
-            <h2>Thông Tin Cô Dâu, Chú Rể & Đấu Giá Kết Hôn</h2>
+            <small>CẤU HÌNH TIỆC CƯỚI & ĐẤU GIÁ</small>
+            <h2>Cô Dâu, Chú Rể & Đấu Giá Kết Hôn</h2>
           </div>
           <div class="card-panel">
+            <div class="hint-box">
+              <b>Cách đấu giá:</b> khách tặng quà thuộc luật <i>"Làm chú rể / cô dâu"</i> (mặc định: mọi quà ≥ 10 xu) để giành vai.
+              Người đang giữ vai có <b>giá</b> = tổng xu đã tặng trong lượt; muốn cướp phải tặng <b>nhiều hơn</b>.
+              Khách bình luận <b>"làm cô dâu"</b> (hoặc chỉ gõ "cô dâu") rồi tặng quà sẽ giành vai cô dâu; còn lại mặc định là chú rể. Lời khen như "cô dâu xinh quá" không tính.
+              Khi đủ đôi, lễ thành hôn tự động diễn ra (nhẫn → hôn → bánh → rượu → <b>động phòng</b>), sau đó vai mở lại cho lượt mới.
+            </div>
             <div class="form-grid">
               <div class="form-group">
-                <label>🤵 Tên Chú Rể:</label>
+                <label>🤵 Tên chú rể gốc (khi chưa ai giành vai):</label>
                 <input type="text" id="cfg-groom" value="Tuấn Anh">
               </div>
               <div class="form-group">
-                <label>👰 Tên Cô Dâu:</label>
+                <label>👰 Tên cô dâu gốc:</label>
                 <input type="text" id="cfg-bride" value="Mai Vy">
               </div>
               <div class="form-group">
-                <label>💒 Tiêu đề Tiệc Cưới:</label>
+                <label>💒 Tiêu đề tiệc cưới:</label>
                 <input type="text" id="cfg-title" value="TIỆC CƯỚI ONLINE">
-              </div>
-              <div class="form-group">
-                <label>💖 Khẩu hiệu Hạnh Phúc:</label>
-                <input type="text" id="cfg-slogan" value="Trăm Năm Hạnh Phúc">
-              </div>
-              <div class="form-group">
-                <label>👑 Đấu giá kết hôn (Cướp Rể):</label>
-                <select id="cfg-marry-auction">
-                  <option value="true">Bật - Tặng đủ xu soán ngôi Chú Rể</option>
-                  <option value="false">Tắt - Giữ nguyên chú rể</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>💰 Mức xu tối thiểu để làm Chú Rể:</label>
-                <input type="number" id="cfg-min-marry" value="10" min="1">
               </div>
               <div class="form-group">
                 <label>📅 Ngày cưới:</label>
                 <input type="date" id="cfg-date" value="2026-11-03">
               </div>
+              <div class="form-group">
+                <label>👑 Đấu giá giành vai:</label>
+                <select id="cfg-marry-auction">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt - giữ nguyên cô dâu chú rể gốc</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🎟️ Cách giành vai:</label>
+                <select id="cfg-role-system">
+                  <option value="auction">Đấu giá — tặng nhiều hơn để cướp vai</option>
+                  <option value="queue">Hàng chờ — quà rẻ vào vai, vai có người thì xếp hàng (kiểu các rạp cưới khác)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🎭 Khách được giành vai:</label>
+                <select id="cfg-role-mode">
+                  <option value="both">Cả chú rể và cô dâu</option>
+                  <option value="groom">Chỉ chú rể (cô dâu là chủ kênh)</option>
+                  <option value="bride">Chỉ cô dâu (chú rể là chủ kênh)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>💰 Giá tối thiểu để nhận vai trống (xu):</label>
+                <input type="number" id="cfg-min-marry" value="10" min="1">
+              </div>
+              <div class="form-group">
+                <label>💒 Tự động làm lễ khi đủ đôi:</label>
+                <select id="cfg-auto-ceremony">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt - chỉ làm lễ khi bấm nút</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>⏳ Đếm ngược trước lễ (giây) — vẫn cho cướp vai:</label>
+                <input type="number" id="cfg-ceremony-countdown" value="45" min="5" max="600">
+              </div>
+              <div class="form-group">
+                <label>💖 Khẩu hiệu:</label>
+                <input type="text" id="cfg-slogan" value="Trăm Năm Hạnh Phúc">
+              </div>
+              <div class="form-group">
+                <label>📸 Tự chụp ảnh cưới sau mỗi lễ (lưu vào Album):</label>
+                <select id="cfg-photo-after">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>👥 Số khách hiển thị trong hội trường:</label>
+                <select id="cfg-max-guests">
+                  <option value="54">Đông vui (54 khách)</option>
+                  <option value="24">Thoáng (24 khách)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>❤️ Số tim để "cả rạp đứng dậy quẩy":</label>
+                <input type="number" id="cfg-like-goal" value="5000" min="100">
+              </div>
+              <div class="form-group">
+                <label>💰 Hiển thị tiền mừng:</label>
+                <select id="cfg-money-unit">
+                  <option value="xu">Theo xu</option>
+                  <option value="chỉ vàng">Theo chỉ vàng (1 xu = 1 chỉ)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🔥 Mất danh hiệu nếu ngừng tương tác (giây):</label>
+                <input type="number" id="cfg-title-decay" value="30" min="10" max="600">
+              </div>
+              <div class="form-group">
+                <label>🎤 Nhân vật MC trên sân khấu:</label>
+                <select id="cfg-show-mc">
+                  <option value="true">Hiện</option>
+                  <option value="false">Ẩn</option>
+                </select>
+              </div>
             </div>
             <div class="panel-footer">
+              <button class="btn btn-secondary" data-action="reset_roles">🔄 Mở lại vai</button>
+              <button class="btn btn-secondary" data-action="ceremony">💒 Làm lễ ngay</button>
               <button class="btn btn-primary" id="btn-save-couple">💾 Lưu Thay Đổi</button>
+            </div>
+          </div>
+
+          <div class="card-panel" style="margin-top:18px;">
+            <div class="panel-header"><h3>💍 Các cặp đã thành hôn</h3></div>
+            <table class="data-table" id="table-marriages">
+              <thead><tr><th>Thời gian</th><th>Chú rể</th><th>Cô dâu</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================= TAB 3: LUẬT QUÀ & MỤC TIÊU ================= -->
+        <section class="tab-pane" id="tab-goals">
+          <div class="section-heading">
+            <small>QUÀ NÀO → NGHI THỨC NÀO</small>
+            <h2>Luật Quà Tặng & Mục Tiêu</h2>
+          </div>
+          <div class="card-panel">
+            <div class="hint-box">
+              Mỗi dòng: <b>tên quà</b> (nhiều tên cách nhau dấu phẩy, không phân biệt hoa/thường, có dấu hay không dấu; để trống = mọi quà),
+              <b>xu tối thiểu</b> của lần tặng, và <b>nghi thức</b>. Luật được xét <b>từ trên xuống</b>, dòng đầu tiên khớp sẽ được dùng.
+              Tên quà phải giống tên TikTok gửi về — xem bảng <i>"Quà vừa nhận"</i> bên dưới khi LIVE thử để lấy đúng tên. Có thể dùng <code>#ID</code> để khớp theo mã quà.
+            </div>
+            <table class="data-table rules-table" id="rules-table">
+              <thead><tr><th>Tên quà</th><th class="col-min">Xu tối thiểu</th><th class="col-act">Nghi thức</th><th class="col-move"></th><th class="col-del"></th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <div class="panel-footer" style="justify-content:space-between;">
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-secondary" id="btn-add-rule">➕ Thêm luật</button>
+                <button class="btn btn-secondary" id="btn-preset-auction">⚔️ Bộ quà Đấu giá</button>
+                <button class="btn btn-secondary" id="btn-preset-queue">⏳ Bộ quà Hàng chờ</button>
+              </div>
+              <button class="btn btn-primary" id="btn-save-rules">💾 Lưu Luật Quà</button>
+            </div>
+          </div>
+
+          <div class="card-panel" style="margin-top:18px;">
+            <div class="panel-header">
+              <h3>🎁 Quà vừa nhận (30 gần nhất)</h3>
+              <small>Bấm ➕ để tạo luật với đúng tên quà này</small>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="table-recent-gifts">
+                <thead><tr><th>Lúc</th><th>Người tặng</th><th>Quà</th><th>Xu</th><th>Nghi thức</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card-panel" style="margin-top:18px;">
+            <div class="panel-header"><h3>💬 Bình luận & 🎯 Mục tiêu</h3></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Bình luận "hôn", "dzô", "nhảy", "cắt bánh"... kích hoạt nghi thức:</label>
+                <select id="cfg-comment-rituals">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Chờ giữa 2 lần cùng nghi thức do bình luận (giây):</label>
+                <input type="number" id="cfg-comment-cooldown" value="8" min="0" max="300">
+              </div>
+              <div class="form-group">
+                <label>🌹 Mục tiêu Mưa hoa hồng (số bông) — đạt thì mưa hoa:</label>
+                <input type="number" id="cfg-goal-rose" value="100" min="1">
+              </div>
+              <div class="form-group">
+                <label>🎂 Mục tiêu Cắt bánh cưới (tổng xu) — đạt thì cắt bánh:</label>
+                <input type="number" id="cfg-goal-cake" value="1000" min="1">
+              </div>
+            </div>
+            <div class="panel-footer">
+              <button class="btn btn-primary" id="btn-save-goals">💾 Lưu</button>
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 3: SỔ MỪNG CƯỚI & KHÁCH ================= -->
+        <!-- ================= TAB 4: SỔ MỪNG CƯỚI ================= -->
         <section class="tab-pane" id="tab-registry">
           <div class="section-heading">
             <small>DANH SÁCH & BẢNG VÀNG</small>
@@ -298,214 +477,280 @@
           </div>
           <div class="card-panel">
             <div class="panel-header">
-              <h3>🏆 Top Khách Mừng Cưới Cao Nhất</h3>
+              <h3>🏆 Khách Mừng Cưới</h3>
               <button class="btn btn-danger btn-sm" id="btn-reset-session">⚠️ Xóa Dữ Liệu Bắt Đầu Phiên Mới</button>
             </div>
             <div class="table-responsive">
               <table class="data-table" id="table-registry">
-                <thead>
-                  <tr>
-                    <th>Hạng</th>
-                    <th>Khách Mừng</th>
-                    <th>Tổng Xu Mừng</th>
-                    <th>Quà Gần Nhất</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Dữ liệu render qua JS -->
-                </tbody>
+                <thead><tr><th>Hạng</th><th>Khách mừng</th><th>Tổng xu</th></tr></thead>
+                <tbody></tbody>
               </table>
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 4: MỤC TIÊU & QUÀ ================= -->
-        <section class="tab-pane" id="tab-goals">
+        <!-- ================= TAB: ALBUM ẢNH CƯỚI ================= -->
+        <section class="tab-pane" id="tab-album">
           <div class="section-heading">
-            <small>THIẾT LẬP MỤC TIÊU LIVESTREAM</small>
-            <h2>Thanh Tiến Độ Quà Tặng & Mục Tiêu Cưới</h2>
+            <small>KỶ NIỆM CÁC CẶP ĐÔI</small>
+            <h2>Album Ảnh Cưới</h2>
+            <p>Ảnh "Happy Wedding" tự lưu sau mỗi lễ thành hôn, khi bấm "Chụp ảnh cưới" hoặc khi khách tặng quà chụp ảnh chung. File nằm ở thư mục <code>app/public/album</code>.</p>
           </div>
           <div class="card-panel">
-            <div class="form-grid">
-              <div class="form-group">
-                <label>🌹 Mục tiêu Mưa hoa hồng (Số bông):</label>
-                <input type="number" id="cfg-goal-rose" value="2532">
-              </div>
-              <div class="form-group">
-                <label>🎂 Mục tiêu Cắt bánh cưới (Điểm / Xu):</label>
-                <input type="number" id="cfg-goal-cake" value="100000">
+            <div class="panel-header">
+              <h3>📸 Ảnh đã lưu</h3>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-secondary btn-sm" id="btn-album-refresh">🔄 Làm mới</button>
+                <button class="btn btn-primary btn-sm" data-action="photo">📸 Chụp ảnh ngay</button>
               </div>
             </div>
-            <div class="panel-footer">
-              <button class="btn btn-primary" id="btn-save-goals">💾 Lưu Mục Tiêu</button>
-            </div>
+            <div class="album-grid" id="album-grid"><p class="muted">Chưa có ảnh nào.</p></div>
           </div>
         </section>
 
-        <!-- ================= TAB 5: ÂM THANH & GIỌNG ĐỌC AI ================= -->
+        <!-- ================= TAB 5: GIỌNG MC ================= -->
         <section class="tab-pane" id="tab-voice">
           <div class="section-heading">
-            <small>CÔNG NGHỆ GIỌNG ĐỌC AI</small>
-            <h2>Âm Thanh & Giọng Đọc Cảm Ơn Mừng Cưới</h2>
+            <small>GIỌNG MC</small>
+            <h2>Giọng MC & Cách MC Dẫn Chương Trình</h2>
+            <p>Giọng đọc phát ra từ <b>màn hình LIVE</b> (OBS / trình duyệt). Lời MC sửa ở tab <i>Lời Thoại MC</i>.</p>
           </div>
+
           <div class="card-panel">
+            <div class="panel-header">
+              <h3>🎙️ Giọng đọc</h3>
+              <button class="btn btn-secondary btn-sm" id="btn-refresh-voices">🔄 Dò lại giọng</button>
+            </div>
             <div class="form-grid">
               <div class="form-group">
-                <label>Bật giọng đọc cảm ơn khi có quà:</label>
+                <label>Giọng MC:</label>
                 <select id="cfg-speech-enabled">
-                  <option value="true">Bật giọng đọc AI</option>
-                  <option value="false">Tắt giọng đọc</option>
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt (chỉ hiện phụ đề)</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>Phong cách MC hài hước (Trêu đùa):</label>
-                <select id="cfg-funny-voice">
-                  <option value="true">Bật - MC cute nhí nhảnh trêu khách & cướp rể</option>
-                  <option value="false">Tắt - Đọc theo mẫu chuẩn</option>
+                <label>Nguồn giọng:</label>
+                <select id="cfg-voice-engine">
+                  <option value="auto">Tự động — giọng của máy nếu có, không thì Google</option>
+                  <option value="browser">Giọng của máy chạy màn hình LIVE</option>
+                  <option value="google">Giọng Google (cần Internet)</option>
                 </select>
-              </div>
-              <div class="form-group">
-                <label>Độ cao giọng (Pitch cute: 1.25):</label>
-                <input type="range" id="cfg-voice-pitch" min="0.8" max="1.6" step="0.05" value="1.25">
-              </div>
-              <div class="form-group">
-                <label>Tốc độ đọc (Rate: 1.08):</label>
-                <input type="range" id="cfg-voice-rate" min="0.8" max="1.4" step="0.04" value="1.08">
-              </div>
-              <div class="form-group">
-                <label>Âm lượng giọng đọc:</label>
-                <input type="range" id="cfg-volume" min="0" max="1" step="0.05" value="0.95">
               </div>
               <div class="form-group full-width">
-                <label>Mẫu câu cảm ơn mừng cưới:</label>
-                <textarea id="cfg-thanks-template" rows="3">Cảm ơn bạn {name} đã mừng {count} {gift} cho cô dâu {bride} và chú rể {groom}! Chúc bạn và gia đình dồi dào sức khỏe, vạn sự như ý!</textarea>
-                <small class="hint-text">Dùng biến: {name} (tên người tặng), {gift} (tên quà), {count} (số lượng), {groom} (chú rể), {bride} (cô dâu)</small>
+                <label>Chọn giọng của máy:</label>
+                <select id="cfg-browser-voice">
+                  <option value="">(Tự chọn giọng tự nhiên nhất)</option>
+                </select>
+                <small class="hint-text" id="voice-detect-info">Đang dò giọng...</small>
+              </div>
+              <div class="form-group">
+                <label>Tốc độ đọc: <b id="lbl-rate">1.08</b></label>
+                <input type="range" id="cfg-voice-rate" min="0.7" max="1.5" step="0.02" value="1.08">
+              </div>
+              <div class="form-group">
+                <label>Cao độ (chỉ giọng của máy): <b id="lbl-pitch">1.00</b></label>
+                <input type="range" id="cfg-voice-pitch" min="0.6" max="1.6" step="0.05" value="1">
+              </div>
+              <div class="form-group">
+                <label>Âm lượng giọng: <b id="lbl-volume">95%</b></label>
+                <input type="range" id="cfg-volume" min="0" max="1" step="0.05" value="0.95">
+              </div>
+              <div class="form-group">
+                <label>Hiệu ứng âm thanh (chuông, cụng ly, beat sàn nhảy):</label>
+                <select id="cfg-sound-effects">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
               </div>
             </div>
-            <div class="panel-footer">
-              <button class="btn btn-secondary" id="btn-test-voice">🔊 Đọc Thử Mẫu Câu</button>
-              <button class="btn btn-primary" id="btn-save-voice">💾 Lưu Thiết Lập</button>
+            <div class="hint-box" style="margin:16px 0 0;">
+              💡 <b>Muốn giọng tự nhiên như người thật:</b> trên Windows, mở màn hình LIVE bằng trình duyệt <b>Microsoft Edge</b> (có sẵn giọng <i>HoaiMy</i> nữ và <i>NamMinh</i> nam),
+              rồi trong OBS dùng <i>Window Capture</i> + thu tiếng máy. Browser Source của OBS và Chrome/Linux không có giọng tiếng Việt nên tool tự dùng giọng Google.
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-header"><h3>🎤 MC dẫn chương trình</h3></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Cảm ơn quà (quà không gán nghi thức):</label>
+                <select id="cfg-funny-voice">
+                  <option value="true">Hài hước — nhóm "Cảm ơn quà - MC hài hước"</option>
+                  <option value="false">Lịch sự — nhóm "Cảm ơn quà - lịch sự"</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Phụ đề lời MC trên màn hình LIVE:</label>
+                <select id="cfg-mc-caption">
+                  <option value="true">Hiện</option>
+                  <option value="false">Ẩn</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>MC tự nói khi phòng vắng (mời giành vai, nhắc giờ lễ, giới thiệu quà):</label>
+                <select id="cfg-mc-idle">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Sau bao nhiêu giây im lặng thì MC tự nói:</label>
+                <input type="number" id="cfg-mc-idle-seconds" value="45" min="15" max="600">
+              </div>
+              <div class="form-group">
+                <label>MC chào khách mới vào phòng (gộp tên):</label>
+                <select id="cfg-mc-welcome">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tối thiểu bao nhiêu giây giữa 2 lần chào:</label>
+                <input type="number" id="cfg-mc-welcome-seconds" value="30" min="5" max="600">
+              </div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-header"><h3>🔊 Nghe thử</h3></div>
+            <div class="form-group">
+              <textarea id="voice-test-text" rows="2">Kính thưa quý vị quan khách, chào mừng đến với tiệc cưới online! Tặng quà để lên sân khấu làm cô dâu chú rể nhé!</textarea>
+            </div>
+            <div class="panel-footer" style="justify-content:space-between;">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary" id="btn-test-voice">🔈 Nghe trên máy này (Google)</button>
+                <button class="btn btn-secondary" id="btn-test-overlay">📺 Đọc trên màn hình LIVE</button>
+              </div>
+              <button class="btn btn-primary" id="btn-save-voice">💾 Lưu Giọng MC</button>
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 6: NHẠC NỀN CƯỚI YOUTUBE ================= -->
+        <!-- ================= TAB 5b: LỜI THOẠI MC ================= -->
+        <section class="tab-pane" id="tab-mclines">
+          <div class="section-heading">
+            <small>KỊCH BẢN MC</small>
+            <h2>Toàn Bộ Lời Thoại MC</h2>
+            <p>Mỗi nhóm có nhiều câu, MC đọc <b>luân phiên</b>. Biến trong {ngoặc nhọn} được tool tự điền khi có sự kiện. Xóa hết câu trong một nhóm = MC im lặng ở sự kiện đó.</p>
+          </div>
+          <div class="card-panel">
+            <div class="mc-toolbar">
+              <input type="search" id="mc-search" placeholder="🔍 Tìm nhóm hoặc câu...">
+              <button class="btn btn-secondary btn-sm" id="btn-mc-expand">Mở tất cả</button>
+              <button class="btn btn-secondary btn-sm" id="btn-mc-collapse">Thu gọn</button>
+              <button class="btn btn-secondary btn-sm" id="btn-mc-reset-all">↺ Mặc định tất cả</button>
+              <button class="btn btn-primary" id="btn-mc-save">💾 Lưu lời thoại</button>
+            </div>
+            <div id="mc-groups"><p class="muted">Đang tải lời thoại...</p></div>
+            <div class="hint-box" style="margin:16px 0 0;">
+              <b>Biến:</b> {name} người tặng/bình luận · {gift} tên quà · {count} số lượng · {coins} tổng xu · {groom} chú rể · {bride} cô dâu ·
+              {role} vai (chú rể/cô dâu) · {bid} giá đang có · {missing} xu còn thiếu · {holder} người đang giữ vai · {previous} người bị cướp vai ·
+              {min} xu tối thiểu nhận vai · {seconds} giây đếm ngược · {names} tên khách mới · {gifts} tóm tắt quà (theo Luật Quà) · {groomBid} / {brideBid} giá 2 vai.
+              Bấm ▶ để nghe thử câu với dữ liệu mẫu.
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 6: NHẠC NỀN ================= -->
         <section class="tab-pane" id="tab-bgm">
           <div class="section-heading">
-            <small>ÂM NHẠC HÔN TRƯỜNG • PHÁT TRỰC TIẾP TỪ YOUTUBE</small>
-            <h2>Cài Đặt Nhạc Nền Cưới (YouTube BGM)</h2>
-            <p>Admin có thể dán bất kỳ link bài hát YouTube nào hoặc chọn nhanh các bản nhạc cưới nổi tiếng bên dưới.</p>
+            <small>ÂM NHẠC HÔN TRƯỜNG</small>
+            <h2>Nhạc Nền Cưới</h2>
+            <p>Dùng file nhạc trên máy (MP3/WAV/OGG/M4A). Nên dùng nhạc <b>không bản quyền</b> (YouTube Audio Library, Pixabay Music...) để TikTok không tắt tiếng / cắt LIVE.</p>
           </div>
           <div class="card-panel">
             <div class="form-grid">
-              <div class="form-group full-width">
-                <label>🔗 Link hoặc Video ID YouTube:</label>
-                <div class="input-action-group">
-                  <input type="text" id="cfg-bgm-url" placeholder="Dán link YouTube (ví dụ: https://www.youtube.com/watch?v=w4Z01V4uFz8)" value="https://www.youtube.com/watch?v=w4Z01V4uFz8">
-                  <button class="btn btn-primary" id="btn-apply-bgm">▶️ Áp Dụng & Phát Ngay</button>
-                </div>
-                <small class="hint-text">Hỗ trợ mọi định dạng: youtube.com/watch?v=..., youtu.be/..., hoặc mã Video ID</small>
-              </div>
-
               <div class="form-group">
-                <label>🏷️ Tên bài hát hiển thị trên màn hình LIVE:</label>
-                <input type="text" id="cfg-bgm-title" value="Hòa Tấu Đám Cưới Lãng Mạn (Piano & Violin)">
+                <label>Nguồn nhạc nền:</label>
+                <select id="cfg-bgm-source">
+                  <option value="file">🎵 File nhạc trên máy</option>
+                  <option value="youtube">▶️ YouTube (dễ dính bản quyền)</option>
+                  <option value="off">🔇 Tắt nhạc nền</option>
+                </select>
               </div>
-
+              <div class="form-group">
+                <label>Trạng thái:</label>
+                <select id="cfg-bgm-playing">
+                  <option value="true">Đang phát 🎵</option>
+                  <option value="false">Tạm dừng ⏸️</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label>🔊 Âm lượng nhạc nền (%):</label>
                 <input type="range" id="cfg-bgm-volume" min="0" max="100" step="5" value="50">
               </div>
-
               <div class="form-group">
-                <label>Trạng thái phát nhạc:</label>
-                <select id="cfg-bgm-playing">
-                  <option value="true">Đang phát nhạc 🎵</option>
-                  <option value="false">Tạm dừng phát ⏸️</option>
-                </select>
+                <label>🏷️ Tên bài hiển thị (để trống = tên file):</label>
+                <input type="text" id="cfg-bgm-title" value="">
               </div>
-
-              <div class="form-group full-width">
-                <label>⚡ Chọn Nhanh Bản Nhạc Cưới Yêu Thích:</label>
-                <div class="quick-keywords">
-                  <button class="tag-btn bgm-preset-btn" data-url="https://www.youtube.com/watch?v=w4Z01V4uFz8" data-title="Ánh Nắng Của Anh (Piano Wedding)">🎹 Ánh Nắng Của Anh (Piano)</button>
-                  <button class="tag-btn bgm-preset-btn" data-url="https://www.youtube.com/watch?v=0k2Zzkw_-0I" data-title="Ngày Đầu Tiên - Đức Phúc">💍 Ngày Đầu Tiên (Đức Phúc)</button>
-                  <button class="tag-btn bgm-preset-btn" data-url="https://www.youtube.com/watch?v=kYx8kS_aV5Y" data-title="Cưới Thôi - Masew ft. Masiu">🍾 Cưới Thôi (Masew)</button>
-                  <button class="tag-btn bgm-preset-btn" data-url="https://www.youtube.com/watch?v=i9YyTjI-6_0" data-title="Đám Cưới Nha - Hồng Thanh">💐 Đám Cưới Nha (Hồng Thanh)</button>
-                  <button class="tag-btn bgm-preset-btn" data-url="https://www.youtube.com/watch?v=NlprozGcs80" data-title="Canon in D (Hòa Tấu Lễ Cưới Hoàng Gia)">🎻 Canon in D (Lễ Cưới)</button>
+              <div class="form-group full-width" id="bgm-file-group">
+                <label>📁 Danh sách nhạc (thư mục <code>app/public/music</code>):</label>
+                <div class="input-action-group">
+                  <input type="file" id="bgm-upload" accept=".mp3,.wav,.ogg,.m4a,audio/*" multiple>
+                  <button class="btn btn-secondary" id="btn-upload-music">⬆️ Tải lên</button>
                 </div>
+                <div class="music-list" id="music-list"></div>
+              </div>
+              <div class="form-group full-width" id="bgm-youtube-group">
+                <label>🔗 Link hoặc ID video YouTube:</label>
+                <input type="text" id="cfg-bgm-url" placeholder="https://www.youtube.com/watch?v=...">
+                <small class="warn-text">⚠️ Nhạc YouTube thường có bản quyền — TikTok có thể tắt tiếng hoặc cảnh cáo buổi LIVE.</small>
               </div>
             </div>
             <div class="panel-footer">
-              <button class="btn btn-secondary" id="btn-toggle-bgm">⏯️ Bật / Tắt Nhạc Nhanh</button>
-              <button class="btn btn-primary" id="btn-save-bgm">💾 Lưu Cấu Hình Nhạc</button>
+              <button class="btn btn-primary" id="btn-save-bgm">💾 Lưu & Áp Dụng</button>
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 7: TIKFINITY ================= -->
+        <!-- ================= TAB 7: KẾT NỐI ================= -->
         <section class="tab-pane" id="tab-tikfinity">
           <div class="section-heading">
-            <small>KẾT NỐI TỰ ĐỘNG THỜI GIAN THỰC (CHUẨN NHƯ BẢN CHÙA)</small>
-            <h2>Kết Nối TikFinity Desktop 1-Click & Lấy Dữ Liệu Thật</h2>
-            <p>Không cần cấu hình webhook phức tạp. Chỉ cần mở TikFinity Desktop và bấm nút kết nối!</p>
+            <small>NHẬN BÌNH LUẬN & QUÀ TỪ TIKTOK LIVE</small>
+            <h2>Kết Nối TikTok qua TikFinity</h2>
           </div>
 
           <div class="card-panel">
-            <div class="guide-box" style="line-height:1.6;font-size:14px;color:#f0e6d6;">
-              <h4 style="color:#ffd700;font-size:16px;margin-bottom:8px;">⚡ 1. Kết Nối TikFinity Desktop Siêu Đơn Giản (3 Bước):</h4>
-              <ol style="margin-left:20px;margin-bottom:16px;line-height:1.8;">
-                <li>Tải và cài ứng dụng <b>TikFinity Desktop (Windows)</b> từ <a href="https://tikfinity.zerody.one/" target="_blank" style="color:#ffd700;text-decoration:underline;">tikfinity.zerody.one</a>.</li>
-                <li>Mở TikFinity Desktop, nhập <b>@username</b> kênh TikTok của bạn và bấm nút <b>Connect</b> để kết nối phòng LIVE.</li>
-                <li>Quay lại giao diện Tiệc Cưới này, chọn tab <b>Tổng quan</b> (hoặc bấm nút dưới đây) → bấm <b>⚡ Kết nối TikFinity ➔</b>. Dữ liệu phòng LIVE sẽ tự động truyền thẳng vào màn hình tiệc cưới!</li>
+            <div class="guide-box" style="line-height:1.7;font-size:14px;color:#f0e6d6;">
+              <h4 style="color:#ffd700;font-size:16px;margin-bottom:8px;">⚡ Cách 1 — TikFinity Desktop (Windows, cùng máy)</h4>
+              <ol style="margin-left:20px;margin-bottom:16px;">
+                <li>Cài <b>TikFinity Desktop</b> từ <a href="https://tikfinity.zerody.one/" target="_blank" rel="noopener" style="color:#ffd700;">tikfinity.zerody.one</a>.</li>
+                <li>Bắt đầu LIVE TikTok, trong TikFinity nhập username và bấm <b>Connect</b>.</li>
+                <li>Quay lại đây bấm <b>⚡ Kết nối TikFinity Desktop</b>.</li>
               </ol>
-
-              <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-                <div>
-                  <strong style="color:#ffd700;display:block;margin-bottom:4px;">Trạng thái kết nối TikFinity hiện tại:</strong>
-                  <span id="tab-status-desc" style="font-size:13px;color:#ddd;">Hãy mở TikFinity Desktop trên máy này và bấm Kết nối.</span>
-                </div>
-                <button class="btn btn-connect-gold" type="button" onclick="document.querySelector('#connect')?.click();" style="padding:9px 18px;font-size:13px;">
-                  ⚡ Bấm Kết Nối Ngay ➔
-                </button>
+              <div class="webhook-box" style="margin-bottom:18px;">
+                <span id="tab-status-desc" style="flex:1;font-size:13px;color:#ddd;">Chưa kết nối.</span>
+                <button class="btn btn-connect-gold btn-sm" type="button" onclick="document.querySelector('#connect')?.click();">⚡ Kết nối</button>
               </div>
 
-              <h4 style="color:#ffd700;font-size:16px;margin-bottom:8px;">📌 2. Tên Cô Dâu & Chú Rể lấy từ đâu khi Live thật?</h4>
-              <ul style="margin-left:20px;margin-bottom:16px;line-height:1.8;">
-                <li><b>Tên Cô Dâu:</b> Cố định theo cấu hình của bạn ở Tab <i>"Cô dâu & Chú rể"</i> (hoặc đặt là tên bạn / tên kênh TikTok của bạn).</li>
-                <li><b>Tên Chú Rể:</b> Ban đầu đặt theo ý bạn. Khi live, <b>bất kỳ ai tặng quà $\ge 10$ xu</b> (hoặc mức xu do bạn chỉnh) sẽ <b>tự động soán ngôi Chú Rể</b>, lấy đúng <b>Tên / Nickname TikTok thật</b> của người xem đó đưa lên sân khấu, đội vương miện và hôn cô dâu!</li>
-              </ul>
-
-              <h4 style="color:#aaa;font-size:14px;margin-bottom:6px;cursor:pointer;" onclick="const el=document.getElementById('webhook-detail');el.style.display=el.style.display==='none'?'block':'none';">
-                ⚙️ Tùy chọn nâng cao: Kết nối bằng Webhook TikFinity (Bấm để xem) ▾
-              </h4>
-              <div id="webhook-detail" style="display:none;background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);">
-                <p style="font-size:13px;color:#bbb;margin-bottom:8px;">Dành cho trường hợp bạn sử dụng TikFinity Web thay vì ứng dụng Desktop:</p>
-                <ol style="margin-left:20px;margin-bottom:10px;font-size:13px;color:#bbb;">
-                  <li>Vào mục <b>Webhook</b> trong TikFinity → Bật <b>Enable Webhook</b>.</li>
-                  <li>Dán URL:
-                    <div class="webhook-box" style="margin:6px 0;">
-                      <code>http://localhost:3003/api/tikfinity</code>
-                      <button class="btn btn-secondary btn-sm" id="btn-copy-webhook">Sao chép</button>
-                    </div>
-                  </li>
-                  <li>Chọn: <b>Chat</b> và <b>Gift</b> → Bấm <b>Save</b>.</li>
-                </ol>
-              </div>
+              <h4 style="color:#ffd700;font-size:16px;margin-bottom:8px;">🌐 Cách 2 — TikFinity Web + Webhook (Linux / máy khác)</h4>
+              <ol style="margin-left:20px;margin-bottom:10px;">
+                <li>Mở tunnel trên máy chạy tool: <code>cloudflared tunnel --no-autoupdate --url http://localhost:3003</code> → lấy link <code>https://xxxx.trycloudflare.com</code>.</li>
+                <li>Link webhook = <b>link tunnel</b> + đường dẫn dưới đây (có khóa bí mật, đừng chia sẻ):
+                  <div class="webhook-box">
+                    <code id="webhook-path">/api/tikfinity?key=...</code>
+                    <button class="btn btn-secondary btn-sm" id="btn-copy-webhook">Sao chép</button>
+                  </div>
+                </li>
+                <li>Trong TikFinity Web: <b>Actions & Events</b> → tạo Action có <b>Webhook</b> với link trên → tạo Event cho <b>Gift</b> (mọi quà) và <b>Chat/Comment</b>, gắn Action đó.</li>
+                <li>(Tuỳ chọn) Tạo thêm Action webhook với link có thêm đuôi <code>&event=share</code> gắn vào Event <b>Share</b>, đuôi <code>&event=follow</code> gắn vào <b>Follow</b>, đuôi <code>&event=like</code> gắn vào <b>Likes</b> — để tool cảm ơn chia sẻ/theo dõi và đếm tim.</li>
+              </ol>
+              <p style="font-size:12px;color:#aaa;">Từ Internet chỉ gọi được webhook (đúng khóa); bảng điều khiển này không bị lộ ra ngoài.</p>
             </div>
           </div>
         </section>
       </div>
     </main>
 
-    <!-- RIGHT PREVIEW COLUMN (IPHONE LIVE PREVIEW) -->
+    <!-- XEM TRƯỚC (TẮT TIẾNG) -->
     <aside class="preview-sidebar">
       <div class="preview-header">
-        <span>📱 XEM TRƯỚC MÀN HÌNH LIVE (9:16)</span>
+        <span>📱 XEM TRƯỚC MÀN HÌNH LIVE (9:16 · tắt tiếng)</span>
       </div>
       <div class="phone-frame">
         <div class="dynamic-island"></div>
-        <iframe id="preview-iframe" src="/overlay.html" title="Xem trước tiệc cưới"></iframe>
+        <iframe id="preview-iframe" src="/overlay.html?preview=1" title="Xem trước tiệc cưới"></iframe>
       </div>
       <div class="preview-controls">
         <button class="btn btn-sm btn-secondary" id="btn-refresh-preview">🔄 Làm mới màn hình</button>
@@ -513,6 +758,7 @@
     </aside>
   </div>
 
+  <div id="panel-toast" class="panel-toast" hidden></div>
   <script src="/panel.js"></script>
 </body>
 </html>
