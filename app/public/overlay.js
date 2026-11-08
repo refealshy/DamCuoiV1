@@ -560,7 +560,11 @@ class StageActor {
     this.state = '';
     this.show('idle');
   }
-  has(name) { return Boolean(this.layers[name]); }
+  // Nhiều phiên bản cùng động tác: kiss, kiss2, kiss3... -> mỗi lần chọn ngẫu nhiên một bản
+  variants(name) {
+    return Object.keys(this.layers).filter(k => k === name || (k.startsWith(name) && /^\d+$/.test(k.slice(name.length))));
+  }
+  has(name) { return this.variants(name).length > 0; }
   show(name) {
     if (!this.layers[name]) name = 'idle';
     const next = this.layers[name];
@@ -581,10 +585,15 @@ class StageActor {
   }
   // Diễn một động tác trong ms rồi về đứng yên. Bộ hình không có động tác đó -> trả false.
   play(name, ms, back = 'idle') {
-    if (!this.layers[name]) return false;
+    const list = this.variants(name);
+    if (!list.length) return false;
+    const chosen = list[Math.floor(Math.random() * list.length)];
+    const el = this.layers[chosen];
+    // Video dài hơn thời gian định sẵn thì cho chạy hết một lượt (về đúng tư thế đứng rồi mới chuyển)
+    const clip = el.tagName === 'VIDEO' && Number.isFinite(el.duration) ? el.duration * 1000 - 120 : 0;
     clearTimeout(this.timer);
-    this.show(name);
-    this.timer = setTimeout(() => this.show(back), ms);
+    this.show(chosen);
+    this.timer = setTimeout(() => this.show(back), Math.max(ms, Math.min(clip, 12000)));
     return true;
   }
 }
