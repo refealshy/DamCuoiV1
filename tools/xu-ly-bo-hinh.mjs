@@ -42,7 +42,7 @@ const GROUPS = {
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
-const DISPLAY = { couple: 430, mc: 270, guest: 190, walker: 330 };
+const DISPLAY = { couple: 430, mc: 270, guest: 360, walker: 380 };
 
 const BG_NAMES = {
   red_gold: 'Đỏ vàng', pink_white: 'Hồng trắng', pink_garden: 'Hồng vườn hoa',
@@ -232,6 +232,8 @@ async function main() {
     display: DISPLAY,
     // Vị trí trên khung 1080x1920: chân cặp đôi, tâm và chân MC (chỉnh nếu phông có sân khấu cao/thấp hơn)
     layout: { coupleBottom: 1108, mcX: 292, mcBottom: 1102 },
+    // Co dãn khách theo hàng ghế: [hàng sau cùng, hàng trước nhất]
+    guestScale: [0.66, 0.97],
     backgrounds: [],
     dongphong: null,
     couple: null,

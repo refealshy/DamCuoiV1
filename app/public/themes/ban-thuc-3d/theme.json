@@ -5,8 +5,8 @@
   "display": {
     "couple": 430,
     "mc": 270,
-    "guest": 190,
-    "walker": 330
+    "guest": 360,
+    "walker": 380
   },
   "backgrounds": [
     {
@@ -106,5 +106,9 @@
     "coupleBottom": 1108,
     "mcX": 292,
     "mcBottom": 1102
-  }
+  },
+  "guestScale": [
+    0.66,
+    0.97
+  ]
 }

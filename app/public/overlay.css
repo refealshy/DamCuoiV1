@@ -530,7 +530,7 @@ html, body {
   width: 145px;
   height: 185px;
   transform-origin: 50% 100%;
-  z-index: 35;
+  z-index: 185;
   pointer-events: none;
   filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.75));
 }

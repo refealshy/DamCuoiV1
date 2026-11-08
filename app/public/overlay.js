@@ -618,6 +618,13 @@ function guestBox() {
   return { w: Math.max(135, Math.round(h * (theme.data.guests?.aspect || 0.9))), h };
 }
 
+// Bộ hình người thật: hàng sau không nhỏ quá so với hàng trước (theme.guestScale = [hàng sau, hàng trước])
+function seatScale(seat) {
+  const gs = theme.data.guestScale;
+  if (!Array.isArray(gs) || gs.length !== 2) return seat.scale;
+  return Number((gs[0] + ((seat.scale - 0.58) * (gs[1] - gs[0])) / (0.97 - 0.58)).toFixed(3));
+}
+
 function actorBox() {
   const t = theme.data;
   const h = Math.round((t.display?.walker || 185) * sizePct(cfg().sizeGuest));
@@ -795,12 +802,13 @@ function renderGuests(people = []) {
     node.querySelector('.guest-status-tag').textContent = p.statusTag || '💍 Xin vía';
 
     const seat = banquetTables[(Number.isInteger(p.table) ? p.table : index) % banquetTables.length];
+    const sc = seatScale(seat);
     node.style.width = `${box.w}px`;
     node.style.height = `${box.h}px`;
     node.style.left = `${seat.x - box.w / 2}px`;
     node.style.top = `${seat.y + 30 - box.h}px`;
-    node.style.setProperty('--scale', seat.scale);
-    node.style.transform = `scale(${seat.scale})`;
+    node.style.setProperty('--scale', sc);
+    node.style.transform = `scale(${sc})`;
     node.style.zIndex = String(Math.round(seat.y / 10));
   });
 }
@@ -1465,7 +1473,7 @@ function triggerCancel(name, couple) {
 function seatPoint(personId) {
   const p = currentState?.people?.find(x => x.id === personId);
   const seat = p ? banquetTables[p.table % banquetTables.length] : null;
-  return seat ? { x: seat.x, y: seat.y + 30 - guestBox().h * 0.8 * seat.scale } : { x: 200 + Math.random() * 680, y: 1400 };
+  return seat ? { x: seat.x, y: seat.y + 30 - guestBox().h * 0.8 * seatScale(seat) } : { x: 200 + Math.random() * 680, y: 1400 };
 }
 
 async function triggerBouquet(catcher) {
@@ -2016,7 +2024,7 @@ function walkPath(item) {
   const dance = item.action === 'dance';
   if (!theme.data.walker) return { start: START, target: dance ? FLOOR : ALTAR };
   const fromRight = walkSide++ % 2 === 1;
-  const start = fromRight ? { x: 800, y: 1995, scale: 0.95 } : { x: 280, y: 1995, scale: 0.95 };
+  const start = fromRight ? { x: 770, y: 1995, scale: 0.95 } : { x: 310, y: 1995, scale: 0.95 };
   const target = dance ? FLOOR : fromRight ? { x: 612, y: 1335, scale: 0.64 } : { x: 468, y: 1335, scale: 0.64 };
   return { start, target };
 }
