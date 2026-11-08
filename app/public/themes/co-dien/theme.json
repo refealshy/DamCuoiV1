@@ -1,0 +1,54 @@
+{
+  "id": "co-dien",
+  "name": "Cổ điển (chibi)",
+  "legacy": true,
+  "version": 1,
+  "display": {
+    "couple": 280,
+    "mc": 155,
+    "guest": 175,
+    "walker": 185
+  },
+  "backgrounds": [
+    {
+      "id": "hoi-truong",
+      "name": "Hội trường hoa",
+      "src": "/assets/wedding_stage_bg.jpg",
+      "thumb": "bg_thumb.jpg"
+    }
+  ],
+  "dongphong": null,
+  "couple": {
+    "aspect": 0.9492,
+    "states": {
+      "idle": {
+        "img": "/assets/couple_standing.png"
+      },
+      "kiss": {
+        "img": "/assets/couple_kissing.png"
+      }
+    }
+  },
+  "mc": {
+    "aspect": 0.8929,
+    "states": {
+      "idle": {
+        "img": "/assets/guest_1.png"
+      }
+    }
+  },
+  "walker": null,
+  "guests": {
+    "aspect": 0.8929,
+    "male": [
+      "/assets/guest_1.png",
+      "/assets/guest_2.png",
+      "/assets/guest_3.png"
+    ],
+    "female": [
+      "/assets/guest_4.png",
+      "/assets/guest_5.png",
+      "/assets/guest_6.png"
+    ]
+  }
+}

@@ -11,3 +11,10 @@ app/public/album/*
 app_backup_truoc_nang_cap/
 
 node_modules/
+
+# Ảnh/video gốc tạo bằng AI (đã xử lý vào app/public/themes) và file kiểm tra tạm
+bo-hinh-moi/
+.tmp_kiemtra/
+
+# Trạng thái khi chạy (tên, avatar người xem) — server tự tạo khi chưa có
+app/wedding_state.json

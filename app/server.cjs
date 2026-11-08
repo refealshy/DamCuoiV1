@@ -12,6 +12,8 @@ const MUSIC_DIR = path.join(PUBLIC_DIR, 'music');
 const CEREMONY_MS = 37500;       // thời lượng chuỗi lễ thành hôn trên overlay
 const CEREMONY_QUICK_MS = 14500; // "động phòng luôn": bỏ qua các bước lễ
 const ALBUM_DIR = path.join(PUBLIC_DIR, 'album');
+const THEMES_DIR = path.join(PUBLIC_DIR, 'themes');
+let themeCache = { at: 0, list: [] };
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 const MUSIC_EXT = new Set(['.mp3', '.wav', '.ogg', '.m4a']);
 const MAX_MUSIC_BYTES = 60 * 1024 * 1024;
@@ -171,6 +173,13 @@ const defaultState = {
     moneyUnit: 'xu',           // xu | chỉ vàng (cách hiển thị tiền mừng)
     titleDecaySeconds: 30,     // ngừng tương tác bao lâu thì mất danh hiệu
     showMC: true,              // nhân vật MC đứng trên sân khấu
+    // Bộ hình (thư mục public/themes/<mã>/theme.json)
+    theme: 'ban-thuc-3d',
+    themeBackground: '',       // mã phông trong bộ hình; trống = phông đầu tiên
+    themeVideo: true,          // nhân vật chuyển động bằng video (máy yếu thì tắt)
+    sizeCouple: 100,           // % kích thước cặp đôi
+    sizeMC: 100,               // % kích thước MC
+    sizeGuest: 100,            // % kích thước khách và người đi lên
     funnyVoiceEnabled: true,
     giftRules: DEFAULT_GIFT_RULES.map(r => ({ ...r })),
     bgm: {
@@ -208,12 +217,12 @@ const defaultState = {
     cake: { current: 0, target: 1000, label: 'Cắt bánh cưới' }
   },
   people: [
-    { id: 'guest-1', name: 'Minh Thư', avatar: '', sprite: 4, table: 0, seat: 0, statusTag: '💍 Xin vía' },
-    { id: 'guest-2', name: 'Nhà Đẹp Huy', avatar: '', sprite: 1, table: 12, seat: 0, statusTag: '🍗 Ăn cỗ' },
-    { id: 'guest-3', name: 'Jamie', avatar: '', sprite: 2, table: 1, seat: 0, statusTag: '🍻 Cạn ly' },
-    { id: 'guest-4', name: 'Linh', avatar: '', sprite: 5, table: 13, seat: 0, statusTag: '💃 Quẩy' },
-    { id: 'guest-5', name: 'Em Bông', avatar: '', sprite: 3, table: 2, seat: 0, statusTag: '👀 Hóng biến' },
-    { id: 'guest-6', name: 'Quang Nhật', avatar: '', sprite: 0, table: 14, seat: 0, statusTag: '🥂 Cụng ly' }
+    { id: 'guest-1', name: 'Minh Thư', avatar: '', gender: 'female', sprite: 4, table: 0, seat: 0, statusTag: '💍 Xin vía' },
+    { id: 'guest-2', name: 'Nhà Đẹp Huy', avatar: '', gender: 'male', sprite: 1, table: 12, seat: 0, statusTag: '🍗 Ăn cỗ' },
+    { id: 'guest-3', name: 'Jamie', avatar: '', gender: 'male', sprite: 2, table: 1, seat: 0, statusTag: '🍻 Cạn ly' },
+    { id: 'guest-4', name: 'Linh', avatar: '', gender: 'female', sprite: 5, table: 13, seat: 0, statusTag: '💃 Quẩy' },
+    { id: 'guest-5', name: 'Em Bông', avatar: '', gender: 'female', sprite: 3, table: 2, seat: 0, statusTag: '👀 Hóng biến' },
+    { id: 'guest-6', name: 'Quang Nhật', avatar: '', gender: 'male', sprite: 0, table: 14, seat: 0, statusTag: '🥂 Cụng ly' }
   ],
   scores: {},
   recentGivers: [],
@@ -330,7 +339,12 @@ function loadState() {
     s.intents = parsed.intents && typeof parsed.intents === 'object' ? parsed.intents : {};
     if (Array.isArray(parsed.people)) s.people = parsed.people;
     s.people = fixSeats(s.people, Number(s.config.maxGuests) === 24 ? 24 : 54);
-    for (const p of s.people) if (!p.baseTag) p.baseTag = p.statusTag || '✨ Khách quý';
+    for (const p of s.people) {
+      if (!p.baseTag) p.baseTag = p.statusTag || '✨ Khách quý';
+      // Bản cũ chỉ lưu số hình 0-5 (0-2 nam, 3-5 nữ); giờ lưu giới tính + số bộ đồ
+      if (p.gender !== 'male' && p.gender !== 'female') p.gender = FEMALE_SPRITES.includes(Number(p.sprite)) ? 'female' : 'male';
+      if (!Number.isInteger(p.sprite) || p.sprite < 0) p.sprite = 0;
+    }
     s.queue = { groom: sanitizeQueue(parsed.queue?.groom), bride: sanitizeQueue(parsed.queue?.bride) };
     s.likes = { total: Number(parsed.likes?.total) || 0, progress: Number(parsed.likes?.progress) || 0 };
     s.ceremony = { phase: 'idle', endsAt: 0 };
@@ -338,6 +352,7 @@ function loadState() {
   } catch (e) {
     console.error('Error loading wedding state, using default:', e.message);
   }
+  sanitizeThemeConfig(s.config);
   return s;
 }
 
@@ -453,12 +468,13 @@ function upsertPerson(user, baseTag) {
     seat = victim.table;
     state.people = state.people.filter(x => x !== victim);
   }
-  const gender = user.gender === 'male' ? MALE_SPRITES : user.gender === 'female' ? FEMALE_SPRITES : null;
   p = {
     id,
     name: user.name || 'Khách Quý',
     avatar: user.avatar || '',
-    sprite: gender ? pick(gender) : Math.floor(Math.random() * 6),
+    // Chưa biết giới tính thì chọn ngẫu nhiên; bộ đồ cụ thể do bộ hình đang dùng quyết định
+    gender: user.gender === 'male' || user.gender === 'female' ? user.gender : (Math.random() < 0.5 ? 'male' : 'female'),
+    sprite: Math.floor(Math.random() * 1000),
     table: seat,
     seat: 0,
     baseTag: baseTag || '✨ Khách quý',
@@ -476,10 +492,58 @@ function upsertPerson(user, baseTag) {
 
 // Đổi nhân vật nam/nữ; gõ lại cùng giới tính -> bộ đồ khác
 function switchGender(p, gender) {
-  const list = gender === 'male' ? MALE_SPRITES : FEMALE_SPRITES;
-  const idx = list.indexOf(p.sprite);
-  p.sprite = idx >= 0 ? list[(idx + 1) % list.length] : pick(list);
+  if (p.gender === gender) p.sprite = (Number(p.sprite) || 0) + 1;
+  else {
+    p.gender = gender;
+    p.sprite = Math.floor(Math.random() * 1000);
+  }
   return p.sprite;
+}
+
+// ========================================================
+// BỘ HÌNH: mỗi thư mục public/themes/<mã>/ có theme.json (tạo bằng tools/xu-ly-bo-hinh.mjs)
+// ========================================================
+function listThemes() {
+  if (Date.now() - themeCache.at < 3000) return themeCache.list;
+  const list = [];
+  let dirs = [];
+  try { dirs = fs.readdirSync(THEMES_DIR, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name); } catch {}
+  for (const id of dirs) {
+    if (!/^[a-z0-9-]{1,40}$/.test(id)) continue;
+    try {
+      const t = JSON.parse(fs.readFileSync(path.join(THEMES_DIR, id, 'theme.json'), 'utf8'));
+      const url = f => (!f ? '' : String(f).startsWith('/') ? String(f) : `/themes/${id}/${f}`);
+      const states = [t.couple?.states, t.mc?.states].filter(Boolean).flatMap(o => Object.values(o));
+      list.push({
+        id,
+        name: String(t.name || id).slice(0, 60),
+        legacy: Boolean(t.legacy),
+        hasVideo: states.some(x => x && x.video) || Boolean(t.walker && Object.values(t.walker).some(w => w && w.video)),
+        guests: (t.guests?.male?.length || 0) + (t.guests?.female?.length || 0),
+        backgrounds: (Array.isArray(t.backgrounds) ? t.backgrounds : []).slice(0, 30).map(b => ({
+          id: String(b.id).slice(0, 40),
+          name: String(b.name || b.id).slice(0, 40),
+          src: url(b.src),
+          thumb: url(b.thumb || b.src)
+        }))
+      });
+    } catch {}
+  }
+  list.sort((a, b) => (a.legacy - b.legacy) || a.name.localeCompare(b.name, 'vi'));
+  themeCache = { at: Date.now(), list };
+  return list;
+}
+
+function sanitizeThemeConfig(c) {
+  const themes = listThemes();
+  const t = themes.find(x => x.id === c.theme) || themes.find(x => !x.legacy) || themes[0];
+  c.theme = t ? t.id : 'co-dien';
+  const bgIds = t ? t.backgrounds.map(b => b.id) : [];
+  if (!bgIds.includes(c.themeBackground)) c.themeBackground = bgIds[0] || '';
+  c.themeVideo = c.themeVideo !== false;
+  c.sizeCouple = clampNum(c.sizeCouple, 50, 160, 100);
+  c.sizeMC = clampNum(c.sizeMC, 50, 160, 100);
+  c.sizeGuest = clampNum(c.sizeGuest, 50, 160, 100);
 }
 
 // ========================================================
@@ -1229,6 +1293,7 @@ function processGiftEvent(g) {
     name,
     avatar,
     sprite: p.sprite,
+    gender: p.gender,
     gift,
     count,
     diamonds,
@@ -1545,6 +1610,8 @@ const MIME = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
+  '.webm': 'video/webm',
+  '.mp4': 'video/mp4',
   '.svg': 'image/svg+xml',
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
@@ -1675,6 +1742,8 @@ const server = http.createServer(async (req, res) => {
     state.config.likeGoal = clampNum(state.config.likeGoal, 100, 10000000, 5000);
     state.config.titleDecaySeconds = clampNum(state.config.titleDecaySeconds, 10, 600, 30);
     if (!['xu', 'chỉ vàng'].includes(state.config.moneyUnit)) state.config.moneyUnit = 'xu';
+    themeCache.at = 0;
+    sanitizeThemeConfig(state.config);
 
     const goalsIn = data.goals || cfgIn.goals;
     if (goalsIn && typeof goalsIn === 'object') {
@@ -1919,6 +1988,11 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { presets: RULE_PRESETS });
   }
 
+  if (pathname === '/api/themes' && req.method === 'GET') {
+    themeCache.at = 0;
+    return sendJson(res, 200, { themes: listThemes(), current: state.config.theme, background: state.config.themeBackground });
+  }
+
   // Lấy avatar TikTok qua server (cùng nguồn) để vẽ được vào ảnh cưới
   if (pathname === '/api/avatar' && req.method === 'GET') {
     let target;
@@ -2137,7 +2211,7 @@ const server = http.createServer(async (req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const headers = {
       'Content-Type': MIME[ext] || 'application/octet-stream',
-      'Cache-Control': /\.(png|jpg|jpeg|webp|woff2?|ttf)$/.test(ext) ? 'public, max-age=3600' : 'no-cache',
+      'Cache-Control': /\.(png|jpg|jpeg|webp|webm|woff2?|ttf)$/.test(ext) && !rel.endsWith('theme.json') ? 'public, max-age=3600' : 'no-cache',
       'Accept-Ranges': 'bytes'
     };
     const range = req.headers.range && /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);

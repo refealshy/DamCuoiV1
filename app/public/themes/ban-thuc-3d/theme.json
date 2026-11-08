@@ -1,0 +1,114 @@
+{
+  "id": "ban-thuc-3d",
+  "name": "Bán thực 3D",
+  "version": 1794156235680,
+  "display": {
+    "couple": 430,
+    "mc": 270,
+    "guest": 360,
+    "walker": 380
+  },
+  "backgrounds": [
+    {
+      "id": "red_gold",
+      "name": "Đỏ vàng",
+      "src": "bg_red_gold.jpg",
+      "thumb": "bg_red_gold_thumb.jpg"
+    },
+    {
+      "id": "champagne",
+      "name": "Champagne",
+      "src": "bg_champagne.jpg",
+      "thumb": "bg_champagne_thumb.jpg"
+    },
+    {
+      "id": "pink_white",
+      "name": "Hồng trắng",
+      "src": "bg_pink_white.jpg",
+      "thumb": "bg_pink_white_thumb.jpg"
+    }
+  ],
+  "dongphong": null,
+  "couple": {
+    "aspect": 0.5674,
+    "states": {
+      "bow": {
+        "img": "couple_bow.webp"
+      },
+      "heart": {
+        "img": "couple_heart.webp",
+        "video": "couple_heart.webm"
+      },
+      "idle": {
+        "img": "couple_idle.webp",
+        "video": "couple_idle.webm"
+      },
+      "kiss": {
+        "img": "couple_kiss.webp",
+        "video": "couple_kiss.webm"
+      },
+      "wave": {
+        "img": "couple_wave.webp",
+        "video": "couple_wave.webm"
+      }
+    }
+  },
+  "mc": {
+    "aspect": 0.4313,
+    "states": {
+      "idle": {
+        "img": "mc_idle.webp"
+      },
+      "talk": {
+        "img": "mc_talk.webp",
+        "video": "mc_talk.webm"
+      }
+    }
+  },
+  "walker": {
+    "male": {
+      "aspect": 0.4925,
+      "facing": "right",
+      "img": "walker_m.webp",
+      "video": "walker_m.webm"
+    },
+    "female": {
+      "aspect": 0.4124,
+      "facing": "right",
+      "img": "walker_f.webp",
+      "video": "walker_f.webm"
+    }
+  },
+  "guests": {
+    "aspect": 0.4087,
+    "male": [
+      "guest_m1.webp",
+      "guest_m2.webp",
+      "guest_m3.webp",
+      "guest_m4.webp",
+      "guest_m5.webp",
+      "guest_m6.webp",
+      "guest_m7.webp",
+      "guest_m8.webp"
+    ],
+    "female": [
+      "guest_f1.webp",
+      "guest_f2.webp",
+      "guest_f3.webp",
+      "guest_f4.webp",
+      "guest_f5.webp",
+      "guest_f6.webp",
+      "guest_f7.webp",
+      "guest_f8.webp"
+    ]
+  },
+  "layout": {
+    "coupleBottom": 1108,
+    "mcX": 292,
+    "mcBottom": 1102
+  },
+  "guestScale": [
+    0.66,
+    0.97
+  ]
+}

@@ -435,6 +435,7 @@ function mcTalk(ms) {
   const host = $('#mc-host');
   if (!host) return;
   host.classList.add('talking');
+  mcActor.play('talk', ms);
   clearTimeout(mcTalkTimer);
   mcTalkTimer = setTimeout(() => host.classList.remove('talking'), ms);
 }
@@ -486,6 +487,256 @@ function speak(text, { priority = false, caption = true } = {}) {
 }
 
 // ========================================================
+// BỘ HÌNH: phông, cặp đôi, MC, khách, người đi lên (ảnh + video nền trong suốt)
+// Mỗi bộ ở /themes/<mã>/theme.json (tạo bằng tools/xu-ly-bo-hinh.mjs)
+// ========================================================
+const LEGACY_THEME = {
+  id: 'co-dien',
+  legacy: true,
+  version: 1,
+  display: { couple: 280, mc: 155, guest: 175, walker: 185 },
+  backgrounds: [{ id: 'hoi-truong', src: '/assets/wedding_stage_bg.jpg' }],
+  couple: { aspect: 0.9492, states: { idle: { img: '/assets/couple_standing.png' }, kiss: { img: '/assets/couple_kissing.png' } } },
+  mc: { aspect: 0.8929, states: { idle: { img: '/assets/guest_1.png' } } },
+  guests: {
+    aspect: 0.8929,
+    male: ['/assets/guest_1.png', '/assets/guest_2.png', '/assets/guest_3.png'],
+    female: ['/assets/guest_4.png', '/assets/guest_5.png', '/assets/guest_6.png']
+  },
+  walker: null
+};
+const theme = { id: 'co-dien', data: LEGACY_THEME, key: '', bgSrc: '/assets/wedding_stage_bg.jpg' };
+
+function themeAsset(f) {
+  if (!f) return '';
+  return f.startsWith('/') ? f : `/themes/${theme.id}/${f}?v=${theme.data.version || 1}`;
+}
+const sizePct = v => Math.min(160, Math.max(50, Number(v) || 100)) / 100;
+
+// Một nhân vật trên sân khấu gồm nhiều lớp (mỗi động tác một ảnh hoặc video), chuyển bằng mờ dần
+class StageActor {
+  constructor(host) {
+    this.host = host;
+    this.layers = {};
+    this.state = '';
+    this.timer = null;
+    this.sig = '';
+    this.hasVideo = false;
+  }
+  configure(def, { video }) {
+    const states = def?.states || {};
+    const sig = JSON.stringify([theme.id, theme.data.version, states, video]);
+    if (!this.host || sig === this.sig) return;
+    this.sig = sig;
+    clearTimeout(this.timer);
+    this.host.replaceChildren();
+    this.layers = {};
+    this.hasVideo = false;
+    for (const [name, s] of Object.entries(states)) {
+      let el;
+      if (video && s?.video) {
+        el = document.createElement('video');
+        el.muted = true;
+        el.defaultMuted = true;
+        el.playsInline = true;
+        el.loop = true;
+        el.preload = 'auto';
+        el.setAttribute('muted', '');
+        el.setAttribute('playsinline', '');
+        if (s.img) el.poster = themeAsset(s.img);
+        el.src = themeAsset(s.video);
+        this.hasVideo = true;
+      } else if (s?.img) {
+        el = new Image();
+        el.decoding = 'async';
+        el.alt = '';
+        el.src = themeAsset(s.img);
+      } else continue;
+      el.className = 'actor-layer';
+      el.dataset.state = name;
+      this.host.append(el);
+      this.layers[name] = el;
+    }
+    this.state = '';
+    this.show('idle');
+  }
+  // Nhiều phiên bản cùng động tác: kiss, kiss2, kiss3... -> mỗi lần chọn ngẫu nhiên một bản
+  variants(name) {
+    return Object.keys(this.layers).filter(k => k === name || (k.startsWith(name) && /^\d+$/.test(k.slice(name.length))));
+  }
+  has(name) { return this.variants(name).length > 0; }
+  show(name) {
+    if (!this.layers[name]) name = 'idle';
+    const next = this.layers[name];
+    if (!next) return;
+    const changed = name !== this.state;
+    for (const el of Object.values(this.layers)) {
+      const on = el === next;
+      el.classList.toggle('on', on);
+      if (el.tagName !== 'VIDEO') continue;
+      if (on) {
+        if (changed) { try { el.currentTime = 0; } catch (e) {} }
+        el.play().catch(() => {});
+      } else {
+        setTimeout(() => { if (!el.classList.contains('on')) el.pause(); }, 400);
+      }
+    }
+    this.state = name;
+  }
+  // Diễn một động tác trong ms rồi về đứng yên. Bộ hình không có động tác đó -> trả false.
+  play(name, ms, back = 'idle') {
+    const list = this.variants(name);
+    if (!list.length) return false;
+    const chosen = list[Math.floor(Math.random() * list.length)];
+    const el = this.layers[chosen];
+    // Video dài hơn thời gian định sẵn thì cho chạy hết một lượt (về đúng tư thế đứng rồi mới chuyển)
+    const clip = el.tagName === 'VIDEO' && Number.isFinite(el.duration) ? el.duration * 1000 - 120 : 0;
+    clearTimeout(this.timer);
+    this.show(chosen);
+    this.timer = setTimeout(() => this.show(back), Math.max(ms, Math.min(clip, 12000)));
+    return true;
+  }
+}
+const coupleActor = new StageActor($('#couple-sprite'));
+// Diễn động tác đầu tiên mà bộ hình có (vd ['ring', 'heart']: có video trao nhẫn thì dùng, không thì bắn tim)
+function coupleDo(names, ms) {
+  for (const n of [].concat(names)) if (coupleActor.play(n, ms)) return n;
+  return '';
+}
+// Cảm ơn quà thường: cúi chào, không quá dày
+let lastCoupleThanks = 0;
+function coupleThanks() {
+  if (Date.now() - lastCoupleThanks < 10000 || coupleActor.state !== 'idle') return;
+  if (coupleDo(['thanks', 'bow'], 3200)) lastCoupleThanks = Date.now();
+}
+const mcActor = new StageActor($('.mc-sprite'));
+
+function coupleStill(...names) {
+  const st = theme.data.couple?.states || {};
+  const n = names.find(k => st[k]?.img) || 'idle';
+  return themeAsset(st[n]?.img || LEGACY_THEME.couple.states.idle.img);
+}
+
+function guestGender(p) {
+  if (p?.gender === 'male' || p?.gender === 'female') return p.gender;
+  const sp = Number(p?.sprite);
+  return sp >= 3 && sp <= 5 ? 'female' : 'male'; // dữ liệu cũ: 0-2 nam, 3-5 nữ
+}
+
+function guestFile(p) {
+  const g = theme.data.guests || LEGACY_THEME.guests;
+  const own = g[guestGender(p)] || [];
+  const pool = own.length ? own : [...(g.male || []), ...(g.female || [])];
+  return pool[(Number(p?.sprite) || 0) % pool.length];
+}
+function guestSprite(p) {
+  return themeAsset(guestFile(p));
+}
+
+function guestBox() {
+  const h = Math.round((theme.data.display?.guest || 175) * sizePct(cfg().sizeGuest));
+  return { w: Math.max(135, Math.round(h * (theme.data.guests?.aspect || 0.9))), h };
+}
+
+// Bộ hình người thật: hàng sau không nhỏ quá so với hàng trước (theme.guestScale = [hàng sau, hàng trước])
+function seatScale(seat) {
+  const gs = theme.data.guestScale;
+  if (!Array.isArray(gs) || gs.length !== 2) return seat.scale;
+  return Number((gs[0] + ((seat.scale - 0.58) * (gs[1] - gs[0])) / (0.97 - 0.58)).toFixed(3));
+}
+
+function actorBox() {
+  const t = theme.data;
+  const h = Math.round((t.display?.walker || 185) * sizePct(cfg().sizeGuest));
+  const aspects = [t.guests?.aspect || 0.9, ...Object.values(t.walker || {}).map(w => w?.aspect || 0)];
+  return { w: Math.max(145, Math.round(h * Math.max(...aspects))), h };
+}
+
+// Đặt chân cặp đôi đúng mặt sân khấu của phông (giữ cách căn giữa cũ để hiệu ứng rung không lệch)
+function placeCouple() {
+  const stage = $('#wedding-stage');
+  const wrap = $('#couple-wrapper');
+  const spr = $('#couple-sprite');
+  const bottom = theme.data.layout?.coupleBottom;
+  if (!stage || !wrap || !spr) return;
+  if (!bottom) { stage.style.top = ''; return; }
+  const h = wrap.offsetHeight;
+  const sprBottom = spr.offsetTop + spr.offsetHeight;
+  if (h > 0) stage.style.top = `${Math.round(bottom + h / 2 - sprBottom)}px`;
+}
+
+let themeLoadSeq = 0;
+async function applyTheme(c) {
+  const id = /^[a-z0-9-]{1,40}$/.test(c.theme || '') ? c.theme : 'co-dien';
+  const key = JSON.stringify([id, c.themeBackground || '', c.themeVideo !== false, c.sizeCouple, c.sizeMC, c.sizeGuest]);
+  if (key === theme.key) return;
+  theme.key = key;
+  const seq = ++themeLoadSeq;
+  if (id !== theme.id || theme.data === LEGACY_THEME) {
+    let data = null;
+    try {
+      const r = await fetch(`/themes/${id}/theme.json`, { cache: 'no-store' });
+      if (r.ok) data = await r.json();
+    } catch (e) {}
+    if (seq !== themeLoadSeq) return;
+    if (data?.couple?.states?.idle) {
+      theme.id = id;
+      theme.data = data;
+    } else {
+      theme.id = 'co-dien';
+      theme.data = LEGACY_THEME;
+    }
+  }
+  renderTheme(c);
+}
+
+function renderTheme(c) {
+  const t = theme.data;
+  const video = c.themeVideo !== false;
+  document.body.dataset.theme = theme.id;
+
+  const bgs = t.backgrounds?.length ? t.backgrounds : LEGACY_THEME.backgrounds;
+  const bg = bgs.find(b => b.id === c.themeBackground) || bgs[0];
+  theme.bgSrc = themeAsset(bg.src);
+  const bgEl = $('.stage-bg');
+  if (bgEl && bgEl.getAttribute('src') !== theme.bgSrc) bgEl.src = theme.bgSrc;
+
+  // Cặp đôi
+  const spr = $('#couple-sprite');
+  const ch = Math.round((t.display?.couple || 280) * sizePct(c.sizeCouple));
+  if (spr) {
+    spr.style.height = `${ch}px`;
+    spr.style.width = `${Math.round(ch * (t.couple?.aspect || 0.95))}px`;
+  }
+  coupleActor.configure(t.couple, { video });
+  spr?.classList.toggle('has-video', coupleActor.hasVideo);
+  requestAnimationFrame(placeCouple);
+
+  // MC
+  const host = $('#mc-host');
+  mcActor.configure(t.mc, { video });
+  if (host) {
+    host.classList.toggle('has-video', mcActor.hasVideo);
+    const L = t.layout;
+    if (L?.mcX && L?.mcBottom) {
+      const mh = Math.round((t.display?.mc || 155) * sizePct(c.sizeMC));
+      const mw = Math.round(mh * (t.mc?.aspect || 0.9));
+      Object.assign(host.style, { width: `${mw}px`, height: `${mh}px`, left: `${L.mcX - mw / 2}px`, top: `${L.mcBottom - mh}px` });
+    } else {
+      Object.assign(host.style, { width: '', height: '', left: '', top: '' });
+    }
+  }
+
+  // Người đi lên + khách ngồi bàn
+  setupActorMedia();
+  const dp = $('.dp-couple');
+  if (dp) dp.style.backgroundImage = `url('${coupleStill('carry', 'heart', 'kiss', 'idle')}')`;
+  const room = $('.dp-inside');
+  if (room) room.style.background = t.dongphong ? `url('${themeAsset(t.dongphong)}') center / cover no-repeat` : '';
+  if (currentState) renderGuests(currentState.people || []);
+}
+
+// ========================================================
 // KHÁCH DỰ TIỆC
 // ========================================================
 const guestNodes = new Map();
@@ -516,8 +767,6 @@ const banquetTables = [
   ].map(([x, y, scale]) => ({ x, y, scale }))
 ];
 
-const guestSprites = ['/assets/guest_1.png', '/assets/guest_2.png', '/assets/guest_3.png', '/assets/guest_4.png', '/assets/guest_5.png', '/assets/guest_6.png'];
-
 function renderGuests(people = []) {
   const container = $('#guests-container');
   if (!container) return;
@@ -529,18 +778,22 @@ function renderGuests(people = []) {
     }
   }
 
+  const box = guestBox();
   people.forEach((p, index) => {
     let node = guestNodes.get(p.id);
-    const spriteIdx = Number.isInteger(p.sprite) ? p.sprite % guestSprites.length : index % guestSprites.length;
+    const idle = cfg().themeVideo !== false ? theme.data.guests?.idle?.[guestFile(p)] : null;
+    const src = idle ? themeAsset(idle) : guestSprite(p);
     if (!node) {
       node = document.createElement('div');
       node.className = 'wedding-guest';
       node.dataset.id = p.id;
-      node.style.setProperty('--delay', `${(index * 0.28) % 3}s`);
+      node.style.setProperty('--delay', `${-(Math.random() * 4).toFixed(2)}s`);
+      node.style.setProperty('--dur', `${(2.8 + Math.random() * 1.8).toFixed(2)}s`);
+      node.style.setProperty('--sway', `${(0.9 + Math.random() * 1.1).toFixed(2)}deg`);
+      node.style.setProperty('--bdur', `${(2.6 + Math.random() * 1.4).toFixed(2)}s`);
 
       const sprite = document.createElement('div');
       sprite.className = 'guest-sprite';
-      sprite.style.backgroundImage = `url('${guestSprites[spriteIdx]}')`;
 
       const badge = document.createElement('div');
       badge.className = 'guest-name-badge';
@@ -556,10 +809,12 @@ function renderGuests(people = []) {
       guestNodes.set(p.id, node);
     }
     const spr = node.querySelector('.guest-sprite');
-    if (spr.dataset.sprite !== String(spriteIdx)) {
-      const changed = spr.dataset.sprite !== undefined;
-      spr.dataset.sprite = String(spriteIdx);
-      spr.style.backgroundImage = `url('${guestSprites[spriteIdx]}')`;
+    if (spr.dataset.src !== src) {
+      // Chỉ "thay đồ" khi khách đổi nhân vật, không phải khi đổi cả bộ hình
+      const changed = spr.dataset.src !== undefined && spr.dataset.theme === theme.id;
+      spr.dataset.src = src;
+      spr.dataset.theme = theme.id;
+      spr.style.backgroundImage = `url('${src}')`;
       if (changed) {
         node.classList.remove('outfit-change');
         void node.offsetWidth;
@@ -571,13 +826,34 @@ function renderGuests(people = []) {
     node.querySelector('.guest-status-tag').textContent = p.statusTag || '💍 Xin vía';
 
     const seat = banquetTables[(Number.isInteger(p.table) ? p.table : index) % banquetTables.length];
-    node.style.left = `${seat.x - 67}px`;
-    node.style.top = `${seat.y - 145}px`;
-    node.style.setProperty('--scale', seat.scale);
-    node.style.transform = `scale(${seat.scale})`;
+    const sc = seatScale(seat);
+    node.style.width = `${box.w}px`;
+    node.style.height = `${box.h}px`;
+    node.style.left = `${seat.x - box.w / 2}px`;
+    node.style.top = `${seat.y + 30 - box.h}px`;
+    node.style.setProperty('--scale', sc);
+    node.style.transform = `scale(${sc})`;
     node.style.zIndex = String(Math.round(seat.y / 10));
   });
 }
+
+// Khách "sống": mỗi người một nhịp đung đưa, thỉnh thoảng vỗ tay, nhảy cẫng, vẫy, ngó lên sân khấu
+const GUEST_REACTS = { clap: 1300, hop: 1100, wave: 1500, look: 1900 };
+function guestReact(node, kind, ms) {
+  if (!node || node.classList.contains('dancing') || node.classList.contains('cheering')) return;
+  if ([...node.classList].some(c => c.startsWith('react-'))) return;
+  node.classList.add('react-' + kind);
+  setTimeout(() => node.classList.remove('react-' + kind), ms || GUEST_REACTS[kind] || 1200);
+}
+function guestsReact(count, kinds = ['clap']) {
+  const nodes = Array.from(guestNodes.values()).sort(() => Math.random() - 0.5).slice(0, count);
+  nodes.forEach((n, i) => setTimeout(() => guestReact(n, pick(kinds)), i * 90 + Math.random() * 250));
+}
+setInterval(() => {
+  if (!guestNodes.size || dpActive) return;
+  const n = Math.min(2, Math.ceil(guestNodes.size / 12));
+  guestsReact(n, ['clap', 'hop', 'wave', 'look', 'look']);
+}, 1700);
 
 // ========================================================
 // SỔ MỪNG CƯỚI, MENU QUÀ, CÁCH CHƠI
@@ -796,8 +1072,26 @@ function renderStageInfo(s) {
 
 let tagPhase = 'idle';
 let ceremonyDeadline = 0;
+// Vừa đủ đôi -> cặp đôi bắn tim. Nếu người nhận vai còn đang đi lên thì chờ họ vẫy tay chào xong.
+let pairHeartTimer = null;
+let pairHeartPending = false;
+function playPairHeart() {
+  pairHeartPending = false;
+  clearTimeout(pairHeartTimer);
+  coupleActor.play('heart', 5200);
+}
 function renderCeremonyTag(s) {
+  const prevPhase = tagPhase;
   tagPhase = s.ceremony?.phase || 'idle';
+  if (prevPhase === 'idle' && tagPhase === 'countdown') {
+    if (offeringBusy || offeringQueue.length) {
+      pairHeartPending = true;
+      clearTimeout(pairHeartTimer);
+      pairHeartTimer = setTimeout(playPairHeart, 12000);
+    } else {
+      playPairHeart();
+    }
+  }
   ceremonyDeadline = tagPhase === 'countdown' ? performance.now() + (Number(s.ceremony.remainingMs) || 0) : 0;
   updateTag();
 }
@@ -860,6 +1154,7 @@ function renderState(s) {
   renderRoleCard('groom', s);
   renderRoleCard('bride', s);
   renderCeremonyTag(s);
+  applyTheme(c);
   renderGuests(s.people || []);
   renderRegistry(s.scores || {});
   renderGiftMenu(c);
@@ -1000,12 +1295,17 @@ function triggerKiss(silent = false) {
       sprite.classList.add('couple-idle');
     }, 4500);
   }
-  if (!silent) showCeremonyBanner('💋 CÔ DÂU CHÚ RỂ TRAO NỤ HÔN!', 'Tình nồng ý thắm gắn kết trọn đời!', 'kiss');
+  coupleActor.play('kiss', 4500);
+  if (!silent) {
+    showCeremonyBanner('💋 CÔ DÂU CHÚ RỂ TRAO NỤ HÔN!', 'Tình nồng ý thắm gắn kết trọn đời!', 'kiss');
+    guestsReact(12, ['clap', 'hop', 'look']);
+  }
   spawnHearts(20);
   playWeddingBell();
 }
 
 function triggerCheers(initiator = '') {
+  coupleDo(['cheers', 'wave'], 4500);
   playClink();
   $$('.wedding-guest').forEach(g => {
     g.classList.add('cheering');
@@ -1033,12 +1333,14 @@ function guestsDance(ms) {
 
 function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
   const ms = big ? 8000 : 5000;
+  if (!big) coupleDo(['dance', 'wave'], ms);
   guestsDance(ms);
   startDisco(ms + 200);
   playDanceBeat(ms / 1000);
   setDuck('dance', 0.2);
   setTimeout(() => setDuck('dance', null), ms + 200);
   if (big) {
+    coupleActor.play('heart', 5200);
     showCeremonyBanner('💃 CẢ RẠP ĐỨNG DẬY QUẨY!', goal ? `Đủ ${fmt(goal)} tim rồi bà con ơi! 🎉` : 'Quẩy hết mình nào!', 'dance', ms - 300);
     spawnHearts(20, { x: 540, y: 1200, spread: 700, emojis: ['❤️', '💃', '🕺', '🎶', '✨'] });
     showToast('💃 Đủ tim rồi! Cả rạp đứng dậy quẩy! ❤️');
@@ -1051,12 +1353,13 @@ function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
 function triggerCake() {
   playFanfare();
   spawnHearts(16, { emojis: ['🎂', '🍰', '💕', '✨'] });
-  triggerKiss(true);
+  if (!coupleActor.play('cake', 4800)) triggerKiss(true);
   showCeremonyBanner('🎂 NGHI THỨC CẮT BÁNH CƯỚI!', 'Tân lang & tân nương cùng cắt bánh ngọt ngào!', 'cake');
   showToast('🎂 Nghi thức cắt bánh cưới hạnh phúc viên mãn! 💕');
 }
 
 function triggerChampagne() {
+  coupleDo(['cheers', 'wave'], 4500);
   playPop();
   setTimeout(playClink, 350);
   for (let i = 0; i < 18; i++) setTimeout(() => spawnBubbles(true), i * 90);
@@ -1066,6 +1369,7 @@ function triggerChampagne() {
 }
 
 function triggerPetal(big = false) {
+  coupleDo(['petal', 'heart'], 4500);
   playWeddingBell();
   spawnPetalsBurst(big ? 70 : 45);
   showCeremonyBanner('🌹 MƯA HOA HỒNG RỰC RỠ! 🌸', 'Trăm hoa trải thảm chúc phúc đôi uyên ương!', 'petal');
@@ -1082,6 +1386,7 @@ function triggerRing(couple = {}) {
   const g = couple.groom || roleName('groom');
   const b = couple.bride || roleName('bride');
   showCeremonyBanner('💍 TRAO NHẪN CƯỚI', `${g} 💕 ${b}`, 'marry', 4800);
+  coupleDo(['ring', 'heart'], 4800);
   playChime();
   const layer = $('#hearts-layer');
   const target = { x: 540, y: 880 };
@@ -1133,7 +1438,12 @@ function triggerRoleChange({ role, name, avatar, previous, bid, replaced = false
   setTimeout(() => crown?.classList.remove('crown-flash'), 5000);
   playFanfare();
   playWeddingBell();
-  triggerKiss(true);
+  if (!coupleActor.play('wave', 4800)) triggerKiss(true);
+  guestsReact(10, ['clap', 'hop']);
+  if (pairHeartPending) {
+    clearTimeout(pairHeartTimer);
+    pairHeartTimer = setTimeout(playPairHeart, 4800);
+  }
   const c = cardCenter(role);
   spawnHearts(16, { x: c.x, y: c.y + 40, spread: 160, emojis: isGroom ? ['👑', '💖', '✨'] : ['👰', '💐', '💖', '✨'] });
   showToast(`🎉 ${name} chính thức làm ${isGroom ? 'CHÚ RỂ' : 'CÔ DÂU'}! Chúc mừng! 💕`, avatar, name);
@@ -1194,6 +1504,7 @@ function triggerCancel(name, couple) {
   stage?.classList.remove('shake');
   void stage?.offsetWidth;
   stage?.classList.add('shake');
+  coupleDo(['shock'], 4200);
   const sprite = $('#couple-sprite');
   sprite?.classList.add('fled');
   setTimeout(() => sprite?.classList.remove('fled'), 4200);
@@ -1211,10 +1522,11 @@ function triggerCancel(name, couple) {
 function seatPoint(personId) {
   const p = currentState?.people?.find(x => x.id === personId);
   const seat = p ? banquetTables[p.table % banquetTables.length] : null;
-  return seat ? { x: seat.x, y: seat.y - 120 * seat.scale } : { x: 200 + Math.random() * 680, y: 1400 };
+  return seat ? { x: seat.x, y: seat.y + 30 - guestBox().h * 0.8 * seatScale(seat) } : { x: 200 + Math.random() * 680, y: 1400 };
 }
 
 async function triggerBouquet(catcher) {
+  coupleDo(['bouquet', 'wave'], 3600);
   showCeremonyBanner('💐 CÔ DÂU TUNG HOA CƯỚI!', 'Ai sẽ bắt được hoa đây?', 'bride', 3200);
   playChime();
   const from = { x: 560, y: 860 };
@@ -1241,7 +1553,11 @@ async function triggerBouquet(catcher) {
 
 // ----- PHÁO HOA -----
 function triggerFireworks(name) {
-  if (name) showCeremonyBanner('🎆 PHÁO HOA RỰC RỠ!', `${name} thắp sáng cả hôn trường!`, 'gold', 4500);
+  if (name) {
+    showCeremonyBanner('🎆 PHÁO HOA RỰC RỠ!', `${name} thắp sáng cả hôn trường!`, 'gold', 4500);
+    coupleDo(['fireworks', 'wave'], 4500);
+    guestsReact(10, ['hop', 'clap', 'look']);
+  }
   const layer = $('#fireworks-layer');
   if (!layer) return;
   const colors = ['#ffd700', '#ff4d6d', '#4cc9f0', '#b5ff6b', '#ff9e00', '#f72585', '#ffffff'];
@@ -1272,6 +1588,8 @@ function triggerFireworks(name) {
 
 // ----- ĐỔI NHẠC -----
 function triggerMusic(name, track) {
+  coupleDo(['dance', 'wave'], 4500);
+  guestsReact(8, ['clap', 'hop']);
   showCeremonyBanner(`🎵 ĐỔI NHẠC: ${String(track || 'bài mới').toUpperCase()}`, name ? `Theo yêu cầu của ${name}` : 'Nhạc mới đã lên!', 'dance', 4500);
   const disc = $('.music-disc');
   disc?.classList.add('fast');
@@ -1281,6 +1599,8 @@ function triggerMusic(name, track) {
 
 // ----- CƯỚI MC -----
 function triggerMarryMC(name, avatar) {
+  coupleDo(['shock'], 4000);
+  guestsReact(8, ['hop', 'look']);
   showCeremonyBanner(`🎤 ${String(name || 'Ai đó').toUpperCase()} CƯỚI LUÔN MC!`, 'MC đỏ mặt nhận lời rồi bà con ơi! 😳', 'bride', 5000);
   const host = $('#mc-host');
   host?.classList.add('blush');
@@ -1384,8 +1704,8 @@ async function renderPhotoCanvas(d) {
   const font = '"Segoe UI", "Noto Sans", Roboto, Arial, sans-serif';
   const guests = (d.guests || []).slice(0, 8);
   const [bg, couple, gAv, bAv, giverAv, ...guestAvs] = await Promise.all([
-    loadImg('/assets/wedding_stage_bg.jpg'),
-    loadImg(d.kind === 'wedding' ? '/assets/couple_kissing.png' : '/assets/couple_standing.png'),
+    loadImg(theme.bgSrc),
+    loadImg(d.kind === 'wedding' ? coupleStill('kiss', 'idle') : coupleStill('heart', 'wave', 'idle')),
     loadImg(avatarSrc(d.groomAvatar)),
     loadImg(avatarSrc(d.brideAvatar)),
     loadImg(avatarSrc(d.giver?.avatar)),
@@ -1417,10 +1737,10 @@ async function renderPhotoCanvas(d) {
   roundRect(ctx, px, py, pw, ph, 18);
   ctx.clip();
   if (bg) {
-    // Cắt vùng cổng hoa sân khấu của ảnh nền (768x1376)
-    const sw = 527;
+    // Cắt vùng cổng hoa + sân khấu ở giữa ảnh nền (tỷ lệ theo khung 9:16)
+    const sw = bg.width * 0.686;
     const sh = (sw * ph) / pw;
-    ctx.drawImage(bg, 384 - sw / 2, 404 + (427 - sh) / 2, sw, sh, px, py, pw, ph);
+    ctx.drawImage(bg, (bg.width - sw) / 2, bg.height * 0.449 - sh / 2, sw, sh, px, py, pw, ph);
   } else {
     ctx.fillStyle = '#7a1a2a';
     ctx.fillRect(px, py, pw, ph);
@@ -1431,10 +1751,11 @@ async function renderPhotoCanvas(d) {
   ctx.fillStyle = grad;
   ctx.fillRect(px, py, pw, ph);
   if (couple) {
-    const ch = 470;
+    const tall = couple.width / couple.height < 0.75;
+    const ch = tall ? 540 : 470;
     const cw = (couple.width * ch) / couple.height;
     const cx = d.giver ? px + pw / 2 - cw / 2 - 70 : px + (pw - cw) / 2;
-    ctx.drawImage(couple, cx, py + ph - ch - 78, cw, ch);
+    ctx.drawImage(couple, cx, py + ph - ch - (tall ? 64 : 78), cw, ch);
   }
   if (d.giver) {
     const gx = px + pw - 170;
@@ -1553,6 +1874,7 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   if (dpActive) return;
   dpActive = true;
   sceneLock++;
+  coupleDo(['carry', 'kiss'], 3200);
   const g = groom || roleName('groom');
   const b = bride || roleName('bride');
   const root = $('#dong-phong');
@@ -1662,6 +1984,7 @@ async function runCeremony(d) {
   sceneLock++;
 
   showCeremonyBanner(`🎉 ${g} & ${b} VỀ CHUNG MỘT NHÀ!`, 'Vai cô dâu – chú rể mở lại cho lượt mới!', 'marry', 6000);
+  coupleActor.play('bow', 5500);
   playFanfare();
   spawnPetalsBurst(40);
   showToast(`💒 ${g} & ${b} đã thành hôn! Tặng quà để giành vai lượt mới! 💕`);
@@ -1682,7 +2005,93 @@ const ALTAR = { x: 540, y: 1335, scale: 0.64 };
 const FLOOR = { x: 540, y: 1560, scale: 0.85 };
 
 function placeFrame(p) {
-  return { left: `${p.x - 72.5}px`, top: `${p.y - 185}px`, transform: `scale(${p.scale})` };
+  const box = actorBox();
+  return { left: `${p.x - box.w / 2}px`, top: `${p.y - box.h}px`, transform: `scale(${p.scale})` };
+}
+
+// Người đi lên: video đi bộ (nếu bộ hình có), ảnh đứng, hoặc ảnh khách chính diện khi nhảy
+function setupActorMedia() {
+  const actor = $('#procession-actor');
+  const holder = actor?.querySelector('.actor-sprite');
+  if (!holder) return;
+  if (!holder.querySelector('.actor-layer')) {
+    const img = new Image();
+    img.alt = '';
+    img.className = 'actor-layer actor-img';
+    const vid = document.createElement('video');
+    vid.className = 'actor-layer actor-vid';
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.loop = true;
+    vid.playsInline = true;
+    vid.preload = 'auto';
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    holder.style.backgroundImage = 'none';
+    holder.append(img, vid);
+  }
+  const box = actorBox();
+  actor.style.width = `${box.w}px`;
+  actor.style.height = `${box.h}px`;
+  // Nạp sẵn video đi bộ để lúc có quà là chạy ngay
+  if (cfg().themeVideo !== false) {
+    for (const w of Object.values(theme.data.walker || {})) {
+      if (w?.video && !theme.preloaded?.has(w.video)) {
+        theme.preloaded = theme.preloaded || new Set();
+        theme.preloaded.add(w.video);
+        fetch(themeAsset(w.video)).catch(() => {});
+      }
+    }
+  }
+}
+
+function setActorLook(actor, item, mode, flip = false) {
+  setupActorMedia();
+  const holder = actor.querySelector('.actor-sprite');
+  const img = holder.querySelector('.actor-img');
+  const vid = holder.querySelector('.actor-vid');
+  const person = { gender: item.gender, sprite: item.sprite };
+  const w = theme.data.walker?.[guestGender(person)];
+  const useWalker = w && mode !== 'dance';
+  const danceVid = mode === 'dance' ? theme.data.guests?.dance?.[guestFile(person)] : null;
+  const useVid = cfg().themeVideo !== false && ((useWalker && w.video) || danceVid);
+  actor.classList.toggle('has-video', Boolean(useVid));
+  actor.classList.toggle('dance-video', Boolean(useVid && danceVid));
+  if (useVid) {
+    const src = themeAsset(danceVid || w.video);
+    if (vid.dataset.src !== src) { vid.dataset.src = src; vid.src = src; }
+    if (mode === 'walk' || mode === 'dance') vid.play().catch(() => {});
+    else vid.pause();
+  } else {
+    vid.pause();
+    const src = useWalker ? themeAsset(w.img) : guestSprite(person);
+    if (img.getAttribute('src') !== src) img.src = src;
+  }
+  vid.classList.toggle('on', Boolean(useVid));
+  img.classList.toggle('on', !useVid);
+  for (const el of [img, vid]) el.classList.toggle('flip', Boolean(useWalker && flip));
+}
+
+function stopActorMedia(actor) {
+  actor?.querySelector('.actor-vid')?.pause();
+}
+
+// Đường đi: bộ hình có người đi lên nhìn nghiêng thì đi chéo từ góc dưới vào, xen kẽ trái/phải
+let walkSide = 0;
+function walkPath(item) {
+  const dance = item.action === 'dance';
+  if (!theme.data.walker) return { start: START, target: dance ? FLOOR : ALTAR };
+  const fromRight = walkSide++ % 2 === 1;
+  const start = fromRight ? { x: 770, y: 1995, scale: 0.95 } : { x: 310, y: 1995, scale: 0.95 };
+  const target = dance ? FLOOR : fromRight ? { x: 612, y: 1335, scale: 0.64 } : { x: 468, y: 1335, scale: 0.64 };
+  return { start, target };
+}
+
+// Lật hình khi hướng đi ngược với hướng mặt của nhân vật
+function flipFor(item, from, to) {
+  const w = theme.data.walker?.[guestGender({ gender: item.gender, sprite: item.sprite })];
+  const facesRight = (w?.facing || 'right') !== 'left';
+  return (to.x >= from.x) !== facesRight;
 }
 
 async function walkTo(actor, from, to, ms) {
@@ -1750,6 +2159,7 @@ function abortCurrentOffering() {
   const actor = $('#procession-actor');
   actor?.getAnimations().forEach(a => a.finish());
   actor?.classList.remove('dancer', 'walking');
+  stopActorMedia(actor);
   $('#celebration-card')?.classList.remove('show');
   $('#disco-layer')?.classList.remove('on');
   setDuck('dance', null);
@@ -1768,25 +2178,28 @@ async function presentOffering(item, fast) {
     currentOffering = null;
     actor.getAnimations().forEach(a => a.cancel());
     actor.classList.remove('dancer', 'walking');
+    stopActorMedia(actor);
     actor.hidden = true;
   }
 }
 
 async function presentOfferingInner(item, fast, actor, token) {
   const info = ACTION_INFO[item.action] || ACTION_INFO.thanks;
-  actor.querySelector('.actor-sprite').style.backgroundImage = `url('${guestSprites[(Number(item.sprite) || 1) % guestSprites.length]}')`;
+  const path = walkPath(item);
+  setActorLook(actor, item, 'walk', flipFor(item, path.start, path.target));
   actor.querySelector('.actor-gift-icon').textContent = info.icon;
   actor.querySelector('.actor-gift-name').textContent = `${item.gift} ×${item.count}`;
   actor.querySelector('.actor-name').textContent = item.name;
   updateAvatar(actor.querySelector('.actor-av'), item.avatar, item.name);
 
-  const target = item.action === 'dance' ? FLOOR : ALTAR;
-  Object.assign(actor.style, placeFrame(START));
+  const target = path.target;
+  Object.assign(actor.style, placeFrame(path.start));
   actor.hidden = false;
   actor.classList.add('walking');
-  await walkTo(actor, START, target, fast ? 1300 : 3400);
+  await walkTo(actor, path.start, target, fast ? 1300 : 3400);
   actor.classList.remove('walking');
   if (token !== offeringToken) return;
+  setActorLook(actor, item, item.action === 'dance' ? 'dance' : 'stand', flipFor(item, path.start, target));
 
   speak(item.funnyMessage);
   showToast(`💌 ${item.name}: ${giftLine(item)}`, item.avatar, item.name);
@@ -1827,7 +2240,9 @@ async function presentOfferingInner(item, fast, actor, token) {
     default:
       playWeddingBell();
       spawnHearts(10);
+      coupleThanks();
   }
+  guestsReact(item.action === 'thanks' ? 4 : 7, ['clap', 'clap', 'hop']);
 
   const card = $('#celebration-card');
   if (showCard && card) {
@@ -1847,8 +2262,9 @@ async function presentOfferingInner(item, fast, actor, token) {
     if (fast) {
       await actor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350, fill: 'forwards' }).finished;
     } else {
+      setActorLook(actor, item, 'walk', flipFor(item, target, path.start));
       actor.classList.add('walking');
-      await walkTo(actor, target, START, 2400);
+      await walkTo(actor, target, path.start, 2400);
       actor.classList.remove('walking');
     }
   }
@@ -1887,8 +2303,13 @@ realtime.addEventListener('bgm', e => {
 realtime.addEventListener('activity', e => {
   try {
     const d = JSON.parse(e.data);
-    if (d.type === 'chat') showChatBubble(d.id, d.comment);
-    else if (d.type === 'join') showChatBubble(d.id, '👋 Tới rồi nè!');
+    if (d.type === 'chat') {
+      showChatBubble(d.id, d.comment);
+      guestReact(guestNodes.get(d.id), 'hop');
+    } else if (d.type === 'join') {
+      showChatBubble(d.id, '👋 Tới rồi nè!');
+      setTimeout(() => guestReact(guestNodes.get(d.id), 'wave'), 300);
+    }
     else if (d.type === 'share') {
       showToast(`⭐ ${d.name} đã chia sẻ rạp cưới · cảm ơn nha!`, d.avatar, d.name);
       showChatBubble(d.id, '📤 Đã chia sẻ!');

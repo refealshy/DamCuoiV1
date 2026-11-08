@@ -330,6 +330,7 @@ html, body {
 }
 
 #couple-sprite {
+  position: relative;
   width: 255px;
   height: 280px;
   background-size: contain;
@@ -340,12 +341,10 @@ html, body {
 }
 
 .couple-idle {
-  background-image: url('/assets/couple_standing.png');
   animation: couple-breathe 4.5s ease-in-out infinite;
 }
 
 .couple-kissing {
-  background-image: url('/assets/couple_kissing.png') !important;
   animation: couple-kiss-bounce 0.8s ease-in-out infinite alternate !important;
   filter: drop-shadow(0 14px 24px rgba(230, 50, 90, 0.8)) !important;
 }
@@ -403,15 +402,15 @@ html, body {
   height: 175px;
   transform-origin: 50% 100%;
   will-change: transform, left, top;
-  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.65));
   transition: opacity 0.4s ease;
-  animation: guest-idle-sway 3.6s ease-in-out infinite alternate;
+  animation: guest-idle-sway var(--dur, 3.6s) ease-in-out infinite alternate;
   animation-delay: var(--delay, 0s);
 }
 
+/* Mỗi khách một nhịp đung đưa riêng (--dur, --sway đặt ngẫu nhiên khi tạo) */
 @keyframes guest-idle-sway {
-  0% { transform: scale(var(--scale, 1)) rotate(-0.8deg); }
-  100% { transform: scale(var(--scale, 1)) rotate(0.8deg) translateY(-3px); }
+  0% { transform: scale(var(--scale, 1)) rotate(calc(var(--sway, 0.8deg) * -1)); }
+  100% { transform: scale(var(--scale, 1)) rotate(var(--sway, 0.8deg)) translateY(-3px); }
 }
 
 .guest-sprite {
@@ -420,6 +419,42 @@ html, body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom center;
+  transform-origin: 50% 100%;
+  animation: guest-breathe var(--bdur, 3s) ease-in-out infinite;
+  /* Bóng đổ đặt ngay trên hình (không đặt ở khung ngoài) để lúc khách cử động không phải vẽ lại cả khối */
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.65));
+  will-change: transform;
+}
+
+/* Thở nhẹ */
+@keyframes guest-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(0.994, 1.016); }
+}
+
+/* Phản ứng ngắn: vỗ tay, nhảy cẫng, vẫy, quay ngó sân khấu */
+.wedding-guest.react-clap .guest-sprite { animation: guest-clap 0.32s ease-in-out 4; }
+@keyframes guest-clap {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-7px) scale(1.02, 0.99); }
+}
+.wedding-guest.react-hop .guest-sprite { animation: guest-hop 0.55s cubic-bezier(0.3, 0.7, 0.4, 1) 2; }
+@keyframes guest-hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  15% { transform: translateY(2px) scale(1.04, 0.95); }
+  50% { transform: translateY(-26px) scale(0.98, 1.03); }
+  80% { transform: translateY(0) scale(1.03, 0.97); }
+}
+.wedding-guest.react-wave .guest-sprite { animation: guest-wave 0.5s ease-in-out 3; }
+@keyframes guest-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
+.wedding-guest.react-look .guest-sprite { animation: guest-look 1.9s ease-in-out 1; }
+@keyframes guest-look {
+  0%, 100% { transform: scaleX(1); }
+  30%, 70% { transform: scaleX(-1); }
 }
 
 /* Khách nhún nhảy */
@@ -531,12 +566,13 @@ html, body {
   width: 145px;
   height: 185px;
   transform-origin: 50% 100%;
-  z-index: 35;
+  z-index: 185;
   pointer-events: none;
   filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.75));
 }
 
 .guest-walker .actor-sprite {
+  position: relative;
   width: 100%;
   height: 100%;
   background-size: contain;
@@ -1784,9 +1820,9 @@ html, body {
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.6));
 }
 .mc-sprite {
+  position: relative;
   width: 100%;
   height: 100%;
-  background: url('/assets/guest_1.png') no-repeat bottom center / contain;
   transform-origin: 50% 100%;
 }
 .mc-tag {
@@ -1955,3 +1991,37 @@ html, body {
   transition: opacity 0.5s ease 0.9s;
 }
 #photo-booth.pb-show .pb-note { opacity: 1; }
+
+/* ========================================================
+   BỘ HÌNH: các lớp ảnh/video của cặp đôi, MC, người đi lên
+   ======================================================== */
+.actor-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.actor-layer.on { opacity: 1; }
+.actor-layer.flip { transform: scaleX(-1); }
+/* Video đã có chuyển động thật: tắt hiệu ứng nhún giả */
+#couple-sprite.has-video,
+#couple-sprite.has-video.couple-idle,
+#couple-sprite.has-video.couple-kissing { animation: none !important; }
+.mc-host.has-video.talking .mc-sprite { animation: none; }
+.guest-walker.has-video.walking .actor-sprite,
+.guest-walker.dance-video.dancer .actor-sprite { animation: none; }
+
+/* Động tác cặp đôi chỉ có ảnh tĩnh (vd cúi chào) trong lúc đang dùng video: thở nhẹ cho khỏi đứng hình */
+#couple-sprite.has-video img.actor-layer.on {
+  transform-origin: 50% 100%;
+  animation: couple-still-breathe 3.2s ease-in-out infinite;
+}
+@keyframes couple-still-breathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.012) translateY(-2px); }
+}
