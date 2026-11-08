@@ -589,6 +589,17 @@ class StageActor {
   }
 }
 const coupleActor = new StageActor($('#couple-sprite'));
+// Diễn động tác đầu tiên mà bộ hình có (vd ['ring', 'heart']: có video trao nhẫn thì dùng, không thì bắn tim)
+function coupleDo(names, ms) {
+  for (const n of [].concat(names)) if (coupleActor.play(n, ms)) return n;
+  return '';
+}
+// Cảm ơn quà thường: cúi chào, không quá dày
+let lastCoupleThanks = 0;
+function coupleThanks() {
+  if (Date.now() - lastCoupleThanks < 10000 || coupleActor.state !== 'idle') return;
+  if (coupleDo(['thanks', 'bow'], 3200)) lastCoupleThanks = Date.now();
+}
 const mcActor = new StageActor($('.mc-sprite'));
 
 function coupleStill(...names) {
@@ -761,12 +772,16 @@ function renderGuests(people = []) {
   const box = guestBox();
   people.forEach((p, index) => {
     let node = guestNodes.get(p.id);
-    const src = guestSprite(p);
+    const idle = cfg().themeVideo !== false ? theme.data.guests?.idle?.[guestFile(p)] : null;
+    const src = idle ? themeAsset(idle) : guestSprite(p);
     if (!node) {
       node = document.createElement('div');
       node.className = 'wedding-guest';
       node.dataset.id = p.id;
-      node.style.setProperty('--delay', `${(index * 0.28) % 3}s`);
+      node.style.setProperty('--delay', `${-(Math.random() * 4).toFixed(2)}s`);
+      node.style.setProperty('--dur', `${(2.8 + Math.random() * 1.8).toFixed(2)}s`);
+      node.style.setProperty('--sway', `${(0.9 + Math.random() * 1.1).toFixed(2)}deg`);
+      node.style.setProperty('--bdur', `${(2.6 + Math.random() * 1.4).toFixed(2)}s`);
 
       const sprite = document.createElement('div');
       sprite.className = 'guest-sprite';
@@ -812,6 +827,24 @@ function renderGuests(people = []) {
     node.style.zIndex = String(Math.round(seat.y / 10));
   });
 }
+
+// Khách "sống": mỗi người một nhịp đung đưa, thỉnh thoảng vỗ tay, nhảy cẫng, vẫy, ngó lên sân khấu
+const GUEST_REACTS = { clap: 1300, hop: 1100, wave: 1500, look: 1900 };
+function guestReact(node, kind, ms) {
+  if (!node || node.classList.contains('dancing') || node.classList.contains('cheering')) return;
+  if ([...node.classList].some(c => c.startsWith('react-'))) return;
+  node.classList.add('react-' + kind);
+  setTimeout(() => node.classList.remove('react-' + kind), ms || GUEST_REACTS[kind] || 1200);
+}
+function guestsReact(count, kinds = ['clap']) {
+  const nodes = Array.from(guestNodes.values()).sort(() => Math.random() - 0.5).slice(0, count);
+  nodes.forEach((n, i) => setTimeout(() => guestReact(n, pick(kinds)), i * 90 + Math.random() * 250));
+}
+setInterval(() => {
+  if (!guestNodes.size || dpActive) return;
+  const n = Math.min(2, Math.ceil(guestNodes.size / 12));
+  guestsReact(n, ['clap', 'hop', 'wave', 'look', 'look']);
+}, 1700);
 
 // ========================================================
 // SỔ MỪNG CƯỚI, MENU QUÀ, CÁCH CHƠI
@@ -1254,13 +1287,16 @@ function triggerKiss(silent = false) {
     }, 4500);
   }
   coupleActor.play('kiss', 4500);
-  if (!silent) showCeremonyBanner('💋 CÔ DÂU CHÚ RỂ TRAO NỤ HÔN!', 'Tình nồng ý thắm gắn kết trọn đời!', 'kiss');
+  if (!silent) {
+    showCeremonyBanner('💋 CÔ DÂU CHÚ RỂ TRAO NỤ HÔN!', 'Tình nồng ý thắm gắn kết trọn đời!', 'kiss');
+    guestsReact(12, ['clap', 'hop', 'look']);
+  }
   spawnHearts(20);
   playWeddingBell();
 }
 
 function triggerCheers(initiator = '') {
-  coupleActor.play('cheers', 4500);
+  coupleDo(['cheers', 'wave'], 4500);
   playClink();
   $$('.wedding-guest').forEach(g => {
     g.classList.add('cheering');
@@ -1288,7 +1324,7 @@ function guestsDance(ms) {
 
 function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
   const ms = big ? 8000 : 5000;
-  if (!big) coupleActor.play('dance', ms);
+  if (!big) coupleDo(['dance', 'wave'], ms);
   guestsDance(ms);
   startDisco(ms + 200);
   playDanceBeat(ms / 1000);
@@ -1314,7 +1350,7 @@ function triggerCake() {
 }
 
 function triggerChampagne() {
-  coupleActor.play('cheers', 4500);
+  coupleDo(['cheers', 'wave'], 4500);
   playPop();
   setTimeout(playClink, 350);
   for (let i = 0; i < 18; i++) setTimeout(() => spawnBubbles(true), i * 90);
@@ -1324,6 +1360,7 @@ function triggerChampagne() {
 }
 
 function triggerPetal(big = false) {
+  coupleDo(['petal', 'heart'], 4500);
   playWeddingBell();
   spawnPetalsBurst(big ? 70 : 45);
   showCeremonyBanner('🌹 MƯA HOA HỒNG RỰC RỠ! 🌸', 'Trăm hoa trải thảm chúc phúc đôi uyên ương!', 'petal');
@@ -1340,6 +1377,7 @@ function triggerRing(couple = {}) {
   const g = couple.groom || roleName('groom');
   const b = couple.bride || roleName('bride');
   showCeremonyBanner('💍 TRAO NHẪN CƯỚI', `${g} 💕 ${b}`, 'marry', 4800);
+  coupleDo(['ring', 'heart'], 4800);
   playChime();
   const layer = $('#hearts-layer');
   const target = { x: 540, y: 880 };
@@ -1392,6 +1430,7 @@ function triggerRoleChange({ role, name, avatar, previous, bid, replaced = false
   playFanfare();
   playWeddingBell();
   if (!coupleActor.play('wave', 4800)) triggerKiss(true);
+  guestsReact(10, ['clap', 'hop']);
   if (pairHeartPending) {
     clearTimeout(pairHeartTimer);
     pairHeartTimer = setTimeout(playPairHeart, 4800);
@@ -1456,6 +1495,7 @@ function triggerCancel(name, couple) {
   stage?.classList.remove('shake');
   void stage?.offsetWidth;
   stage?.classList.add('shake');
+  coupleDo(['shock'], 4200);
   const sprite = $('#couple-sprite');
   sprite?.classList.add('fled');
   setTimeout(() => sprite?.classList.remove('fled'), 4200);
@@ -1477,6 +1517,7 @@ function seatPoint(personId) {
 }
 
 async function triggerBouquet(catcher) {
+  coupleDo(['bouquet', 'wave'], 3600);
   showCeremonyBanner('💐 CÔ DÂU TUNG HOA CƯỚI!', 'Ai sẽ bắt được hoa đây?', 'bride', 3200);
   playChime();
   const from = { x: 560, y: 860 };
@@ -1503,7 +1544,11 @@ async function triggerBouquet(catcher) {
 
 // ----- PHÁO HOA -----
 function triggerFireworks(name) {
-  if (name) showCeremonyBanner('🎆 PHÁO HOA RỰC RỠ!', `${name} thắp sáng cả hôn trường!`, 'gold', 4500);
+  if (name) {
+    showCeremonyBanner('🎆 PHÁO HOA RỰC RỠ!', `${name} thắp sáng cả hôn trường!`, 'gold', 4500);
+    coupleDo(['fireworks', 'wave'], 4500);
+    guestsReact(10, ['hop', 'clap', 'look']);
+  }
   const layer = $('#fireworks-layer');
   if (!layer) return;
   const colors = ['#ffd700', '#ff4d6d', '#4cc9f0', '#b5ff6b', '#ff9e00', '#f72585', '#ffffff'];
@@ -1534,6 +1579,8 @@ function triggerFireworks(name) {
 
 // ----- ĐỔI NHẠC -----
 function triggerMusic(name, track) {
+  coupleDo(['dance', 'wave'], 4500);
+  guestsReact(8, ['clap', 'hop']);
   showCeremonyBanner(`🎵 ĐỔI NHẠC: ${String(track || 'bài mới').toUpperCase()}`, name ? `Theo yêu cầu của ${name}` : 'Nhạc mới đã lên!', 'dance', 4500);
   const disc = $('.music-disc');
   disc?.classList.add('fast');
@@ -1543,6 +1590,8 @@ function triggerMusic(name, track) {
 
 // ----- CƯỚI MC -----
 function triggerMarryMC(name, avatar) {
+  coupleDo(['shock'], 4000);
+  guestsReact(8, ['hop', 'look']);
   showCeremonyBanner(`🎤 ${String(name || 'Ai đó').toUpperCase()} CƯỚI LUÔN MC!`, 'MC đỏ mặt nhận lời rồi bà con ơi! 😳', 'bride', 5000);
   const host = $('#mc-host');
   host?.classList.add('blush');
@@ -1816,7 +1865,7 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   if (dpActive) return;
   dpActive = true;
   sceneLock++;
-  coupleActor.play('carry', 3200);
+  coupleDo(['carry', 'kiss'], 3200);
   const g = groom || roleName('groom');
   const b = bride || roleName('bride');
   const root = $('#dong-phong');
@@ -2182,7 +2231,9 @@ async function presentOfferingInner(item, fast, actor, token) {
     default:
       playWeddingBell();
       spawnHearts(10);
+      coupleThanks();
   }
+  guestsReact(item.action === 'thanks' ? 4 : 7, ['clap', 'clap', 'hop']);
 
   const card = $('#celebration-card');
   if (showCard && card) {
@@ -2243,8 +2294,13 @@ realtime.addEventListener('bgm', e => {
 realtime.addEventListener('activity', e => {
   try {
     const d = JSON.parse(e.data);
-    if (d.type === 'chat') showChatBubble(d.id, d.comment);
-    else if (d.type === 'join') showChatBubble(d.id, '👋 Tới rồi nè!');
+    if (d.type === 'chat') {
+      showChatBubble(d.id, d.comment);
+      guestReact(guestNodes.get(d.id), 'hop');
+    } else if (d.type === 'join') {
+      showChatBubble(d.id, '👋 Tới rồi nè!');
+      setTimeout(() => guestReact(guestNodes.get(d.id), 'wave'), 300);
+    }
     else if (d.type === 'share') {
       showToast(`⭐ ${d.name} đã chia sẻ rạp cưới · cảm ơn nha!`, d.avatar, d.name);
       showChatBubble(d.id, '📤 Đã chia sẻ!');

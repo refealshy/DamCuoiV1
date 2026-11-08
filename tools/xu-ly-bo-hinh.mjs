@@ -8,11 +8,15 @@
 // Tên file nguồn (ảnh .png/.jpg/.webp, video .mp4/.mov/.webm):
 //   bg_<mã>.jpg              phông 9:16 (vd bg_red_gold.jpg)
 //   dongphong_room.jpg       phông phòng tân hôn (tùy chọn)
-//   couple_<động tác>        cặp đôi: idle (bắt buộc), kiss, heart, wave, bow, ... (couple_ref bị bỏ qua)
+//   couple_<động tác>        cặp đôi: idle (bắt buộc), kiss, heart, wave, bow, và tùy chọn:
+//                            ring (trao nhẫn), cake (cắt bánh), cheers (cụng ly), dance (khiêu vũ),
+//                            carry (bế vào động phòng), bouquet (tung hoa), shock (bị phá đám),
+//                            thanks (cảm ơn quà), petal (mưa hoa), fireworks (pháo hoa). couple_ref bị bỏ qua.
 //   mc_<động tác>            MC: idle, talk
 //   walker_m, walker_f       người đi lên thảm đỏ (mặc định nhân vật hướng mặt sang phải)
 //   guest_m<số>, guest_f<số> khách nam, khách nữ
 //   guest_m<số>_dance        (video) khách đó nhảy trên sàn nhảy (tùy chọn)
+//   guest_m<số>_idle         (video) khách đó đứng cử động nhẹ, lặp lại; thành ảnh động WebP (tùy chọn)
 //
 // Mỗi nhóm (cặp đôi, MC, từng người đi lên, khách) dùng chung một khung cắt để
 // chuyển giữa ảnh và video không bị nhảy vị trí. Chạy lại bất cứ lúc nào khi thêm file.
@@ -38,7 +42,7 @@ const GROUPS = {
   mc: { test: n => /^mc_[a-z0-9]+$/.test(n), imgH: 560, vidH: 400 },
   walker_m: { test: n => n === 'walker_m', imgH: 640, vidH: 440 },
   walker_f: { test: n => n === 'walker_f', imgH: 640, vidH: 440 },
-  guest: { test: n => /^guest_[mf]\d+(_dance)?$/.test(n), imgH: 440, vidH: 440 }
+  guest: { test: n => /^guest_[mf]\d+(_(dance|idle))?$/.test(n), imgH: 440, vidH: 440 }
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
@@ -191,6 +195,27 @@ async function makeVideo(file, crop, outH, outFile, key) {
     '-deadline', 'good', '-cpu-used', '3', '-row-mt', '1', '-auto-alt-ref', '0', outFile]);
 }
 
+// Video khách đứng chờ -> ảnh động WebP trong suốt (nhiều khách dùng chung nhẹ hơn nhiều video cùng lúc)
+async function makeAnimWebp(file, crop, outH, outFile, key) {
+  const { dur } = probe(file);
+  const fps = 12;
+  const n = Math.floor(dur * fps);
+  const k = 4;
+  const filters = [];
+  if (n > 3 * k) {
+    filters.push(`[0:v]fps=${fps},split[a][b]`,
+      `[a]trim=start_frame=${k},setpts=PTS-STARTPTS[s1]`,
+      `[b]trim=end_frame=${k},setpts=PTS-STARTPTS[s2]`,
+      `[s1][s2]xfade=transition=fade:duration=${(k / fps).toFixed(4)}:offset=${((n - 2 * k) / fps).toFixed(4)}[lp]`);
+  } else {
+    filters.push(`[0:v]fps=${fps}[lp]`);
+  }
+  filters.push(`[lp]${labelMask},${cropExpr(crop)},scale=-2:${even(outH)}:flags=lanczos,` +
+    `${keyFilter(key, { featherL: crop.touchL, featherR: crop.touchR })},format=yuva420p[out]`);
+  await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-filter_complex', filters.join(';'),
+    '-map', '[out]', '-an', '-c:v', 'libwebp_anim', '-lossless', '0', '-quality', '62', '-compression_level', '4', '-loop', '0', outFile]);
+}
+
 async function makeBackground(file, outFile, thumbFile) {
   const { w, h } = probe(file);
   // Che nhãn AI ở góc trên trái bằng cách nội suy từ vùng xung quanh.
@@ -275,6 +300,10 @@ async function main() {
         const out = `${m.name}.webp`;
         await makeStill(m.file, crop, g.imgH, path.join(OUT, out), m.key);
         entry.img = out;
+      } else if (gid === 'guest' && m.name.endsWith('_idle')) {
+        const out = `${m.name}.webp`;
+        await makeAnimWebp(m.file, crop, 400, path.join(OUT, out), m.key);
+        entry.anim = out;
       } else if (g.vidH) {
         const out = `${m.name}.webm`;
         await makeVideo(m.file, crop, g.vidH, path.join(OUT, out), m.key);
@@ -305,17 +334,21 @@ async function main() {
   manifest.walker = Object.keys(walker).length ? walker : null;
   if (groupOut.guest) {
     const assets = groupOut.guest.assets;
-    const names = Object.keys(assets).filter(n => !n.endsWith('_dance')).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    const names = Object.keys(assets).filter(n => !/_(dance|idle)$/.test(n)).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
     const dance = {};
+    const idle = {};
     for (const n of names) {
       const v = assets[`${n}_dance`]?.video || assets[n].video;
       if (v && assets[n].img) dance[assets[n].img] = v;
+      const a = assets[`${n}_idle`]?.anim;
+      if (a && assets[n].img) idle[assets[n].img] = a;
     }
     manifest.guests = {
       aspect: groupOut.guest.aspect,
       male: names.filter(n => n.startsWith('guest_m')).map(n => assets[n].img).filter(Boolean),
       female: names.filter(n => n.startsWith('guest_f')).map(n => assets[n].img).filter(Boolean),
-      dance
+      dance,
+      idle
     };
   }
 
