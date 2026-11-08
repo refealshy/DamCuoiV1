@@ -29,6 +29,10 @@
           <span class="nav-icon">👰🤵</span>
           <span>Cô dâu, Chú rể & Đấu giá</span>
         </button>
+        <button class="nav-item" data-tab="tab-theme">
+          <span class="nav-icon">🎨</span>
+          <span>Bộ Hình Nhân Vật</span>
+        </button>
         <button class="nav-item" data-tab="tab-goals">
           <span class="nav-icon">🎁</span>
           <span>Luật Quà Tặng & Mục Tiêu</span>
@@ -398,6 +402,50 @@
               <thead><tr><th>Thời gian</th><th>Chú rể</th><th>Cô dâu</th></tr></thead>
               <tbody></tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- ================= BỘ HÌNH NHÂN VẬT ================= -->
+        <section class="tab-pane" id="tab-theme">
+          <div class="section-heading">
+            <small>GIAO DIỆN RẠP CƯỚI</small>
+            <h2>Bộ Hình Nhân Vật & Phông Hội Trường</h2>
+          </div>
+          <div class="card-panel">
+            <div class="hint-box">
+              Chọn bộ hình cho cô dâu chú rể, MC, khách mời và phông hội trường. Bộ <b>Bán thực 3D</b> có video chuyển động:
+              cặp đôi đứng, hôn, bắn tim, vẫy tay, cúi chào; MC cầm micro nói; người tặng quà đi lên thảm đỏ.
+              Muốn thêm hoặc thay hình: bỏ file vào thư mục <code>bo-hinh-moi</code> rồi chạy <code>node tools/xu-ly-bo-hinh.mjs</code>.
+            </div>
+            <h3 class="theme-subtitle">Bộ hình</h3>
+            <div class="theme-grid" id="theme-list"></div>
+            <h3 class="theme-subtitle">Phông hội trường</h3>
+            <div class="bg-grid" id="theme-bg-list"></div>
+            <div class="form-grid" style="margin-top:16px;">
+              <div class="form-group">
+                <label>🎬 Nhân vật chuyển động (video):</label>
+                <select id="cfg-theme-video">
+                  <option value="true">Bật (đẹp nhất)</option>
+                  <option value="false">Tắt (máy yếu, chỉ dùng ảnh)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>👰🤵 Cỡ cặp đôi: <b id="lbl-size-couple">100%</b></label>
+                <input type="range" id="cfg-size-couple" min="50" max="160" step="5" value="100">
+              </div>
+              <div class="form-group">
+                <label>🎤 Cỡ MC: <b id="lbl-size-mc">100%</b></label>
+                <input type="range" id="cfg-size-mc" min="50" max="160" step="5" value="100">
+              </div>
+              <div class="form-group">
+                <label>👥 Cỡ khách & người đi lên: <b id="lbl-size-guest">100%</b></label>
+                <input type="range" id="cfg-size-guest" min="50" max="160" step="5" value="100">
+              </div>
+            </div>
+            <div class="panel-footer">
+              <button class="btn btn-secondary" id="btn-theme-reset-size">↺ Cỡ mặc định</button>
+              <button class="btn btn-primary" id="btn-save-theme">💾 Lưu Bộ Hình</button>
+            </div>
           </div>
         </section>
 

@@ -936,3 +936,33 @@ body {
 .album-actions { display: flex; gap: 6px; }
 .album-actions a.icon-btn { text-decoration: none; }
 .stats-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+/* ===== Bộ hình nhân vật ===== */
+.theme-subtitle { margin: 18px 0 10px; font-size: 15px; color: #f3d9a4; }
+.theme-grid, .bg-grid { display: grid; gap: 12px; }
+.theme-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.bg-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+.theme-card, .bg-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-card:hover, .bg-card:hover { border-color: var(--border-gold); }
+.theme-card.active, .bg-card.active { border-color: #f5c451; background: rgba(245, 196, 81, 0.12); box-shadow: 0 0 0 1px #f5c451 inset; }
+.theme-card img { width: 54px; height: 96px; object-fit: cover; border-radius: 8px; flex: none; background: #222; }
+.theme-card-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.theme-card-info b { font-size: 15px; }
+.theme-card-info span { font-size: 12px; opacity: 0.75; }
+.bg-card { flex-direction: column; align-items: stretch; gap: 6px; text-align: center; }
+.bg-card img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 8px; background: #222; }
+.bg-card span { font-size: 13px; font-weight: 600; }
+.form-group input[type="range"] { width: 100%; accent-color: #f5c451; }

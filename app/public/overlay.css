@@ -330,6 +330,7 @@ html, body {
 }
 
 #couple-sprite {
+  position: relative;
   width: 255px;
   height: 280px;
   background-size: contain;
@@ -340,12 +341,10 @@ html, body {
 }
 
 .couple-idle {
-  background-image: url('/assets/couple_standing.png');
   animation: couple-breathe 4.5s ease-in-out infinite;
 }
 
 .couple-kissing {
-  background-image: url('/assets/couple_kissing.png') !important;
   animation: couple-kiss-bounce 0.8s ease-in-out infinite alternate !important;
   filter: drop-shadow(0 14px 24px rgba(230, 50, 90, 0.8)) !important;
 }
@@ -537,6 +536,7 @@ html, body {
 }
 
 .guest-walker .actor-sprite {
+  position: relative;
   width: 100%;
   height: 100%;
   background-size: contain;
@@ -1784,9 +1784,9 @@ html, body {
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.6));
 }
 .mc-sprite {
+  position: relative;
   width: 100%;
   height: 100%;
-  background: url('/assets/guest_1.png') no-repeat bottom center / contain;
   transform-origin: 50% 100%;
 }
 .mc-tag {
@@ -1955,3 +1955,26 @@ html, body {
   transition: opacity 0.5s ease 0.9s;
 }
 #photo-booth.pb-show .pb-note { opacity: 1; }
+
+/* ========================================================
+   BỘ HÌNH: các lớp ảnh/video của cặp đôi, MC, người đi lên
+   ======================================================== */
+.actor-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.actor-layer.on { opacity: 1; }
+.actor-layer.flip { transform: scaleX(-1); }
+/* Video đã có chuyển động thật: tắt hiệu ứng nhún giả */
+#couple-sprite.has-video,
+#couple-sprite.has-video.couple-idle,
+#couple-sprite.has-video.couple-kissing { animation: none !important; }
+.mc-host.has-video.talking .mc-sprite { animation: none; }
+.guest-walker.has-video.walking .actor-sprite { animation: none; }

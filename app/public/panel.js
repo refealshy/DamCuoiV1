@@ -70,6 +70,7 @@ $$('.nav-item').forEach(btn => {
     if (btn.dataset.tab === 'tab-voice') loadVoices();
     if (btn.dataset.tab === 'tab-mclines' && !mcRendered) loadMcEditor();
     if (btn.dataset.tab === 'tab-album') loadAlbum();
+    if (btn.dataset.tab === 'tab-theme') loadThemes();
   });
 });
 
@@ -759,6 +760,87 @@ $('#btn-save-bgm')?.addEventListener('click', async () => {
 });
 
 // ========================================================
+// BỘ HÌNH NHÂN VẬT
+// ========================================================
+let themeList = [];
+const themePick = { theme: '', background: '' };
+
+async function loadThemes() {
+  try {
+    const d = await api('/api/themes', null, 'GET');
+    themeList = d.themes || [];
+    if (!themePick.theme) {
+      themePick.theme = d.current;
+      themePick.background = d.background;
+    }
+  } catch {
+    themeList = [];
+  }
+  renderThemePicker();
+}
+
+function renderThemePicker() {
+  const list = $('#theme-list');
+  const bgList = $('#theme-bg-list');
+  if (!list || !bgList) return;
+  const cur = themeList.find(t => t.id === themePick.theme) || themeList[0];
+  if (cur) themePick.theme = cur.id;
+  list.replaceChildren(...themeList.map(t => el('button', {
+    class: 'theme-card' + (t.id === themePick.theme ? ' active' : ''),
+    type: 'button',
+    onclick: () => {
+      themePick.theme = t.id;
+      themePick.background = t.backgrounds[0]?.id || '';
+      renderThemePicker();
+    }
+  },
+  el('img', { src: t.backgrounds[0]?.thumb || '', alt: '' }),
+  el('div', { class: 'theme-card-info' },
+    el('b', { text: t.name }),
+    el('span', { text: [t.hasVideo ? '🎬 Có video chuyển động' : '🖼️ Ảnh tĩnh', t.guests ? `${t.guests} kiểu khách` : ''].filter(Boolean).join(' · ') })
+  ))));
+  if (!themeList.length) list.append(el('div', { class: 'empty-note', text: 'Chưa có bộ hình nào trong app/public/themes.' }));
+  const bgs = cur?.backgrounds || [];
+  if (!bgs.some(b => b.id === themePick.background)) themePick.background = bgs[0]?.id || '';
+  bgList.replaceChildren(...bgs.map(b => el('button', {
+    class: 'bg-card' + (b.id === themePick.background ? ' active' : ''),
+    type: 'button',
+    onclick: () => {
+      themePick.background = b.id;
+      renderThemePicker();
+    }
+  }, el('img', { src: b.thumb, alt: '' }), el('span', { text: b.name }))));
+}
+
+function sizeLabel(k) {
+  const l = $(`#lbl-size-${k}`);
+  if (l) l.textContent = `${$(`#cfg-size-${k}`)?.value || 100}%`;
+}
+['couple', 'mc', 'guest'].forEach(k => $(`#cfg-size-${k}`)?.addEventListener('input', () => sizeLabel(k)));
+
+$('#btn-theme-reset-size')?.addEventListener('click', () => {
+  ['couple', 'mc', 'guest'].forEach(k => {
+    setVal(`#cfg-size-${k}`, 100);
+    sizeLabel(k);
+  });
+});
+
+$('#btn-save-theme')?.addEventListener('click', async () => {
+  const config = {
+    theme: themePick.theme,
+    themeBackground: themePick.background,
+    themeVideo: $('#cfg-theme-video').value === 'true',
+    sizeCouple: Number($('#cfg-size-couple').value) || 100,
+    sizeMC: Number($('#cfg-size-mc').value) || 100,
+    sizeGuest: Number($('#cfg-size-guest').value) || 100
+  };
+  try {
+    await api('/api/config', { config });
+    toast('✅ Đã lưu bộ hình. Màn hình LIVE đổi ngay.');
+  } catch {}
+});
+
+// ========================================================
 // HIỂN THỊ TRẠNG THÁI
 // ========================================================
 function setVal(id, v) {
@@ -785,6 +867,15 @@ function fillForms(cfg, goals) {
   setVal('#cfg-money-unit', cfg.moneyUnit || 'xu');
   setVal('#cfg-title-decay', cfg.titleDecaySeconds || 30);
   setVal('#cfg-show-mc', cfg.showMC !== false);
+  setVal('#cfg-theme-video', cfg.themeVideo !== false);
+  setVal('#cfg-size-couple', cfg.sizeCouple || 100);
+  setVal('#cfg-size-mc', cfg.sizeMC || 100);
+  setVal('#cfg-size-guest', cfg.sizeGuest || 100);
+  ['couple', 'mc', 'guest'].forEach(sizeLabel);
+  if (!themePick.theme) {
+    themePick.theme = cfg.theme || '';
+    themePick.background = cfg.themeBackground || '';
+  }
   setVal('#cfg-comment-rituals', cfg.commentRituals !== false);
   setVal('#cfg-comment-cooldown', cfg.commentCooldown ?? 8);
   setVal('#cfg-speech-enabled', cfg.speech !== false);
