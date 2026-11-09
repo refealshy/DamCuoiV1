@@ -1,19 +1,31 @@
 {
   "id": "ban-thuc-3d",
   "name": "Bán thực 3D",
-  "version": 1794156235680,
+  "version": 1794182175889,
   "display": {
     "couple": 430,
     "mc": 270,
     "guest": 360,
     "walker": 380
   },
+  "layout": {
+    "coupleBottom": 1108,
+    "mcX": 292,
+    "mcBottom": 1102
+  },
+  "guestScale": [
+    0.66,
+    0.97
+  ],
   "backgrounds": [
     {
       "id": "red_gold",
       "name": "Đỏ vàng",
       "src": "bg_red_gold.jpg",
-      "thumb": "bg_red_gold_thumb.jpg"
+      "thumb": "bg_red_gold_thumb.jpg",
+      "fx": {
+        "party": "bg_party.webm"
+      }
     },
     {
       "id": "champagne",
@@ -28,12 +40,33 @@
       "thumb": "bg_pink_white_thumb.jpg"
     }
   ],
-  "dongphong": null,
+  "dongphong": "dongphong.jpg",
   "couple": {
-    "aspect": 0.5674,
+    "aspect": 0.5625,
     "states": {
+      "bouquet": {
+        "video": "couple_bouquet.webm"
+      },
       "bow": {
         "img": "couple_bow.webp"
+      },
+      "cake": {
+        "img": "couple_cake.webp",
+        "video": "couple_cake.webm"
+      },
+      "cancel": {
+        "video": "couple_cancel.webm"
+      },
+      "carry": {
+        "img": "couple_carry.webp",
+        "video": "couple_carry.webm"
+      },
+      "cheers": {
+        "img": "couple_cheers.webp",
+        "video": "couple_cheers.webm"
+      },
+      "dance": {
+        "video": "couple_dance.webm"
       },
       "heart": {
         "img": "couple_heart.webp",
@@ -100,15 +133,9 @@
       "guest_f6.webp",
       "guest_f7.webp",
       "guest_f8.webp"
-    ]
+    ],
+    "dance": {},
+    "idle": {}
   },
-  "layout": {
-    "coupleBottom": 1108,
-    "mcX": 292,
-    "mcBottom": 1102
-  },
-  "guestScale": [
-    0.66,
-    0.97
-  ]
+  "effects": {}
 }

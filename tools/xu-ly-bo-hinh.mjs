@@ -7,10 +7,12 @@
 //
 // Tên file nguồn (ảnh .png/.jpg/.webp, video .mp4/.mov/.webm):
 //   bg_<mã>.jpg              phông 9:16 (vd bg_red_gold.jpg)
+//   bg_<tên>.mp4             phông động (vd bg_party.mp4: chế độ tiệc khi cả rạp quẩy, pháo hoa).
+//                            Tự gắn vào phông giống khung đầu nhất; đặt bg_<mã phông>_party.mp4 để chỉ định rõ.
 //   dongphong_room.jpg       phông phòng tân hôn (tùy chọn)
 //   couple_<động tác>        cặp đôi: idle (bắt buộc), kiss, heart, wave, bow, và tùy chọn:
 //                            ring (trao nhẫn), cake (cắt bánh), cheers (cụng ly), dance (khiêu vũ),
-//                            carry (bế vào động phòng), bouquet (tung hoa), shock (bị phá đám),
+//                            carry (bế vào động phòng), bouquet (tung hoa), shock hoặc cancel (bị phá đám),
 //                            thanks (cảm ơn quà), petal (mưa hoa), fireworks (pháo hoa). couple_ref bị bỏ qua.
 //   mc_<động tác>            MC: idle, talk
 //   walker_m, walker_f       người đi lên thảm đỏ (mặc định nhân vật hướng mặt sang phải)
@@ -216,6 +218,26 @@ async function makeAnimWebp(file, crop, outH, outFile, key) {
     '-map', '[out]', '-an', '-c:v', 'libwebp_anim', '-lossless', '0', '-quality', '62', '-compression_level', '4', '-loop', '0', outFile]);
 }
 
+// Độ giống (SSIM) giữa khung đầu của video và một ảnh
+function similarity(video, image) {
+  const r = spawnSync('ffmpeg', ['-hide_banner', '-i', video, '-i', image, '-lavfi',
+    "[0:v]select='eq(n\\,0)',scale=180:320,format=yuv420p[a];[1:v]scale=180:320,format=yuv420p[b];[a][b]ssim",
+    '-frames:v', '1', '-f', 'null', '-'], { encoding: 'utf8' });
+  return Number((r.stderr || '').match(/All:([0-9.]+)/)?.[1]) || 0;
+}
+
+// Phông động (không xóa nền): che nhãn AI, bỏ tiếng, giữ 720x1280 cho nhẹ (CSS phóng lên 1080x1920)
+async function makeBackgroundVideo(file, outFile) {
+  const { w, h } = probe(file);
+  const lx = Math.max(1, Math.round(w * 0.01));
+  const ly = Math.max(1, Math.round(h * 0.006));
+  const lw = Math.round(w * 0.075);
+  const lh = Math.round(h * 0.035);
+  const vf = `fps=${FPS},delogo=x=${lx}:y=${ly}:w=${lw}:h=${lh},scale=720:1280:force_original_aspect_ratio=increase:flags=lanczos,crop=720:1280,format=yuv420p`;
+  await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-vf', vf, '-an',
+    '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '34', '-deadline', 'good', '-cpu-used', '3', '-row-mt', '1', outFile]);
+}
+
 async function makeBackground(file, outFile, thumbFile) {
   const { w, h } = probe(file);
   // Che nhãn AI ở góc trên trái bằng cách nội suy từ vùng xung quanh.
@@ -276,6 +298,27 @@ async function main() {
   });
   manifest.backgrounds = bgs.map(bg => bg.name.slice(3)).sort((a, b) => (a === 'red_gold' ? -1 : b === 'red_gold' ? 1 : a.localeCompare(b)))
     .map(id => ({ id, name: BG_NAMES[id] || id.replace(/_/g, ' '), src: `bg_${id}.jpg`, thumb: `bg_${id}_thumb.jpg` }));
+  // Phông động: bg_<mã phông>_<hiệu ứng> gắn thẳng; bg_<hiệu ứng> gắn vào phông giống khung đầu nhất
+  manifest.effects = {};
+  for (const v of items.filter(i => i.kind === 'vid' && /^bg_[a-z0-9_]+$/.test(i.name))) {
+    const out = `${v.name}.webm`;
+    await makeBackgroundVideo(v.file, path.join(OUT, out));
+    let target = manifest.backgrounds.find(b => v.name.startsWith(`bg_${b.id}_`));
+    let fx = target ? v.name.slice(`bg_${target.id}_`.length) : v.name.slice(3);
+    if (!target) {
+      const scores = bgs.map(b => ({ id: b.name.slice(3), s: similarity(v.file, b.file) })).sort((a, b) => b.s - a.s);
+      if (scores[0] && scores[0].s > 0.62 && scores[0].s - (scores[1]?.s || 0) > 0.05) target = manifest.backgrounds.find(b => b.id === scores[0].id);
+      console.log(`  ${v.name}: giống nhất ${scores.map(x => `${x.id} ${x.s.toFixed(2)}`).join(', ')}`);
+    }
+    if (target) {
+      target.fx = { ...(target.fx || {}), [fx]: out };
+      console.log(`✓ phông động ${fx} cho phông ${target.id}`);
+    } else {
+      manifest.effects[fx] = out;
+      console.log(`✓ phông động ${fx} (dùng cho mọi phông)`);
+    }
+  }
+
   const dp = items.find(i => i.kind === 'img' && i.name === 'dongphong_room');
   if (dp) {
     await makeBackground(dp.file, path.join(OUT, 'dongphong.jpg'));

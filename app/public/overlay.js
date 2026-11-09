@@ -611,6 +611,27 @@ function coupleThanks() {
 }
 const mcActor = new StageActor($('.mc-sprite'));
 
+// Phông động (chế độ tiệc): phát một lượt đè lên phông thường rồi mờ dần về
+let bgFxBusy = false;
+function playBgFx(name = 'party') {
+  const el = $('.stage-bg-fx');
+  const f = theme.fx?.[name];
+  if (!el || !f || bgFxBusy || cfg().themeVideo === false) return false;
+  const src = themeAsset(f);
+  if (el.dataset.src !== src) {
+    el.dataset.src = src;
+    el.src = src;
+  }
+  bgFxBusy = true;
+  try { el.currentTime = 0; } catch (e) {}
+  el.play().catch(() => {});
+  el.classList.add('on');
+  const len = Number.isFinite(el.duration) && el.duration > 1 ? el.duration * 1000 : 5000;
+  setTimeout(() => el.classList.remove('on'), Math.max(1500, len - 500));
+  setTimeout(() => { el.pause(); bgFxBusy = false; }, Math.max(2000, len + 200));
+  return true;
+}
+
 function coupleStill(...names) {
   const st = theme.data.couple?.states || {};
   const n = names.find(k => st[k]?.img) || 'idle';
@@ -700,6 +721,16 @@ function renderTheme(c) {
   theme.bgSrc = themeAsset(bg.src);
   const bgEl = $('.stage-bg');
   if (bgEl && bgEl.getAttribute('src') !== theme.bgSrc) bgEl.src = theme.bgSrc;
+  theme.fx = { ...(t.effects || {}), ...(bg.fx || {}) };
+  const fxEl = $('.stage-bg-fx');
+  if (fxEl) {
+    fxEl.classList.remove('on');
+    const party = video && theme.fx.party ? themeAsset(theme.fx.party) : '';
+    if (party && fxEl.dataset.src !== party) {
+      fxEl.dataset.src = party;
+      fxEl.src = party;
+    }
+  }
 
   // Cặp đôi
   const spr = $('#couple-sprite');
@@ -1334,6 +1365,7 @@ function guestsDance(ms) {
 function triggerDance(initiator = '', { big = false, goal = 0 } = {}) {
   const ms = big ? 8000 : 5000;
   if (!big) coupleDo(['dance', 'wave'], ms);
+  playBgFx('party');
   guestsDance(ms);
   startDisco(ms + 200);
   playDanceBeat(ms / 1000);
@@ -1504,10 +1536,12 @@ function triggerCancel(name, couple) {
   stage?.classList.remove('shake');
   void stage?.offsetWidth;
   stage?.classList.add('shake');
-  coupleDo(['shock'], 4200);
+  const acted = coupleDo(['cancel', 'shock'], 4600);
   const sprite = $('#couple-sprite');
-  sprite?.classList.add('fled');
-  setTimeout(() => sprite?.classList.remove('fled'), 4200);
+  if (!acted) {
+    sprite?.classList.add('fled');
+    setTimeout(() => sprite?.classList.remove('fled'), 4200);
+  }
   playSadTrombone();
   const big = document.createElement('div');
   big.className = 'broken-heart';
@@ -1557,6 +1591,7 @@ function triggerFireworks(name) {
     showCeremonyBanner('🎆 PHÁO HOA RỰC RỠ!', `${name} thắp sáng cả hôn trường!`, 'gold', 4500);
     coupleDo(['fireworks', 'wave'], 4500);
     guestsReact(10, ['hop', 'clap', 'look']);
+    playBgFx('party');
   }
   const layer = $('#fireworks-layer');
   if (!layer) return;
@@ -1857,6 +1892,7 @@ async function runDanceFloor(item, actor, token) {
   showCeremonyBanner(`💃 ${String(item.name).toUpperCase()} LÊN SÀN NHẢY!`, 'Cả hôn trường quẩy cùng nào! 🎶', 'dance', 7600);
   startDisco(8000);
   guestsDance(8000);
+  playBgFx('party');
   actor.classList.add('dancer');
   playDanceBeat(8);
   setDuck('dance', 0.15);
@@ -1985,6 +2021,7 @@ async function runCeremony(d) {
 
   showCeremonyBanner(`🎉 ${g} & ${b} VỀ CHUNG MỘT NHÀ!`, 'Vai cô dâu – chú rể mở lại cho lượt mới!', 'marry', 6000);
   coupleActor.play('bow', 5500);
+  setTimeout(() => playBgFx('party'), 1200);
   playFanfare();
   spawnPetalsBurst(40);
   showToast(`💒 ${g} & ${b} đã thành hôn! Tặng quà để giành vai lượt mới! 💕`);

@@ -2025,3 +2025,16 @@ html, body {
   0%, 100% { transform: scale(1) translateY(0); }
   50% { transform: scale(1.012) translateY(-2px); }
 }
+
+/* Phông động (vd chế độ tiệc): phủ lên phông thường rồi mờ dần đi */
+.stage-bg-fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.stage-bg-fx.on { opacity: 1; }
