@@ -59,7 +59,8 @@
       },
       "carry": {
         "img": "couple_carry.webp",
-        "video": "couple_carry.webm"
+        "video": "couple_carry.webm",
+        "videoHD": "couple_carry_hd.webm"
       },
       "cheers": {
         "img": "couple_cheers.webp",

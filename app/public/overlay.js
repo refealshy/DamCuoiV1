@@ -760,11 +760,56 @@ function renderTheme(c) {
 
   // Người đi lên + khách ngồi bàn
   setupActorMedia();
-  const dp = $('.dp-couple');
-  if (dp) dp.style.backgroundImage = `url('${coupleStill('carry', 'heart', 'kiss', 'idle')}')`;
-  const room = $('.dp-inside');
-  if (room) room.style.background = t.dongphong ? `url('${themeAsset(t.dongphong)}') center / cover no-repeat` : '';
+  setupDongPhong(video);
   if (currentState) renderGuests(currentState.people || []);
+}
+
+// Động phòng: bộ hình có ảnh phòng tân hôn -> phòng tràn màn hình, cặp đôi bế nhau cỡ lớn (video nếu có).
+// Bộ hình không có ảnh phòng -> giữ kiểu cũ (khung cửa nhỏ, ảnh tĩnh).
+function setupDongPhong(video) {
+  const t = theme.data;
+  const root = $('#dong-phong');
+  const box = $('.dp-couple');
+  const room = $('.dp-inside');
+  if (!root || !box || !room) return;
+  const photo = Boolean(t.dongphong);
+  root.dataset.room = photo ? 'photo' : '';
+  room.style.background = photo ? `url('${themeAsset(t.dongphong)}') center / cover no-repeat` : '';
+  if (!photo) {
+    box.dataset.sig = '';
+    box.replaceChildren();
+    box.style.removeProperty('--dp-aspect');
+    box.style.backgroundImage = `url('${coupleStill('carry', 'heart', 'kiss', 'idle')}')`;
+    return;
+  }
+  const st = t.couple?.states || {};
+  const s = st[['carry', 'heart', 'kiss', 'idle'].find(k => st[k]?.img || st[k]?.video)] || {};
+  const src = video ? s.videoHD || s.video : '';
+  const sig = JSON.stringify([theme.id, t.version, src, s.img]);
+  if (box.dataset.sig === sig) return;
+  box.dataset.sig = sig;
+  box.style.backgroundImage = 'none';
+  box.style.setProperty('--dp-aspect', t.couple?.aspect || 0.5625);
+  let el;
+  if (src) {
+    el = document.createElement('video');
+    el.muted = true;
+    el.defaultMuted = true;
+    el.playsInline = true;
+    el.loop = true;
+    el.preload = 'auto';
+    el.setAttribute('muted', '');
+    el.setAttribute('playsinline', '');
+    if (s.img) el.poster = themeAsset(s.img);
+    el.src = themeAsset(src);
+  } else {
+    el = new Image();
+    el.decoding = 'async';
+    el.alt = '';
+    el.src = s.img ? themeAsset(s.img) : coupleStill('carry', 'heart', 'kiss', 'idle');
+  }
+  el.className = 'dp-media';
+  box.replaceChildren(el);
 }
 
 // ========================================================
@@ -1914,18 +1959,26 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   const g = groom || roleName('groom');
   const b = bride || roleName('bride');
   const root = $('#dong-phong');
+  // Phòng tràn màn hình: để người xem nhìn rõ cặp đôi bế nhau lâu hơn rồi mới đóng cửa (tổng thời lượng như cũ)
+  const photo = root.dataset.room === 'photo';
+  const T = photo ? { enter: 2000, close: 1200, closed: 4400 } : { enter: 900, close: 1700, closed: 5000 };
+  const media = photo ? root.querySelector('video.dp-media') : null;
   $('#dp-groom').textContent = g;
   $('#dp-bride').textContent = b;
   root.className = '';
   root.hidden = false;
+  if (media) {
+    try { media.currentTime = 0; } catch (e) {}
+    media.play().catch(() => {});
+  }
   void root.offsetWidth;
   root.classList.add('dp-show');
   if (intro && lines.dongphong) speak(lines.dongphong, { priority: true });
   playWeddingBell();
 
-  await sleep(900);
+  await sleep(T.enter);
   root.classList.add('dp-enter');
-  await sleep(1700);
+  await sleep(T.close);
   root.classList.add('dp-closed');
   playDoor();
   await sleep(500);
@@ -1943,9 +1996,26 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   }, 220);
   const chants = ['Ố ồ ồ 🙈', 'Hóng quá 👀', 'Chúc ngủ ngon 😴', 'Sớm có tin vui nha 👶', 'Trăm năm hạnh phúc 💕', 'Đóng cửa rồi kìa 🤭'];
   const ids = Array.from(guestNodes.keys()).sort(() => Math.random() - 0.5).slice(0, 4);
-  ids.forEach((id, i) => setTimeout(() => showChatBubble(id, pick(chants)), 400 + i * 900));
+  // Phòng tràn màn hình che mất khách -> lời trêu hiện thành bong bóng trên cánh cửa
+  const spots = [[250, 1190], [830, 1290], [270, 1410], [810, 1520]];
+  ids.forEach((id, i) => setTimeout(() => {
+    if (!photo) return showChatBubble(id, pick(chants));
+    const name = (currentState?.people || []).find(p => p.id === id)?.name || '';
+    const c = document.createElement('div');
+    c.className = 'dp-chant';
+    if (name) {
+      const n = document.createElement('b');
+      n.textContent = String(name).slice(0, 18);
+      c.append(n);
+    }
+    c.append(pick(chants));
+    c.style.left = `${spots[i][0] + (Math.random() - 0.5) * 60}px`;
+    c.style.top = `${spots[i][1] + (Math.random() - 0.5) * 40}px`;
+    heartsBox.append(c);
+    setTimeout(() => c.remove(), 3200);
+  }, 400 + i * 900));
 
-  await sleep(5000);
+  await sleep(T.closed);
   clearInterval(heartTimer);
   root.classList.remove('dp-closed', 'dp-signon');
   root.classList.add('dp-open', 'dp-baby-on');
@@ -1958,6 +2028,7 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
   await sleep(600);
   root.hidden = true;
   root.className = '';
+  media?.pause();
   heartsBox.replaceChildren();
   dpActive = false;
   sceneLock--;

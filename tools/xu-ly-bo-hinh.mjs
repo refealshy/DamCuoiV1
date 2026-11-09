@@ -39,8 +39,9 @@ const IMG_EXT = ['.png', '.jpg', '.jpeg', '.webp'];
 const VID_EXT = ['.mp4', '.mov', '.webm', '.mkv'];
 
 // Chiều cao xuất ra (px). Ảnh xuất gấp đôi cỡ hiển thị cho nét; video nhỏ hơn cho nhẹ máy.
+// hd: video thêm một bản nét hơn (vd cảnh động phòng tràn màn hình hiện cặp đôi bế nhau cao 900px).
 const GROUPS = {
-  couple: { test: n => /^couple_[a-z0-9]+$/.test(n) && n !== 'couple_ref', imgH: 900, vidH: 600 },
+  couple: { test: n => /^couple_[a-z0-9]+$/.test(n) && n !== 'couple_ref', imgH: 900, vidH: 600, hd: { names: ['couple_carry'], h: 900 } },
   mc: { test: n => /^mc_[a-z0-9]+$/.test(n), imgH: 560, vidH: 400 },
   walker_m: { test: n => n === 'walker_m', imgH: 640, vidH: 440 },
   walker_f: { test: n => n === 'walker_f', imgH: 640, vidH: 440 },
@@ -351,6 +352,11 @@ async function main() {
         const out = `${m.name}.webm`;
         await makeVideo(m.file, crop, g.vidH, path.join(OUT, out), m.key);
         entry.video = out;
+        if (g.hd?.names.includes(m.name)) {
+          const hd = `${m.name}_hd.webm`;
+          await makeVideo(m.file, crop, g.hd.h, path.join(OUT, hd), m.key);
+          entry.videoHD = hd;
+        }
       }
       const t = m.key.d === null ? 'ngưỡng mặc định' : `nền ${m.key.d}, ngưỡng ${m.key.t1}/${m.key.t2}`;
       console.log(`✓ ${gid}: ${m.name}${m.kind === 'vid' ? ' (video)' : ''} · ${t}`);

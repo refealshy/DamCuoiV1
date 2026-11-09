@@ -1707,6 +1707,160 @@ html, body {
   transform: translateX(-50%) translateY(0) scale(1.05);
 }
 
+/* ----- Động phòng tràn màn hình: bộ hình có ảnh phòng tân hôn (data-room="photo") -----
+   Phòng phủ kín khung 1080x1920, cặp đôi bế nhau cao 900px ở giữa (vùng TikTok không che),
+   bước vào phòng rồi hai cánh cửa lớn đóng lại phía trước. */
+#dong-phong[data-room="photo"] .dp-dim,
+#dong-phong[data-room="photo"] .dp-room::before,
+#dong-phong[data-room="photo"] .dp-roof,
+#dong-phong[data-room="photo"] .dp-lantern,
+#dong-phong[data-room="photo"] .dp-candles { display: none; }
+#dong-phong[data-room="photo"] .dp-title {
+  top: 255px;
+  font-size: 58px;
+  z-index: 5;
+}
+#dong-phong[data-room="photo"] .dp-room {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#dong-phong[data-room="photo"].dp-show .dp-room {
+  opacity: 1;
+  transform: none;
+}
+#dong-phong[data-room="photo"] .dp-doorway {
+  inset: 0;
+  height: auto;
+  border: 0;
+  box-shadow: none;
+  background: #1a0306;
+  perspective: 2600px;
+}
+/* Phòng phóng chậm cho có chiều sâu */
+#dong-phong[data-room="photo"] .dp-inside {
+  transform: scale(1.02);
+  transition: transform 11s linear;
+}
+#dong-phong[data-room="photo"].dp-show .dp-inside { transform: scale(1.1); }
+/* Tối nhẹ mép trên/dưới cho chữ dễ đọc (thay biểu tượng 💞 của kiểu cũ) */
+#dong-phong[data-room="photo"] .dp-inside::after {
+  content: '';
+  inset: 0;
+  transform: none;
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(30, 0, 8, 0.72) 0%, rgba(30, 0, 8, 0) 30%, rgba(30, 0, 8, 0) 72%, rgba(30, 0, 8, 0.6) 100%);
+}
+#dong-phong[data-room="photo"] .dp-couple {
+  top: 600px;
+  bottom: auto;
+  height: 900px;
+  width: calc(900px * var(--dp-aspect, 0.5625));
+  background: none;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) translateY(80px) scale(0.96);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.6s ease;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.55));
+}
+#dong-phong[data-room="photo"].dp-show .dp-couple {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+/* Bế nhau bước vào phòng, nhún theo bước chân; không mờ đi vì cửa đóng ngay phía trước */
+#dong-phong[data-room="photo"].dp-enter .dp-couple {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-110px) scale(0.8);
+  transition: transform 1.6s ease-in-out, opacity 0.6s ease;
+}
+#dong-phong[data-room="photo"].dp-enter:not(.dp-open) .dp-media {
+  animation: dp-step 0.4s ease-in-out 4 alternate;
+}
+@keyframes dp-step {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+#dong-phong[data-room="photo"].dp-open .dp-couple {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  transition: transform 1.2s ease-out, opacity 0.6s ease;
+}
+.dp-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+#dong-phong[data-room="photo"] .dp-door {
+  border: 12px solid #c99a3a;
+  background:
+    radial-gradient(ellipse at 50% 46%, rgba(255, 214, 130, 0.22), transparent 58%),
+    repeating-linear-gradient(0deg, rgba(255, 215, 120, 0.13) 0 4px, transparent 4px 64px),
+    repeating-linear-gradient(90deg, rgba(255, 215, 120, 0.13) 0 4px, transparent 4px 64px),
+    linear-gradient(90deg, #6d0715, #b5162e 50%, #6d0715);
+  box-shadow: inset 0 0 0 30px rgba(80, 4, 14, 0.45), inset 0 0 90px rgba(0, 0, 0, 0.55);
+}
+#dong-phong[data-room="photo"] .dp-hy { font-size: 300px; }
+#dong-phong[data-room="photo"] .dp-sign {
+  top: 30%;
+  padding: 14px 28px;
+  font-size: 40px;
+  border-width: 4px;
+  border-radius: 16px;
+}
+#dong-phong[data-room="photo"] .dp-names {
+  top: 360px;
+  bottom: auto;
+  padding: 10px 30px;
+  border-radius: 30px;
+  font-size: 34px;
+}
+#dong-phong[data-room="photo"] .dp-heart {
+  top: 1180px;
+  font-size: 58px;
+}
+#dong-phong[data-room="photo"] .dp-baby {
+  top: 450px;
+  padding: 14px 32px;
+  font-size: 38px;
+}
+/* Lời trêu của khách hiện trên cánh cửa (khách bị phòng che) */
+.dp-chant {
+  position: absolute;
+  z-index: 4;
+  padding: 10px 20px;
+  border-radius: 22px;
+  background: rgba(255, 250, 240, 0.96);
+  border: 3px solid #ffd36b;
+  color: #8e0b22;
+  font-size: 28px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  animation: dp-chant 3.2s ease forwards;
+}
+.dp-chant b {
+  display: block;
+  font-size: 20px;
+  font-weight: 900;
+  color: #b0124a;
+}
+@keyframes dp-chant {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  12% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; }
+  100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
+}
+/* Phụ đề MC nổi trên phòng để vẫn đọc được lời dẫn */
+#dong-phong[data-room="photo"]:not([hidden]) ~ .mc-caption { z-index: 72; }
+
 /* PHỤ ĐỀ LỜI MC */
 .mc-caption {
   position: absolute;
