@@ -4,16 +4,28 @@
 // Cách dùng (từ thư mục DamCuoiV1):
 //   node tools/xu-ly-bo-hinh.mjs                       # đọc bo-hinh-moi/, ghi app/public/themes/ban-thuc-3d/
 //   node tools/xu-ly-bo-hinh.mjs <thư_mục_nguồn> <mã_bộ_hình> "<Tên hiển thị>"
+//   node tools/xu-ly-bo-hinh.mjs --chi=bride,groom        # chỉ xử lý vài nhóm, giữ nguyên phần còn lại
 //
 // Tên file nguồn (ảnh .png/.jpg/.webp, video .mp4/.mov/.webm):
 //   bg_<mã>.jpg              phông 9:16 (vd bg_red_gold.jpg)
 //   bg_<tên>.mp4             phông động (vd bg_party.mp4: chế độ tiệc khi cả rạp quẩy, pháo hoa).
 //                            Tự gắn vào phông giống khung đầu nhất; đặt bg_<mã phông>_party.mp4 để chỉ định rõ.
+//   bg_<mã phông>_<hiệu ứng> hiệu ứng riêng của phông khi có quà đặc biệt (vd bg_champagne_toast.mp4,
+//                            bg_pink_white_love.mp4); khung đầu và khung cuối là chính phông đó.
+//   bg_<phông>_to_<phông>    video chuyển cảnh giữa hai phông (vd bg_red_gold_to_pink_white.mp4),
+//                            khung đầu là phông đi, khung cuối là phông đến.
+//                            Phông tự đổi theo diễn biến: chờ đôi và làm lễ = red_gold, đủ đôi = pink_white,
+//                            vừa thành hôn = champagne (thiếu video chuyển cảnh thì overlay tự mờ dần sang).
 //   dongphong_room.jpg       phông phòng tân hôn (tùy chọn)
 //   couple_<động tác>        cặp đôi: idle (bắt buộc), kiss, heart, wave, bow, và tùy chọn:
 //                            ring (trao nhẫn), cake (cắt bánh), cheers (cụng ly), dance (khiêu vũ),
 //                            carry (bế vào động phòng), bouquet (tung hoa), shock hoặc cancel (bị phá đám),
 //                            thanks (cảm ơn quà), petal (mưa hoa), fireworks (pháo hoa). couple_ref bị bỏ qua.
+//   bride_wait, groom_wait   cô dâu / chú rể đứng riêng chờ ghép đôi (ảnh, thêm video cùng tên nếu có).
+//                            Sửa từ ảnh couple_idle: giữ nguyên vị trí và cỡ người, xóa người kia.
+//   chinh-video.json         (tùy chọn) chỉnh riêng từng video, vd {"groom_wait": {"diVe": true}}.
+//                            diVe: video có khung cuối khác khung đầu (lặp lại bị giật) -> phát xuôi rồi phát ngược
+//                            cho liền mạch, thời lượng gấp đôi.
 //   mc_<động tác>            MC: idle, talk
 //   walker_m, walker_f       người đi lên thảm đỏ (mặc định nhân vật hướng mặt sang phải)
 //   guest_m<số>, guest_f<số> khách nam, khách nữ
@@ -30,9 +42,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = path.resolve(process.argv[2] || path.join(ROOT, 'bo-hinh-moi'));
-const THEME_ID = (process.argv[3] || 'ban-thuc-3d').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'ban-thuc-3d';
-const THEME_NAME = process.argv[4] || 'Bán thực 3D';
+// --chi=bride,groom : chỉ xử lý các nhóm này, giữ nguyên phần còn lại của theme.json (nhanh, không mã hóa lại cả bộ)
+const ONLY = (process.argv.find(a => a.startsWith('--chi='))?.slice(6) || '').split(',').map(s => s.trim()).filter(Boolean);
+const ARGV = process.argv.slice(2).filter(a => !a.startsWith('--'));
+const SRC = path.resolve(ARGV[0] || path.join(ROOT, 'bo-hinh-moi'));
+const THEME_ID = (ARGV[1] || 'ban-thuc-3d').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'ban-thuc-3d';
+const THEME_NAME = ARGV[2] || 'Bán thực 3D';
 const OUT = path.join(ROOT, 'app', 'public', 'themes', THEME_ID);
 
 const IMG_EXT = ['.png', '.jpg', '.jpeg', '.webp'];
@@ -42,6 +57,10 @@ const VID_EXT = ['.mp4', '.mov', '.webm', '.mkv'];
 // hd: video thêm một bản nét hơn (vd cảnh động phòng tràn màn hình hiện cặp đôi bế nhau cao 900px).
 const GROUPS = {
   couple: { test: n => /^couple_[a-z0-9]+$/.test(n) && n !== 'couple_ref', imgH: 900, vidH: 600, hd: { names: ['couple_carry'], h: 900 } },
+  // Cô dâu, chú rể đứng riêng chờ ghép đôi: cắt cùng khung với cặp đôi để mỗi người đứng đúng chỗ của mình
+  // fit: chiều cao người so với chú rể trong couple_idle (AI hay vẽ người to/nhỏ khác ảnh mẫu -> tự co giãn cho khớp)
+  bride: { test: n => /^bride_[a-z0-9]+$/.test(n), imgH: 900, vidH: 600, cropAs: 'couple', fit: 0.95 },
+  groom: { test: n => /^groom_[a-z0-9]+$/.test(n), imgH: 900, vidH: 600, cropAs: 'couple', fit: 1 },
   mc: { test: n => /^mc_[a-z0-9]+$/.test(n), imgH: 560, vidH: 400 },
   walker_m: { test: n => n === 'walker_m', imgH: 640, vidH: 440 },
   walker_f: { test: n => n === 'walker_f', imgH: 640, vidH: 440 },
@@ -49,7 +68,7 @@ const GROUPS = {
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
-const DISPLAY = { couple: 430, mc: 270, guest: 360, walker: 380 };
+const DISPLAY = { couple: 460, mc: 330, guest: 360, walker: 380 }; // cặp đôi to, nổi nhất màn hình
 
 const BG_NAMES = {
   red_gold: 'Đỏ vàng', pink_white: 'Hồng trắng', pink_garden: 'Hồng vườn hoa',
@@ -67,6 +86,10 @@ const T2_MAX = 66;
 const FEATHER = 0.035; // làm mờ dần phần bị cắt sát mép trái/phải (tỷ lệ chiều rộng khung cắt)
 
 const LOOP_FADE = 8; // số khung hình trộn đuôi vào đầu để vòng lặp liền mạch
+// Chỉnh riêng từng video (file chinh-video.json trong thư mục nguồn), khóa là tên file không đuôi
+const VIDEO_FIX = (() => {
+  try { return JSON.parse(fs.readFileSync(path.join(SRC, 'chinh-video.json'), 'utf8')); } catch { return {}; }
+})();
 const FPS = 24;
 
 function sh(cmd, args) {
@@ -155,6 +178,36 @@ async function detectBox(file, isVideo, k) {
   return { x1: x1 / W, x2: (x2 + 1) / W, y1: y1 / H, y2: (y2 + 1) / H };
 }
 
+// Màu nền xanh của file (lấy ở mép trái, ngang 30% chiều cao) để vá phần khung mới lộ ra khi co ảnh
+function bgColor(file) {
+  const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, '-vf', 'crop=iw*0.02:ih*0.04:iw*0.01:ih*0.3,scale=1:1:flags=area,format=rgb24',
+    '-frames:v', '1', '-f', 'rawvideo', 'pipe:1']);
+  const b = r.stdout || Buffer.alloc(3);
+  return '0x' + [b[0], b[1], b[2]].map(v => (v || 0).toString(16).padStart(2, '0')).join('');
+}
+
+// Ảnh/video đứng riêng: co giãn để người cao bằng trong ảnh cặp đôi (ratio so với khung couple_idle)
+// và chân chạm đúng đường chân của cặp đôi; giữ nguyên vị trí ngang của người.
+async function fitToCouple(m, coupleBox, ratio, tmpDir) {
+  const box = await detectBox(m.file, m.kind === 'vid', m.key);
+  const s = ((coupleBox.y2 - coupleBox.y1) * ratio) / (box.y2 - box.y1);
+  const dy = coupleBox.y2 - box.y2;
+  if (Math.abs(s - 1) < 0.015 && Math.abs(dy) < 0.006) return m.file;
+  const { w, h } = probe(m.file);
+  const cx = (box.x1 + box.x2) / 2;
+  const sw = even(w * s);
+  const sh2 = even(h * s);
+  const ox = Math.round(cx * w - cx * sw);
+  const oy = Math.round(coupleBox.y2 * h - box.y2 * sh2);
+  const isVid = m.kind === 'vid';
+  const out = path.join(tmpDir, `${m.name}_fit.${isVid ? 'mp4' : 'png'}`);
+  const fc = `color=c=${bgColor(m.file)}:s=${w}x${h}${isVid ? `:r=${FPS}` : ''}[bg];[0:v]${labelMask},scale=${sw}:${sh2}:flags=lanczos[p];[bg][p]overlay=${ox}:${oy}:shortest=1`;
+  await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', m.file, '-filter_complex', fc,
+    ...(isVid ? ['-an', '-c:v', 'libx264', '-crf', '12', '-pix_fmt', 'yuv420p'] : ['-frames:v', '1']), out]);
+  console.log(`  ${m.name}: co ${Math.round(s * 100)}%, dời chân ${Math.round(dy * 100)}% cho khớp cặp đôi`);
+  return out;
+}
+
 function unionBox(boxes) {
   const b = boxes.reduce((u, v) => ({
     x1: Math.min(u.x1, v.x1), x2: Math.max(u.x2, v.x2), y1: Math.min(u.y1, v.y1), y2: Math.max(u.y2, v.y2)
@@ -177,12 +230,15 @@ async function makeStill(file, crop, outH, outFile, k) {
     '-frames:v', '1', '-c:v', 'libwebp', '-quality', '90', '-compression_level', '6', outFile]);
 }
 
-async function makeVideo(file, crop, outH, outFile, key) {
+async function makeVideo(file, crop, outH, outFile, key, { diVe = false } = {}) {
   const { dur } = probe(file);
   const n = Math.floor(dur * FPS);
   const k = LOOP_FADE;
   const filters = [];
-  if (n > 3 * k) {
+  if (diVe) {
+    // Phát xuôi rồi phát ngược: khung cuối của vòng trùng khung đầu, không cần trộn đuôi vào đầu
+    filters.push(`[0:v]fps=${FPS},split[f][r]`, '[r]reverse[rr]', '[f][rr]concat=n=2:v=1:a=0[lp]');
+  } else if (n > 3 * k) {
     // Trộn k khung cuối vào k khung đầu: chỗ nối vòng lặp không còn giật
     filters.push(`[0:v]fps=${FPS},split[a][b]`,
       `[a]trim=start_frame=${k},setpts=PTS-STARTPTS[s1]`,
@@ -283,15 +339,19 @@ async function main() {
     // Co dãn khách theo hàng ghế: [hàng sau cùng, hàng trước nhất]
     guestScale: [0.66, 0.97],
     backgrounds: [],
+    scenes: null,
     dongphong: null,
     couple: null,
+    solo: null,
     mc: null,
     walker: null,
     guests: null
   };
 
-  // Phông
-  const bgs = items.filter(i => i.kind === 'img' && /^bg_[a-z0-9_]+$/.test(i.name));
+  // Phông (bỏ qua khi chỉ xử lý vài nhóm bằng --chi)
+  const doBg = !ONLY.length;
+  if (ONLY.length) console.log(`Chỉ xử lý: ${ONLY.join(', ')} (giữ nguyên phần còn lại của theme.json)\n`);
+  const bgs = items.filter(i => doBg && i.kind === 'img' && /^bg_[a-z0-9_]+$/.test(i.name));
   await pool(bgs, cpu, async bg => {
     const id = bg.name.slice(3);
     await makeBackground(bg.file, path.join(OUT, `bg_${id}.jpg`), path.join(OUT, `bg_${id}_thumb.jpg`));
@@ -301,7 +361,7 @@ async function main() {
     .map(id => ({ id, name: BG_NAMES[id] || id.replace(/_/g, ' '), src: `bg_${id}.jpg`, thumb: `bg_${id}_thumb.jpg` }));
   // Phông động: bg_<mã phông>_<hiệu ứng> gắn thẳng; bg_<hiệu ứng> gắn vào phông giống khung đầu nhất
   manifest.effects = {};
-  for (const v of items.filter(i => i.kind === 'vid' && /^bg_[a-z0-9_]+$/.test(i.name))) {
+  for (const v of items.filter(i => doBg && i.kind === 'vid' && /^bg_[a-z0-9_]+$/.test(i.name))) {
     const out = `${v.name}.webm`;
     await makeBackgroundVideo(v.file, path.join(OUT, out));
     let target = manifest.backgrounds.find(b => v.name.startsWith(`bg_${b.id}_`));
@@ -319,8 +379,17 @@ async function main() {
       console.log(`✓ phông động ${fx} (dùng cho mọi phông)`);
     }
   }
+  // Phông theo diễn biến hôn lễ: chờ đôi, đủ đôi (sắp cưới), đang làm lễ, vừa thành hôn
+  // Nền hồng trắng cho lúc chờ và lúc đủ đôi: các bảng hướng dẫn nền đỏ sẫm nổi rõ hơn hẳn so với nền đỏ vàng
+  const SCENE_BG = { waiting: ['pink_white', 'pink_garden', 'red_gold'], engaged: ['pink_white', 'pink_garden'], ceremony: ['red_gold'], married: ['champagne', 'gold'] };
+  const scenes = Object.fromEntries(Object.entries(SCENE_BG)
+    .map(([k, ids]) => [k, ids.find(id => manifest.backgrounds.some(b => b.id === id))]).filter(([, id]) => id));
+  if (scenes.waiting && new Set(Object.values(scenes)).size > 1) {
+    manifest.scenes = scenes;
+    console.log(`✓ phông theo diễn biến: ${Object.entries(scenes).map(([k, id]) => `${k}=${id}`).join(', ')}`);
+  }
 
-  const dp = items.find(i => i.kind === 'img' && i.name === 'dongphong_room');
+  const dp = doBg && items.find(i => i.kind === 'img' && i.name === 'dongphong_room');
   if (dp) {
     await makeBackground(dp.file, path.join(OUT, 'dongphong.jpg'));
     manifest.dongphong = 'dongphong.jpg';
@@ -329,12 +398,34 @@ async function main() {
 
   // Nhân vật theo nhóm
   const groupOut = {};
+  const needCrop = new Set(ONLY.map(id => GROUPS[id]?.cropAs).filter(Boolean));
+  let coupleBox = null;
+  let tmpDir = null;
   for (const [gid, g] of Object.entries(GROUPS)) {
+    const wanted = !ONLY.length || ONLY.includes(gid);
+    if (!wanted && !needCrop.has(gid)) continue;
     const members = items.filter(i => g.test(i.name));
     if (!members.length) continue;
     for (const m of members) m.key = estimateKey(m.file, m.kind === 'vid');
-    const boxes = await pool(members, cpu, m => detectBox(m.file, m.kind === 'vid', m.key));
-    const crop = unionBox(boxes);
+    if (!wanted) {
+      // Chỉ cần khung cắt của nhóm này cho nhóm khác dùng chung (không mã hóa lại)
+      groupOut[gid] = { crop: unionBox(await pool(members, cpu, m => detectBox(m.file, m.kind === 'vid', m.key))), assets: {} };
+      continue;
+    }
+    if (g.fit) {
+      const idle = items.find(i => i.kind === 'img' && i.name === 'couple_idle');
+      if (idle && !coupleBox) coupleBox = await detectBox(idle.file, false, estimateKey(idle.file, false));
+      if (coupleBox) {
+        tmpDir ||= fs.mkdtempSync(path.join(os.tmpdir(), 'xu-ly-bo-hinh-'));
+        for (const m of members) {
+          m.file = await fitToCouple(m, coupleBox, g.fit, tmpDir);
+          m.key = estimateKey(m.file, m.kind === 'vid');
+        }
+      }
+    }
+    const crop = g.cropAs && groupOut[g.cropAs]
+      ? groupOut[g.cropAs].crop
+      : unionBox(await pool(members, cpu, m => detectBox(m.file, m.kind === 'vid', m.key)));
     const ref = probe(members.find(m => m.kind === 'img')?.file || members[0].file);
     const aspect = (crop.w * ref.w) / (crop.h * ref.h);
     const assets = {};
@@ -350,11 +441,11 @@ async function main() {
         entry.anim = out;
       } else if (g.vidH) {
         const out = `${m.name}.webm`;
-        await makeVideo(m.file, crop, g.vidH, path.join(OUT, out), m.key);
+        await makeVideo(m.file, crop, g.vidH, path.join(OUT, out), m.key, VIDEO_FIX[m.name]);
         entry.video = out;
         if (g.hd?.names.includes(m.name)) {
           const hd = `${m.name}_hd.webm`;
-          await makeVideo(m.file, crop, g.hd.h, path.join(OUT, hd), m.key);
+          await makeVideo(m.file, crop, g.hd.h, path.join(OUT, hd), m.key, VIDEO_FIX[m.name]);
           entry.videoHD = hd;
         }
       }
@@ -374,6 +465,8 @@ async function main() {
     return { aspect: g.aspect, states };
   };
   manifest.couple = pickStates('couple', 'couple_');
+  const solo = { bride: pickStates('bride', 'bride_'), groom: pickStates('groom', 'groom_') };
+  manifest.solo = solo.bride && solo.groom ? solo : null;
   manifest.mc = pickStates('mc', 'mc_');
   const walker = {};
   for (const [gid, key] of [['walker_m', 'male'], ['walker_f', 'female']]) {
@@ -401,6 +494,21 @@ async function main() {
     };
   }
 
+  if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true });
+  if (ONLY.length) {
+    // Ghép vào theme.json đang có: chỉ thay phần của các nhóm vừa xử lý
+    const file = path.join(OUT, 'theme.json');
+    const old = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (ONLY.includes('couple')) old.couple = manifest.couple;
+    if (ONLY.includes('mc')) old.mc = manifest.mc;
+    for (const r of ['bride', 'groom']) {
+      if (ONLY.includes(r) && solo[r]) old.solo = { ...(old.solo || {}), [r]: solo[r] };
+    }
+    old.version = Date.now();
+    fs.writeFileSync(file, JSON.stringify(old, null, 2));
+    console.log(`\nXong sau ${Math.round((Date.now() - t0) / 1000)} giây. Cập nhật ${path.relative(ROOT, file)}`);
+    return;
+  }
   if (!manifest.couple?.states?.idle) console.warn('⚠ Thiếu couple_idle: overlay sẽ dùng cặp đôi của bộ Cổ điển.');
   fs.writeFileSync(path.join(OUT, 'theme.json'), JSON.stringify(manifest, null, 2));
   console.log(`\nXong sau ${Math.round((Date.now() - t0) / 1000)} giây. Ghi ${path.relative(ROOT, path.join(OUT, 'theme.json'))}`);

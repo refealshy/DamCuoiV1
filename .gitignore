@@ -18,3 +18,10 @@ bo-hinh-moi/
 
 # Trạng thái khi chạy (tên, avatar người xem) — server tự tạo khi chưa có
 app/wedding_state.json
+
+# Giọng MC nam chạy trên máy: môi trường Python, mô hình tải về, file nghe thử
+tools/giong-nam/venv/
+tools/giong-nam/model/
+tools/giong-nam/mau/
+tools/giong-nam/__pycache__/
+tools/giong-nam/may_chu.log

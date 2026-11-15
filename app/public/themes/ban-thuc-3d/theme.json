@@ -1,10 +1,10 @@
 {
   "id": "ban-thuc-3d",
   "name": "Bán thực 3D",
-  "version": 1794182175889,
+  "version": 1794404925607,
   "display": {
-    "couple": 430,
-    "mc": 270,
+    "couple": 460,
+    "mc": 330,
     "guest": 360,
     "walker": 380
   },
@@ -24,22 +24,38 @@
       "src": "bg_red_gold.jpg",
       "thumb": "bg_red_gold_thumb.jpg",
       "fx": {
-        "party": "bg_party.webm"
+        "party": "bg_party.webm",
+        "to_champagne": "bg_red_gold_to_champagne.webm",
+        "to_pink_white": "bg_red_gold_to_pink_white.webm"
       }
     },
     {
       "id": "champagne",
       "name": "Champagne",
       "src": "bg_champagne.jpg",
-      "thumb": "bg_champagne_thumb.jpg"
+      "thumb": "bg_champagne_thumb.jpg",
+      "fx": {
+        "toast": "bg_champagne_toast.webm",
+        "to_red_gold": "bg_champagne_to_red_gold.webm"
+      }
     },
     {
       "id": "pink_white",
       "name": "Hồng trắng",
       "src": "bg_pink_white.jpg",
-      "thumb": "bg_pink_white_thumb.jpg"
+      "thumb": "bg_pink_white_thumb.jpg",
+      "fx": {
+        "love": "bg_pink_white_love.webm",
+        "to_red_gold": "bg_pink_white_to_red_gold.webm"
+      }
     }
   ],
+  "scenes": {
+    "waiting": "pink_white",
+    "engaged": "pink_white",
+    "ceremony": "red_gold",
+    "married": "champagne"
+  },
   "dongphong": "dongphong.jpg",
   "couple": {
     "aspect": 0.5625,
@@ -138,5 +154,25 @@
     "dance": {},
     "idle": {}
   },
-  "effects": {}
+  "effects": {},
+  "solo": {
+    "groom": {
+      "aspect": 0.5625,
+      "states": {
+        "wait": {
+          "img": "groom_wait.webp",
+          "video": "groom_wait.webm"
+        }
+      }
+    },
+    "bride": {
+      "aspect": 0.5625,
+      "states": {
+        "wait": {
+          "img": "bride_wait.webp",
+          "video": "bride_wait.webm"
+        }
+      }
+    }
+  }
 }

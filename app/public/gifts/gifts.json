@@ -1,0 +1,3573 @@
+{
+ "version": 1794315800551,
+ "region": "VN",
+ "source": "https://streamtoearn.io/gifts",
+ "size": 96,
+ "gifts": [
+  {
+   "name": "A Shard of Hope",
+   "file": "a-shard-of-hope.webp",
+   "coins": 1
+  },
+  {
+   "name": "Birthday Cake",
+   "file": "birthday-cake.webp",
+   "coins": 1
+  },
+  {
+   "name": "Blow a kiss",
+   "file": "blow-a-kiss.webp",
+   "coins": 1
+  },
+  {
+   "name": "Blue Lightning",
+   "file": "blue-lightning.webp",
+   "coins": 1
+  },
+  {
+   "name": "Cake Slice",
+   "file": "cake-slice.webp",
+   "coins": 1,
+   "vi": [
+    "lát bánh kem"
+   ]
+  },
+  {
+   "name": "Club Cheers",
+   "file": "club-cheers.webp",
+   "coins": 1
+  },
+  {
+   "name": "coldy",
+   "file": "coldy.webp",
+   "coins": 1
+  },
+  {
+   "name": "Community Gift",
+   "file": "community-gift.webp",
+   "coins": 1
+  },
+  {
+   "name": "Community Heart",
+   "file": "community-heart.webp",
+   "coins": 1
+  },
+  {
+   "name": "Eye for an Eye",
+   "file": "eye-for-an-eye.webp",
+   "coins": 1
+  },
+  {
+   "name": "Freestyle",
+   "file": "freestyle.webp",
+   "coins": 1
+  },
+  {
+   "name": "GG",
+   "file": "gg.webp",
+   "coins": 1
+  },
+  {
+   "name": "Glow Stick",
+   "file": "glow-stick.webp",
+   "coins": 1
+  },
+  {
+   "name": "Go Popular",
+   "file": "go-popular.webp",
+   "coins": 1
+  },
+  {
+   "name": "Halloween mood",
+   "file": "halloween-mood.webp",
+   "coins": 1
+  },
+  {
+   "name": "Heart",
+   "file": "heart.webp",
+   "coins": 1
+  },
+  {
+   "name": "Heart Me",
+   "file": "heart-me.webp",
+   "coins": 1,
+   "vi": [
+    "thả tim"
+   ]
+  },
+  {
+   "name": "Ice Cream Cone",
+   "file": "ice-cream-cone.webp",
+   "coins": 1,
+   "vi": [
+    "kem ốc quế"
+   ]
+  },
+  {
+   "name": "Little Acorn",
+   "file": "little-acorn.webp",
+   "coins": 1
+  },
+  {
+   "name": "Love KSA",
+   "file": "love-ksa.webp",
+   "coins": 1
+  },
+  {
+   "name": "Love you",
+   "file": "love-you.webp",
+   "coins": 1
+  },
+  {
+   "name": "Love you so much",
+   "file": "love-you-so-much.webp",
+   "coins": 1
+  },
+  {
+   "name": "LUVE Cheer",
+   "file": "luve-cheer.webp",
+   "coins": 1
+  },
+  {
+   "name": "LUVX Cheer",
+   "file": "luvx-cheer.webp",
+   "coins": 1
+  },
+  {
+   "name": "Mantap",
+   "file": "mantap.webp",
+   "coins": 1
+  },
+  {
+   "name": "Mate Melody",
+   "file": "mate-melody.webp",
+   "coins": 1
+  },
+  {
+   "name": "Mirwas Beat",
+   "file": "mirwas-beat.webp",
+   "coins": 1
+  },
+  {
+   "name": "Music Album",
+   "file": "music-album.webp",
+   "coins": 1
+  },
+  {
+   "name": "Music on Stage",
+   "file": "music-on-stage.webp",
+   "coins": 1
+  },
+  {
+   "name": "My First Rose",
+   "file": "my-first-rose.webp",
+   "coins": 1
+  },
+  {
+   "name": "Oldies",
+   "file": "oldies.webp",
+   "coins": 1
+  },
+  {
+   "name": "Palm of Protection",
+   "file": "palm-of-protection.webp",
+   "coins": 1
+  },
+  {
+   "name": "Pop",
+   "file": "pop.webp",
+   "coins": 1
+  },
+  {
+   "name": "Red Lightning",
+   "file": "red-lightning.webp",
+   "coins": 1
+  },
+  {
+   "name": "Rose",
+   "file": "rose.webp",
+   "coins": 1,
+   "vi": [
+    "hoa hồng"
+   ]
+  },
+  {
+   "name": "SEA Shell",
+   "file": "sea-shell.webp",
+   "coins": 1
+  },
+  {
+   "name": "Starfish",
+   "file": "starfish.webp",
+   "coins": 1
+  },
+  {
+   "name": "Thumbs Up",
+   "file": "thumbs-up.webp",
+   "coins": 1
+  },
+  {
+   "name": "TikTok",
+   "file": "tiktok.webp",
+   "coins": 1
+  },
+  {
+   "name": "Treasure Clover",
+   "file": "treasure-clover.webp",
+   "coins": 1,
+   "vi": [
+    "cỏ bốn lá",
+    "cỏ 4 lá"
+   ]
+  },
+  {
+   "name": "Welcome Dallah",
+   "file": "welcome-dallah.webp",
+   "coins": 1
+  },
+  {
+   "name": "Wink Charm",
+   "file": "wink-charm.webp",
+   "coins": 1
+  },
+  {
+   "name": "Wink wink",
+   "file": "wink-wink.webp",
+   "coins": 1
+  },
+  {
+   "name": "Yellow Lightning",
+   "file": "yellow-lightning.webp",
+   "coins": 1
+  },
+  {
+   "name": "You're awesome",
+   "file": "you-re-awesome.webp",
+   "coins": 1
+  },
+  {
+   "name": "Team Bracelet",
+   "file": "team-bracelet.webp",
+   "coins": 2
+  },
+  {
+   "name": "Brown Paw",
+   "file": "brown-paw.webp",
+   "coins": 5
+  },
+  {
+   "name": "Encore Ticket",
+   "file": "encore-ticket.webp",
+   "coins": 5
+  },
+  {
+   "name": "Finger Heart",
+   "file": "finger-heart.webp",
+   "coins": 5,
+   "vi": [
+    "bắn tim"
+   ]
+  },
+  {
+   "name": "Ice cream",
+   "file": "ice-cream.webp",
+   "coins": 5
+  },
+  {
+   "name": "Love in Scent",
+   "file": "love-in-scent.webp",
+   "coins": 5
+  },
+  {
+   "name": "Name shoutout",
+   "file": "name-shoutout.webp",
+   "coins": 5
+  },
+  {
+   "name": "Okay",
+   "file": "okay.webp",
+   "coins": 5
+  },
+  {
+   "name": "Overreact",
+   "file": "overreact.webp",
+   "coins": 5
+  },
+  {
+   "name": "Peach",
+   "file": "peach.webp",
+   "coins": 5
+  },
+  {
+   "name": "Spinning Soccer",
+   "file": "spinning-soccer.webp",
+   "coins": 5
+  },
+  {
+   "name": "Divine Fingers",
+   "file": "divine-fingers.webp",
+   "coins": 6
+  },
+  {
+   "name": "Cheer You Up",
+   "file": "cheer-you-up.webp",
+   "coins": 9
+  },
+  {
+   "name": "Club Power",
+   "file": "club-power.webp",
+   "coins": 9
+  },
+  {
+   "name": "Super Popular",
+   "file": "super-popular.webp",
+   "coins": 9
+  },
+  {
+   "name": "Banana Peel",
+   "file": "banana-peel.webp",
+   "coins": 10
+  },
+  {
+   "name": "Black Paw",
+   "file": "black-paw.webp",
+   "coins": 10
+  },
+  {
+   "name": "Courage potion",
+   "file": "courage-potion.webp",
+   "coins": 10
+  },
+  {
+   "name": "DJ Vinyl",
+   "file": "dj-vinyl.webp",
+   "coins": 10
+  },
+  {
+   "name": "Drip Brewing",
+   "file": "drip-brewing.webp",
+   "coins": 10
+  },
+  {
+   "name": "Friendship Necklace",
+   "file": "friendship-necklace.webp",
+   "coins": 10
+  },
+  {
+   "name": "Heart Gaze",
+   "file": "heart-gaze.webp",
+   "coins": 10
+  },
+  {
+   "name": "I Like What I See",
+   "file": "i-like-what-i-see.webp",
+   "coins": 10
+  },
+  {
+   "name": "I'm Yours",
+   "file": "i-m-yours.webp",
+   "coins": 10
+  },
+  {
+   "name": "Journey Pass",
+   "file": "journey-pass.webp",
+   "coins": 10
+  },
+  {
+   "name": "LIVE Ranking Ticket",
+   "file": "live-ranking-ticket.webp",
+   "coins": 10
+  },
+  {
+   "name": "Lucky Pig",
+   "file": "lucky-pig.webp",
+   "coins": 10,
+   "vi": [
+    "chú heo may mắn",
+    "bé heo",
+    "heo"
+   ]
+  },
+  {
+   "name": "Magic Feather",
+   "file": "magic-feather.webp",
+   "coins": 10
+  },
+  {
+   "name": "Rosa",
+   "file": "rosa.webp",
+   "coins": 10
+  },
+  {
+   "name": "Shamrock",
+   "file": "shamrock.webp",
+   "coins": 10
+  },
+  {
+   "name": "Slow motion",
+   "file": "slow-motion.webp",
+   "coins": 10
+  },
+  {
+   "name": "Songs of LIVE",
+   "file": "songs-of-live.webp",
+   "coins": 10
+  },
+  {
+   "name": "Squirrel",
+   "file": "squirrel.webp",
+   "coins": 10
+  },
+  {
+   "name": "Style Me Up",
+   "file": "style-me-up.webp",
+   "coins": 10
+  },
+  {
+   "name": "Tiny Diny",
+   "file": "tiny-diny.webp",
+   "coins": 10
+  },
+  {
+   "name": "Treasure's Key",
+   "file": "treasure-s-key.webp",
+   "coins": 10
+  },
+  {
+   "name": "Bravo!",
+   "file": "bravo.webp",
+   "coins": 15
+  },
+  {
+   "name": "Kudos for My Star",
+   "file": "kudos-for-my-star.webp",
+   "coins": 15
+  },
+  {
+   "name": "Live Up Earth",
+   "file": "live-up-earth.webp",
+   "coins": 15
+  },
+  {
+   "name": "Lyric Mail",
+   "file": "lyric-mail.webp",
+   "coins": 15
+  },
+  {
+   "name": "G.O.A.T. Busker",
+   "file": "g-o-a-t-busker.webp",
+   "coins": 20
+  },
+  {
+   "name": "Huh?",
+   "file": "huh.webp",
+   "coins": 20
+  },
+  {
+   "name": "little kisses",
+   "file": "little-kisses.webp",
+   "coins": 20
+  },
+  {
+   "name": "LOL",
+   "file": "lol.webp",
+   "coins": 20
+  },
+  {
+   "name": "Mushroom",
+   "file": "mushroom.webp",
+   "coins": 20
+  },
+  {
+   "name": "No Comment",
+   "file": "no-comment.webp",
+   "coins": 20
+  },
+  {
+   "name": "Perfume",
+   "file": "perfume.webp",
+   "coins": 20,
+   "vi": [
+    "nước hoa"
+   ]
+  },
+  {
+   "name": "Rage Mode",
+   "file": "rage-mode.webp",
+   "coins": 20
+  },
+  {
+   "name": "Tiny Blush",
+   "file": "tiny-blush.webp",
+   "coins": 20
+  },
+  {
+   "name": "Traffic Cone",
+   "file": "traffic-cone.webp",
+   "coins": 20
+  },
+  {
+   "name": "Bouquet Flower",
+   "file": "bouquet-flower.webp",
+   "coins": 30
+  },
+  {
+   "name": "Capybara",
+   "file": "capybara.webp",
+   "coins": 30
+  },
+  {
+   "name": "Doughnut",
+   "file": "doughnut.webp",
+   "coins": 30,
+   "vi": [
+    "bánh vòng",
+    "bánh donut"
+   ]
+  },
+  {
+   "name": "Energy Capsule",
+   "file": "energy-capsule.webp",
+   "coins": 30
+  },
+  {
+   "name": "Energy Drop",
+   "file": "energy-drop.webp",
+   "coins": 30
+  },
+  {
+   "name": "Ghostfire",
+   "file": "ghostfire.webp",
+   "coins": 30
+  },
+  {
+   "name": "Warm Cocoa",
+   "file": "warm-cocoa.webp",
+   "coins": 30
+  },
+  {
+   "name": "Single Strike",
+   "file": "single-strike.webp",
+   "coins": 70
+  },
+  {
+   "name": "Takoyaki",
+   "file": "takoyaki.webp",
+   "coins": 88
+  },
+  {
+   "name": "Family",
+   "file": "family.webp",
+   "coins": 90
+  },
+  {
+   "name": "Bloom Melody",
+   "file": "bloom-melody.webp",
+   "coins": 99
+  },
+  {
+   "name": "Breeze Quena",
+   "file": "breeze-quena.webp",
+   "coins": 99
+  },
+  {
+   "name": "Bubble Gum",
+   "file": "bubble-gum.webp",
+   "coins": 99
+  },
+  {
+   "name": "Candy Blast",
+   "file": "candy-blast.webp",
+   "coins": 99
+  },
+  {
+   "name": "Cap",
+   "file": "cap.webp",
+   "coins": 99
+  },
+  {
+   "name": "Charmer Bow",
+   "file": "charmer-bow.webp",
+   "coins": 99
+  },
+  {
+   "name": "Club Victory",
+   "file": "club-victory.webp",
+   "coins": 99
+  },
+  {
+   "name": "Cow-napping",
+   "file": "cow-napping.webp",
+   "coins": 99
+  },
+  {
+   "name": "Cupid’s Bow",
+   "file": "cupid-s-bow.webp",
+   "coins": 99
+  },
+  {
+   "name": "Cursed Kick",
+   "file": "cursed-kick.webp",
+   "coins": 99
+  },
+  {
+   "name": "Fiesta Accordion",
+   "file": "fiesta-accordion.webp",
+   "coins": 99
+  },
+  {
+   "name": "Greeting Heart",
+   "file": "greeting-heart.webp",
+   "coins": 99
+  },
+  {
+   "name": "Groove Guitar",
+   "file": "groove-guitar.webp",
+   "coins": 99
+  },
+  {
+   "name": "Hat and Mustache",
+   "file": "hat-and-mustache.webp",
+   "coins": 99,
+   "vi": [
+    "mũ và ria mép"
+   ]
+  },
+  {
+   "name": "Healing Sape",
+   "file": "healing-sape.webp",
+   "coins": 99
+  },
+  {
+   "name": "Heart KSA",
+   "file": "heart-ksa.webp",
+   "coins": 99
+  },
+  {
+   "name": "Level-up Sparks",
+   "file": "level-up-sparks.webp",
+   "coins": 99
+  },
+  {
+   "name": "Like-Pop",
+   "file": "like-pop.webp",
+   "coins": 99
+  },
+  {
+   "name": "Little Crown",
+   "file": "little-crown.webp",
+   "coins": 99
+  },
+  {
+   "name": "Little Wing",
+   "file": "little-wing.webp",
+   "coins": 99
+  },
+  {
+   "name": "Love Painting",
+   "file": "love-painting.webp",
+   "coins": 99
+  },
+  {
+   "name": "Mark of Love",
+   "file": "mark-of-love.webp",
+   "coins": 99
+  },
+  {
+   "name": "Pad Master",
+   "file": "pad-master.webp",
+   "coins": 99
+  },
+  {
+   "name": "Palace Qanun",
+   "file": "palace-qanun.webp",
+   "coins": 99
+  },
+  {
+   "name": "Paper Crane",
+   "file": "paper-crane.webp",
+   "coins": 99,
+   "vi": [
+    "hạc giấy"
+   ]
+  },
+  {
+   "name": "Pearl Chime",
+   "file": "pearl-chime.webp",
+   "coins": 99
+  },
+  {
+   "name": "Rising Star",
+   "file": "rising-star.webp",
+   "coins": 99
+  },
+  {
+   "name": "Singing Mushroom",
+   "file": "singing-mushroom.webp",
+   "coins": 99
+  },
+  {
+   "name": "Stabilizer",
+   "file": "stabilizer.webp",
+   "coins": 99
+  },
+  {
+   "name": "Sundae Bowl",
+   "file": "sundae-bowl.webp",
+   "coins": 99
+  },
+  {
+   "name": "Wobbler",
+   "file": "wobbler.webp",
+   "coins": 99
+  },
+  {
+   "name": "Balloon Gift Box",
+   "file": "balloon-gift-box.webp",
+   "coins": 100
+  },
+  {
+   "name": "Bouquet",
+   "file": "bouquet.webp",
+   "coins": 100
+  },
+  {
+   "name": "Compact",
+   "file": "compact.webp",
+   "coins": 100
+  },
+  {
+   "name": "Confetti",
+   "file": "confetti.webp",
+   "coins": 100,
+   "vi": [
+    "pháo giấy"
+   ]
+  },
+  {
+   "name": "Danger Door",
+   "file": "danger-door.webp",
+   "coins": 100
+  },
+  {
+   "name": "Gate to Treasure",
+   "file": "gate-to-treasure.webp",
+   "coins": 100
+  },
+  {
+   "name": "Hand Heart",
+   "file": "hand-heart.webp",
+   "coins": 100,
+   "vi": [
+    "tay tim",
+    "hand hearts"
+   ]
+  },
+  {
+   "name": "Heart My Earthling",
+   "file": "heart-my-earthling.webp",
+   "coins": 100
+  },
+  {
+   "name": "Marvelous Confetti",
+   "file": "marvelous-confetti.webp",
+   "coins": 100
+  },
+  {
+   "name": "Match Wand",
+   "file": "match-wand.webp",
+   "coins": 100
+  },
+  {
+   "name": "Mini Star",
+   "file": "mini-star.webp",
+   "coins": 100
+  },
+  {
+   "name": "Mishka Bear",
+   "file": "mishka-bear.webp",
+   "coins": 100
+  },
+  {
+   "name": "Mountain Baby",
+   "file": "mountain-baby.webp",
+   "coins": 100
+  },
+  {
+   "name": "Power Chip",
+   "file": "power-chip.webp",
+   "coins": 100
+  },
+  {
+   "name": "Scooter",
+   "file": "scooter.webp",
+   "coins": 100
+  },
+  {
+   "name": "Shell Energy",
+   "file": "shell-energy.webp",
+   "coins": 100
+  },
+  {
+   "name": "Singing Magic",
+   "file": "singing-magic.webp",
+   "coins": 100
+  },
+  {
+   "name": "Tsar",
+   "file": "tsar.webp",
+   "coins": 100
+  },
+  {
+   "name": "Wooden Box",
+   "file": "wooden-box.webp",
+   "coins": 100
+  },
+  {
+   "name": "Wooden Rod",
+   "file": "wooden-rod.webp",
+   "coins": 100
+  },
+  {
+   "name": "Balloon Crown",
+   "file": "balloon-crown.webp",
+   "coins": 149
+  },
+  {
+   "name": "Big Shout Out",
+   "file": "big-shout-out.webp",
+   "coins": 149
+  },
+  {
+   "name": "Bowknot",
+   "file": "bowknot.webp",
+   "coins": 149
+  },
+  {
+   "name": "Caterpillar Chaos",
+   "file": "caterpillar-chaos.webp",
+   "coins": 149
+  },
+  {
+   "name": "Catrina",
+   "file": "catrina.webp",
+   "coins": 149
+  },
+  {
+   "name": "Chatting Popcorn",
+   "file": "chatting-popcorn.webp",
+   "coins": 149
+  },
+  {
+   "name": "Fairy Hide",
+   "file": "fairy-hide.webp",
+   "coins": 149
+  },
+  {
+   "name": "Feather Tiara",
+   "file": "feather-tiara.webp",
+   "coins": 149
+  },
+  {
+   "name": "Frog Conductor",
+   "file": "frog-conductor.webp",
+   "coins": 149
+  },
+  {
+   "name": "Groove Clarinet",
+   "file": "groove-clarinet.webp",
+   "coins": 149
+  },
+  {
+   "name": "Love Glasses",
+   "file": "love-glasses.webp",
+   "coins": 149
+  },
+  {
+   "name": "Masquerade",
+   "file": "masquerade.webp",
+   "coins": 149
+  },
+  {
+   "name": "Mystic Ney",
+   "file": "mystic-ney.webp",
+   "coins": 149
+  },
+  {
+   "name": "Raving Snail",
+   "file": "raving-snail.webp",
+   "coins": 149
+  },
+  {
+   "name": "Sweetheart Macaron",
+   "file": "sweetheart-macaron.webp",
+   "coins": 149
+  },
+  {
+   "name": "Tempo Flute",
+   "file": "tempo-flute.webp",
+   "coins": 149
+  },
+  {
+   "name": "Cruiser",
+   "file": "cruiser.webp",
+   "coins": 150
+  },
+  {
+   "name": "Puffer Fish",
+   "file": "puffer-fish.webp",
+   "coins": 150
+  },
+  {
+   "name": "Bruiser",
+   "file": "bruiser.webp",
+   "coins": 153
+  },
+  {
+   "name": "Bloom Brass",
+   "file": "bloom-brass.webp",
+   "coins": 199
+  },
+  {
+   "name": "Blowing Bubbles",
+   "file": "blowing-bubbles.webp",
+   "coins": 199
+  },
+  {
+   "name": "Cheer For You",
+   "file": "cheer-for-you.webp",
+   "coins": 199
+  },
+  {
+   "name": "Cheering Crab",
+   "file": "cheering-crab.webp",
+   "coins": 199
+  },
+  {
+   "name": "Chirpy Kisses",
+   "file": "chirpy-kisses.webp",
+   "coins": 199
+  },
+  {
+   "name": "Coconut",
+   "file": "coconut.webp",
+   "coins": 199
+  },
+  {
+   "name": "Coconut Juice",
+   "file": "coconut-juice.webp",
+   "coins": 199
+  },
+  {
+   "name": "Coffee Magic",
+   "file": "coffee-magic.webp",
+   "coins": 199
+  },
+  {
+   "name": "Fan Cat",
+   "file": "fan-cat.webp",
+   "coins": 199
+  },
+  {
+   "name": "Floating Octopus",
+   "file": "floating-octopus.webp",
+   "coins": 199
+  },
+  {
+   "name": "Flower Headband",
+   "file": "flower-headband.webp",
+   "coins": 199
+  },
+  {
+   "name": "Forest Beginnings",
+   "file": "forest-beginnings.webp",
+   "coins": 199
+  },
+  {
+   "name": "Garland Headpiece",
+   "file": "garland-headpiece.webp",
+   "coins": 199
+  },
+  {
+   "name": "Gear",
+   "file": "gear.webp",
+   "coins": 199
+  },
+  {
+   "name": "Goalkeeper Save",
+   "file": "goalkeeper-save.webp",
+   "coins": 199
+  },
+  {
+   "name": "Heart Hood",
+   "file": "heart-hood.webp",
+   "coins": 199
+  },
+  {
+   "name": "Hearts",
+   "file": "hearts.webp",
+   "coins": 199
+  },
+  {
+   "name": "Joker Ball",
+   "file": "joker-ball.webp",
+   "coins": 199
+  },
+  {
+   "name": "Juicy Smile",
+   "file": "juicy-smile.webp",
+   "coins": 199
+  },
+  {
+   "name": "Love Rain",
+   "file": "love-rain.webp",
+   "coins": 199
+  },
+  {
+   "name": "Melon Juice",
+   "file": "melon-juice.webp",
+   "coins": 199
+  },
+  {
+   "name": "Mystic Panpipes",
+   "file": "mystic-panpipes.webp",
+   "coins": 199
+  },
+  {
+   "name": "Night Star",
+   "file": "night-star.webp",
+   "coins": 199
+  },
+  {
+   "name": "Party Pony",
+   "file": "party-pony.webp",
+   "coins": 199
+  },
+  {
+   "name": "Peeka-Bro",
+   "file": "peeka-bro.webp",
+   "coins": 199
+  },
+  {
+   "name": "Rhythm Bot",
+   "file": "rhythm-bot.webp",
+   "coins": 199
+  },
+  {
+   "name": "Rose Hand",
+   "file": "rose-hand.webp",
+   "coins": 199
+  },
+  {
+   "name": "Side by Side",
+   "file": "side-by-side.webp",
+   "coins": 199
+  },
+  {
+   "name": "Smile Latte",
+   "file": "smile-latte.webp",
+   "coins": 199
+  },
+  {
+   "name": "Sour Buddy",
+   "file": "sour-buddy.webp",
+   "coins": 199
+  },
+  {
+   "name": "Sparklers",
+   "file": "sparklers.webp",
+   "coins": 199
+  },
+  {
+   "name": "Sunglasses",
+   "file": "sunglasses.webp",
+   "coins": 199,
+   "vi": [
+    "kính râm"
+   ]
+  },
+  {
+   "name": "Sunny Side Up",
+   "file": "sunny-side-up.webp",
+   "coins": 199
+  },
+  {
+   "name": "Take the Mic",
+   "file": "take-the-mic.webp",
+   "coins": 199
+  },
+  {
+   "name": "Talking Heartbeat",
+   "file": "talking-heartbeat.webp",
+   "coins": 199
+  },
+  {
+   "name": "Baglama",
+   "file": "baglama.webp",
+   "coins": 200
+  },
+  {
+   "name": "Cute Bunny",
+   "file": "cute-bunny.webp",
+   "coins": 200
+  },
+  {
+   "name": "Magic Genie",
+   "file": "magic-genie.webp",
+   "coins": 200
+  },
+  {
+   "name": "Semsemia",
+   "file": "semsemia.webp",
+   "coins": 200
+  },
+  {
+   "name": "Cat",
+   "file": "cat.webp",
+   "coins": 222
+  },
+  {
+   "name": "Amped Up",
+   "file": "amped-up.webp",
+   "coins": 249
+  },
+  {
+   "name": "Blast Drum",
+   "file": "blast-drum.webp",
+   "coins": 249
+  },
+  {
+   "name": "Candy Bouquet",
+   "file": "candy-bouquet.webp",
+   "coins": 249
+  },
+  {
+   "name": "Cheer Mic",
+   "file": "cheer-mic.webp",
+   "coins": 249
+  },
+  {
+   "name": "Dreamy Strings",
+   "file": "dreamy-strings.webp",
+   "coins": 249
+  },
+  {
+   "name": "Face-pulling",
+   "file": "face-pulling.webp",
+   "coins": 249
+  },
+  {
+   "name": "Flower Courier",
+   "file": "flower-courier.webp",
+   "coins": 249
+  },
+  {
+   "name": "Forest Elf",
+   "file": "forest-elf.webp",
+   "coins": 249
+  },
+  {
+   "name": "Ice Cream Mic",
+   "file": "ice-cream-mic.webp",
+   "coins": 249
+  },
+  {
+   "name": "Melodic birds",
+   "file": "melodic-birds.webp",
+   "coins": 249
+  },
+  {
+   "name": "Music Bubbles",
+   "file": "music-bubbles.webp",
+   "coins": 249
+  },
+  {
+   "name": "Palm Breeze",
+   "file": "palm-breeze.webp",
+   "coins": 249
+  },
+  {
+   "name": "Party Blossom",
+   "file": "party-blossom.webp",
+   "coins": 249
+  },
+  {
+   "name": "Pinch Face",
+   "file": "pinch-face.webp",
+   "coins": 249
+  },
+  {
+   "name": "Poetry Score",
+   "file": "poetry-score.webp",
+   "coins": 249
+  },
+  {
+   "name": "Singing Frog",
+   "file": "singing-frog.webp",
+   "coins": 249
+  },
+  {
+   "name": "Snow Bloom",
+   "file": "snow-bloom.webp",
+   "coins": 249
+  },
+  {
+   "name": "Star Goggles",
+   "file": "star-goggles.webp",
+   "coins": 249
+  },
+  {
+   "name": "Surfing Penguin",
+   "file": "surfing-penguin.webp",
+   "coins": 249
+  },
+  {
+   "name": "Sweet Flutter",
+   "file": "sweet-flutter.webp",
+   "coins": 249
+  },
+  {
+   "name": "Treasured Voice",
+   "file": "treasured-voice.webp",
+   "coins": 249
+  },
+  {
+   "name": "Triple Thunder",
+   "file": "triple-thunder.webp",
+   "coins": 289
+  },
+  {
+   "name": "Bat Headwear",
+   "file": "bat-headwear.webp",
+   "coins": 299
+  },
+  {
+   "name": "Bell",
+   "file": "bell.webp",
+   "coins": 299
+  },
+  {
+   "name": "Boxing Gloves",
+   "file": "boxing-gloves.webp",
+   "coins": 299
+  },
+  {
+   "name": "Brazilian Vibe Cap",
+   "file": "brazilian-vibe-cap.webp",
+   "coins": 299
+  },
+  {
+   "name": "Budding Heart",
+   "file": "budding-heart.webp",
+   "coins": 299
+  },
+  {
+   "name": "Butterfly for You",
+   "file": "butterfly-for-you.webp",
+   "coins": 299
+  },
+  {
+   "name": "Cello Romance",
+   "file": "cello-romance.webp",
+   "coins": 299
+  },
+  {
+   "name": "Cheering Towel",
+   "file": "cheering-towel.webp",
+   "coins": 299
+  },
+  {
+   "name": "Cherry Scoop",
+   "file": "cherry-scoop.webp",
+   "coins": 299
+  },
+  {
+   "name": "Come On!",
+   "file": "come-on.webp",
+   "coins": 299
+  },
+  {
+   "name": "Corgi",
+   "file": "corgi.webp",
+   "coins": 299,
+   "vi": [
+    "chó corgi"
+   ]
+  },
+  {
+   "name": "Crystal Shoe",
+   "file": "crystal-shoe.webp",
+   "coins": 299
+  },
+  {
+   "name": "Dreamy Penguin",
+   "file": "dreamy-penguin.webp",
+   "coins": 299
+  },
+  {
+   "name": "Falling For You",
+   "file": "falling-for-you.webp",
+   "coins": 299
+  },
+  {
+   "name": "Floral Lute",
+   "file": "floral-lute.webp",
+   "coins": 299
+  },
+  {
+   "name": "Fruit Friends",
+   "file": "fruit-friends.webp",
+   "coins": 299
+  },
+  {
+   "name": "Go Hamster",
+   "file": "go-hamster.webp",
+   "coins": 299
+  },
+  {
+   "name": "Hi! Rosie!",
+   "file": "hi-rosie.webp",
+   "coins": 299
+  },
+  {
+   "name": "Kicker Challenge",
+   "file": "kicker-challenge.webp",
+   "coins": 299
+  },
+  {
+   "name": "Labor Power",
+   "file": "labor-power.webp",
+   "coins": 299
+  },
+  {
+   "name": "LIVE Ranking Crown",
+   "file": "live-ranking-crown.webp",
+   "coins": 299
+  },
+  {
+   "name": "LIVE Ranking Headband",
+   "file": "live-ranking-headband.webp",
+   "coins": 299
+  },
+  {
+   "name": "Love Call",
+   "file": "love-call.webp",
+   "coins": 299
+  },
+  {
+   "name": "Melody Glasses",
+   "file": "melody-glasses.webp",
+   "coins": 299
+  },
+  {
+   "name": "Music Mate",
+   "file": "music-mate.webp",
+   "coins": 299
+  },
+  {
+   "name": "Mysterious Mask",
+   "file": "mysterious-mask.webp",
+   "coins": 299
+  },
+  {
+   "name": "Naughty Chicken",
+   "file": "naughty-chicken.webp",
+   "coins": 299
+  },
+  {
+   "name": "Pawfect",
+   "file": "pawfect.webp",
+   "coins": 299
+  },
+  {
+   "name": "Penguin Snowpal",
+   "file": "penguin-snowpal.webp",
+   "coins": 299
+  },
+  {
+   "name": "Piano Bow",
+   "file": "piano-bow.webp",
+   "coins": 299
+  },
+  {
+   "name": "Play for You",
+   "file": "play-for-you.webp",
+   "coins": 299
+  },
+  {
+   "name": "Pony Lantern",
+   "file": "pony-lantern.webp",
+   "coins": 299
+  },
+  {
+   "name": "Puppy Kisses",
+   "file": "puppy-kisses.webp",
+   "coins": 299
+  },
+  {
+   "name": "Rhythm Crown",
+   "file": "rhythm-crown.webp",
+   "coins": 299
+  },
+  {
+   "name": "Rock Star",
+   "file": "rock-star.webp",
+   "coins": 299
+  },
+  {
+   "name": "Rookies Cup",
+   "file": "rookies-cup.webp",
+   "coins": 299
+  },
+  {
+   "name": "Sax Groove",
+   "file": "sax-groove.webp",
+   "coins": 299
+  },
+  {
+   "name": "Scroll",
+   "file": "scroll.webp",
+   "coins": 299
+  },
+  {
+   "name": "Spider on web",
+   "file": "spider-on-web.webp",
+   "coins": 299
+  },
+  {
+   "name": "Spring Sprout",
+   "file": "spring-sprout.webp",
+   "coins": 299
+  },
+  {
+   "name": "Starlight Compass",
+   "file": "starlight-compass.webp",
+   "coins": 299
+  },
+  {
+   "name": "Swing Cello",
+   "file": "swing-cello.webp",
+   "coins": 299
+  },
+  {
+   "name": "TikTok Crown",
+   "file": "tiktok-crown.webp",
+   "coins": 299
+  },
+  {
+   "name": "Tropical Mask",
+   "file": "tropical-mask.webp",
+   "coins": 299
+  },
+  {
+   "name": "United Heart",
+   "file": "united-heart.webp",
+   "coins": 299
+  },
+  {
+   "name": "Wakey Mallow",
+   "file": "wakey-mallow.webp",
+   "coins": 299
+  },
+  {
+   "name": "Air Dancer",
+   "file": "air-dancer.webp",
+   "coins": 300
+  },
+  {
+   "name": "Feather Mask",
+   "file": "feather-mask.webp",
+   "coins": 300
+  },
+  {
+   "name": "Galaxy's Bestest",
+   "file": "galaxy-s-bestest.webp",
+   "coins": 300
+  },
+  {
+   "name": "Backing Monkey",
+   "file": "backing-monkey.webp",
+   "coins": 349
+  },
+  {
+   "name": "Batwing Hat",
+   "file": "batwing-hat.webp",
+   "coins": 349
+  },
+  {
+   "name": "Beach Maracas",
+   "file": "beach-maracas.webp",
+   "coins": 349
+  },
+  {
+   "name": "Become Kitten",
+   "file": "become-kitten.webp",
+   "coins": 349
+  },
+  {
+   "name": "Butterfly Vibe",
+   "file": "butterfly-vibe.webp",
+   "coins": 349
+  },
+  {
+   "name": "Chopin in the Rain",
+   "file": "chopin-in-the-rain.webp",
+   "coins": 349
+  },
+  {
+   "name": "Craft Dreamer",
+   "file": "craft-dreamer.webp",
+   "coins": 349
+  },
+  {
+   "name": "Djembe Master",
+   "file": "djembe-master.webp",
+   "coins": 349
+  },
+  {
+   "name": "Electro Vibes",
+   "file": "electro-vibes.webp",
+   "coins": 349
+  },
+  {
+   "name": "Gingerbread Man",
+   "file": "gingerbread-man.webp",
+   "coins": 349
+  },
+  {
+   "name": "Juicy Cap",
+   "file": "juicy-cap.webp",
+   "coins": 349
+  },
+  {
+   "name": "Marked with Love",
+   "file": "marked-with-love.webp",
+   "coins": 349
+  },
+  {
+   "name": "Mom's Bonnet",
+   "file": "mom-s-bonnet.webp",
+   "coins": 349
+  },
+  {
+   "name": "Munch Monster",
+   "file": "munch-monster.webp",
+   "coins": 349
+  },
+  {
+   "name": "Retro Headset",
+   "file": "retro-headset.webp",
+   "coins": 349
+  },
+  {
+   "name": "Retro Melody",
+   "file": "retro-melody.webp",
+   "coins": 349
+  },
+  {
+   "name": "Rock Demon",
+   "file": "rock-demon.webp",
+   "coins": 349
+  },
+  {
+   "name": "Rocking Shroom",
+   "file": "rocking-shroom.webp",
+   "coins": 349
+  },
+  {
+   "name": "Rose Wreath",
+   "file": "rose-wreath.webp",
+   "coins": 349
+  },
+  {
+   "name": "Sparkle Pony",
+   "file": "sparkle-pony.webp",
+   "coins": 349
+  },
+  {
+   "name": "Spin Seal",
+   "file": "spin-seal.webp",
+   "coins": 349
+  },
+  {
+   "name": "Spring Bouquet",
+   "file": "spring-bouquet.webp",
+   "coins": 349
+  },
+  {
+   "name": "Starry Seal",
+   "file": "starry-seal.webp",
+   "coins": 349
+  },
+  {
+   "name": "Ukulele Player",
+   "file": "ukulele-player.webp",
+   "coins": 349
+  },
+  {
+   "name": "Vintage flight",
+   "file": "vintage-flight.webp",
+   "coins": 349
+  },
+  {
+   "name": "Vinyl Flip",
+   "file": "vinyl-flip.webp",
+   "coins": 349
+  },
+  {
+   "name": "Alien Buddy",
+   "file": "alien-buddy.webp",
+   "coins": 399
+  },
+  {
+   "name": "Aurora Groove",
+   "file": "aurora-groove.webp",
+   "coins": 399
+  },
+  {
+   "name": "Beat Wings",
+   "file": "beat-wings.webp",
+   "coins": 399
+  },
+  {
+   "name": "Blossom Fairy",
+   "file": "blossom-fairy.webp",
+   "coins": 399
+  },
+  {
+   "name": "Cactus Shuffle",
+   "file": "cactus-shuffle.webp",
+   "coins": 399
+  },
+  {
+   "name": "Confetti Bear",
+   "file": "confetti-bear.webp",
+   "coins": 399
+  },
+  {
+   "name": "Desert Survivals",
+   "file": "desert-survivals.webp",
+   "coins": 399
+  },
+  {
+   "name": "DJ Set",
+   "file": "dj-set.webp",
+   "coins": 399
+  },
+  {
+   "name": "Dreamy Hat",
+   "file": "dreamy-hat.webp",
+   "coins": 399
+  },
+  {
+   "name": "Echo Mom",
+   "file": "echo-mom.webp",
+   "coins": 399
+  },
+  {
+   "name": "Fairy Locket",
+   "file": "fairy-locket.webp",
+   "coins": 399
+  },
+  {
+   "name": "Floral Serenade",
+   "file": "floral-serenade.webp",
+   "coins": 399
+  },
+  {
+   "name": "Forever Rosa",
+   "file": "forever-rosa.webp",
+   "coins": 399
+  },
+  {
+   "name": "Health Potion",
+   "file": "health-potion.webp",
+   "coins": 399
+  },
+  {
+   "name": "Jiggly Pudding",
+   "file": "jiggly-pudding.webp",
+   "coins": 399
+  },
+  {
+   "name": "Jollie the Joy Bean",
+   "file": "jollie-the-joy-bean.webp",
+   "coins": 399
+  },
+  {
+   "name": "Kitten Kneading",
+   "file": "kitten-kneading.webp",
+   "coins": 399
+  },
+  {
+   "name": "Let butterfly dances",
+   "file": "let-butterfly-dances.webp",
+   "coins": 399
+  },
+  {
+   "name": "Magic Rhythm",
+   "file": "magic-rhythm.webp",
+   "coins": 399
+  },
+  {
+   "name": "Melody Headset",
+   "file": "melody-headset.webp",
+   "coins": 399
+  },
+  {
+   "name": "Panda Snap",
+   "file": "panda-snap.webp",
+   "coins": 399
+  },
+  {
+   "name": "Papa Capybara",
+   "file": "papa-capybara.webp",
+   "coins": 399
+  },
+  {
+   "name": "Pull Rod",
+   "file": "pull-rod.webp",
+   "coins": 399
+  },
+  {
+   "name": "Relaxed Goose",
+   "file": "relaxed-goose.webp",
+   "coins": 399
+  },
+  {
+   "name": "Rocky the Rock Bean",
+   "file": "rocky-the-rock-bean.webp",
+   "coins": 399
+  },
+  {
+   "name": "Rosie the Rose Bean",
+   "file": "rosie-the-rose-bean.webp",
+   "coins": 399
+  },
+  {
+   "name": "Rosie's Concert",
+   "file": "rosie-s-concert.webp",
+   "coins": 399
+  },
+  {
+   "name": "Sage the Smart Bean",
+   "file": "sage-the-smart-bean.webp",
+   "coins": 399
+  },
+  {
+   "name": "Sage's Slash",
+   "file": "sage-s-slash.webp",
+   "coins": 399
+  },
+  {
+   "name": "Santa Owl Surprise",
+   "file": "santa-owl-surprise.webp",
+   "coins": 399
+  },
+  {
+   "name": "Shoot the Apple",
+   "file": "shoot-the-apple.webp",
+   "coins": 399
+  },
+  {
+   "name": "Sing in Sync",
+   "file": "sing-in-sync.webp",
+   "coins": 399
+  },
+  {
+   "name": "Singing Sax",
+   "file": "singing-sax.webp",
+   "coins": 399
+  },
+  {
+   "name": "Tiger Lift",
+   "file": "tiger-lift.webp",
+   "coins": 399
+  },
+  {
+   "name": "Tom's Hug",
+   "file": "tom-s-hug.webp",
+   "coins": 399
+  },
+  {
+   "name": "Vocal Bear",
+   "file": "vocal-bear.webp",
+   "coins": 399
+  },
+  {
+   "name": "Wind on Kemenche",
+   "file": "wind-on-kemenche.webp",
+   "coins": 399
+  },
+  {
+   "name": "You Are Loved",
+   "file": "you-are-loved.webp",
+   "coins": 399
+  },
+  {
+   "name": "Bounce Speakers",
+   "file": "bounce-speakers.webp",
+   "coins": 400
+  },
+  {
+   "name": "Cheeky Pup",
+   "file": "cheeky-pup.webp",
+   "coins": 400
+  },
+  {
+   "name": "Crystal Dreams",
+   "file": "crystal-dreams.webp",
+   "coins": 400
+  },
+  {
+   "name": "DJ Wave",
+   "file": "dj-wave.webp",
+   "coins": 400
+  },
+  {
+   "name": "Glorious Chef",
+   "file": "glorious-chef.webp",
+   "coins": 400
+  },
+  {
+   "name": "Heartbeat Keys",
+   "file": "heartbeat-keys.webp",
+   "coins": 400
+  },
+  {
+   "name": "Magic Accordion",
+   "file": "magic-accordion.webp",
+   "coins": 400
+  },
+  {
+   "name": "Mic Champ",
+   "file": "mic-champ.webp",
+   "coins": 400
+  },
+  {
+   "name": "Moped",
+   "file": "moped.webp",
+   "coins": 400
+  },
+  {
+   "name": "Neon Rockstar",
+   "file": "neon-rockstar.webp",
+   "coins": 400
+  },
+  {
+   "name": "Pop Parrot",
+   "file": "pop-parrot.webp",
+   "coins": 400
+  },
+  {
+   "name": "Punch Cuddle",
+   "file": "punch-cuddle.webp",
+   "coins": 400
+  },
+  {
+   "name": "Reindeer Milk",
+   "file": "reindeer-milk.webp",
+   "coins": 400
+  },
+  {
+   "name": "Rock Cats",
+   "file": "rock-cats.webp",
+   "coins": 400
+  },
+  {
+   "name": "Rock Idol",
+   "file": "rock-idol.webp",
+   "coins": 400
+  },
+  {
+   "name": "Siren's Echo",
+   "file": "siren-s-echo.webp",
+   "coins": 400
+  },
+  {
+   "name": "Starry Sax",
+   "file": "starry-sax.webp",
+   "coins": 400
+  },
+  {
+   "name": "Super Dad",
+   "file": "super-dad.webp",
+   "coins": 400
+  },
+  {
+   "name": "The Mrazhemian",
+   "file": "the-mrazhemian.webp",
+   "coins": 400
+  },
+  {
+   "name": "Wishing Cake",
+   "file": "wishing-cake.webp",
+   "coins": 400
+  },
+  {
+   "name": "Batting Cutie",
+   "file": "batting-cutie.webp",
+   "coins": 449
+  },
+  {
+   "name": "Beating Heart",
+   "file": "beating-heart.webp",
+   "coins": 449
+  },
+  {
+   "name": "Candy Loot",
+   "file": "candy-loot.webp",
+   "coins": 449
+  },
+  {
+   "name": "Captured Vocals",
+   "file": "captured-vocals.webp",
+   "coins": 449
+  },
+  {
+   "name": "Clown Boogie",
+   "file": "clown-boogie.webp",
+   "coins": 449
+  },
+  {
+   "name": "Cyber Strings",
+   "file": "cyber-strings.webp",
+   "coins": 449
+  },
+  {
+   "name": "Electronic Love Song",
+   "file": "electronic-love-song.webp",
+   "coins": 449
+  },
+  {
+   "name": "Encore Clap",
+   "file": "encore-clap.webp",
+   "coins": 449
+  },
+  {
+   "name": "Lightning Look",
+   "file": "lightning-look.webp",
+   "coins": 449
+  },
+  {
+   "name": "Meowsic Trumpet",
+   "file": "meowsic-trumpet.webp",
+   "coins": 449
+  },
+  {
+   "name": "Pirate's Treasure",
+   "file": "pirate-s-treasure.webp",
+   "coins": 449
+  },
+  {
+   "name": "Rock and Roll",
+   "file": "rock-and-roll.webp",
+   "coins": 449
+  },
+  {
+   "name": "Space Love",
+   "file": "space-love.webp",
+   "coins": 449
+  },
+  {
+   "name": "Xmas Tree Hat",
+   "file": "xmas-tree-hat.webp",
+   "coins": 449
+  },
+  {
+   "name": "Celebration Hat",
+   "file": "celebration-hat.webp",
+   "coins": 450
+  },
+  {
+   "name": "City Pop",
+   "file": "city-pop.webp",
+   "coins": 450
+  },
+  {
+   "name": "Clover Hat",
+   "file": "clover-hat.webp",
+   "coins": 450
+  },
+  {
+   "name": "Cupid Koala",
+   "file": "cupid-koala.webp",
+   "coins": 450
+  },
+  {
+   "name": "Diva Feathers",
+   "file": "diva-feathers.webp",
+   "coins": 450
+  },
+  {
+   "name": "Glow Chant",
+   "file": "glow-chant.webp",
+   "coins": 450
+  },
+  {
+   "name": "Groove Straw",
+   "file": "groove-straw.webp",
+   "coins": 450
+  },
+  {
+   "name": "Halloween Fun Hat",
+   "file": "halloween-fun-hat.webp",
+   "coins": 450
+  },
+  {
+   "name": "Hat of Joy",
+   "file": "hat-of-joy.webp",
+   "coins": 450
+  },
+  {
+   "name": "Music Conductor",
+   "file": "music-conductor.webp",
+   "coins": 450
+  },
+  {
+   "name": "Office Penguin",
+   "file": "office-penguin.webp",
+   "coins": 450
+  },
+  {
+   "name": "Paw Call",
+   "file": "paw-call.webp",
+   "coins": 450
+  },
+  {
+   "name": "Pink Cowboy",
+   "file": "pink-cowboy.webp",
+   "coins": 450
+  },
+  {
+   "name": "Powerful Mind",
+   "file": "powerful-mind.webp",
+   "coins": 450
+  },
+  {
+   "name": "Sloth Peek",
+   "file": "sloth-peek.webp",
+   "coins": 450
+  },
+  {
+   "name": "Steady on the Beam",
+   "file": "steady-on-the-beam.webp",
+   "coins": 450
+  },
+  {
+   "name": "Superwoman",
+   "file": "superwoman.webp",
+   "coins": 450
+  },
+  {
+   "name": "Coral",
+   "file": "coral.webp",
+   "coins": 499
+  },
+  {
+   "name": "Eye on the Ball",
+   "file": "eye-on-the-ball.webp",
+   "coins": 499
+  },
+  {
+   "name": "Fuzzy Drum",
+   "file": "fuzzy-drum.webp",
+   "coins": 499
+  },
+  {
+   "name": "Hands Up",
+   "file": "hands-up.webp",
+   "coins": 499
+  },
+  {
+   "name": "Island Uke",
+   "file": "island-uke.webp",
+   "coins": 499
+  },
+  {
+   "name": "Key Master",
+   "file": "key-master.webp",
+   "coins": 499
+  },
+  {
+   "name": "Rose Soundwave",
+   "file": "rose-soundwave.webp",
+   "coins": 499
+  },
+  {
+   "name": "Autumn Leaves",
+   "file": "autumn-leaves.webp",
+   "coins": 500
+  },
+  {
+   "name": "Bunny Crown",
+   "file": "bunny-crown.webp",
+   "coins": 500
+  },
+  {
+   "name": "Chubby Hamster",
+   "file": "chubby-hamster.webp",
+   "coins": 500
+  },
+  {
+   "name": "Cosmic DJ",
+   "file": "cosmic-dj.webp",
+   "coins": 500
+  },
+  {
+   "name": "Cozy Xmas Set",
+   "file": "cozy-xmas-set.webp",
+   "coins": 500
+  },
+  {
+   "name": "DJ Glasses",
+   "file": "dj-glasses.webp",
+   "coins": 500
+  },
+  {
+   "name": "Do Not Blow",
+   "file": "do-not-blow.webp",
+   "coins": 500
+  },
+  {
+   "name": "Dragon Crown",
+   "file": "dragon-crown.webp",
+   "coins": 500
+  },
+  {
+   "name": "Drum Genius",
+   "file": "drum-genius.webp",
+   "coins": 500
+  },
+  {
+   "name": "Drum Pop",
+   "file": "drum-pop.webp",
+   "coins": 500
+  },
+  {
+   "name": "Gem Gun",
+   "file": "gem-gun.webp",
+   "coins": 500
+  },
+  {
+   "name": "Heart Guitar",
+   "file": "heart-guitar.webp",
+   "coins": 500
+  },
+  {
+   "name": "HeartBeats",
+   "file": "heartbeats.webp",
+   "coins": 500
+  },
+  {
+   "name": "Honey Strummer",
+   "file": "honey-strummer.webp",
+   "coins": 500
+  },
+  {
+   "name": "Iron Anchor",
+   "file": "iron-anchor.webp",
+   "coins": 500
+  },
+  {
+   "name": "Jungle Blitzy",
+   "file": "jungle-blitzy.webp",
+   "coins": 500
+  },
+  {
+   "name": "Jungle Cooper",
+   "file": "jungle-cooper.webp",
+   "coins": 500
+  },
+  {
+   "name": "Jungle Diny",
+   "file": "jungle-diny.webp",
+   "coins": 500
+  },
+  {
+   "name": "Jungle Tom",
+   "file": "jungle-tom.webp",
+   "coins": 500
+  },
+  {
+   "name": "Lost in Your Music",
+   "file": "lost-in-your-music.webp",
+   "coins": 500
+  },
+  {
+   "name": "Love Balloon",
+   "file": "love-balloon.webp",
+   "coins": 500
+  },
+  {
+   "name": "Magic Prop",
+   "file": "magic-prop.webp",
+   "coins": 500
+  },
+  {
+   "name": "Match Master",
+   "file": "match-master.webp",
+   "coins": 500
+  },
+  {
+   "name": "Mermaid",
+   "file": "mermaid.webp",
+   "coins": 500
+  },
+  {
+   "name": "Money Gun",
+   "file": "money-gun.webp",
+   "coins": 500
+  },
+  {
+   "name": "Monster Box!",
+   "file": "monster-box.webp",
+   "coins": 500
+  },
+  {
+   "name": "Mystery Box",
+   "file": "mystery-box.webp",
+   "coins": 500
+  },
+  {
+   "name": "Out Pops Jollie!",
+   "file": "out-pops-jollie.webp",
+   "coins": 500
+  },
+  {
+   "name": "Prairie Blitzy",
+   "file": "prairie-blitzy.webp",
+   "coins": 500
+  },
+  {
+   "name": "Prairie Cooper",
+   "file": "prairie-cooper.webp",
+   "coins": 500
+  },
+  {
+   "name": "Prairie Diny",
+   "file": "prairie-diny.webp",
+   "coins": 500
+  },
+  {
+   "name": "Prairie Tom",
+   "file": "prairie-tom.webp",
+   "coins": 500
+  },
+  {
+   "name": "Racing Helmet",
+   "file": "racing-helmet.webp",
+   "coins": 500
+  },
+  {
+   "name": "Roo Mother",
+   "file": "roo-mother.webp",
+   "coins": 500
+  },
+  {
+   "name": "Shell of a Warrior",
+   "file": "shell-of-a-warrior.webp",
+   "coins": 500
+  },
+  {
+   "name": "Sound Spell",
+   "file": "sound-spell.webp",
+   "coins": 500
+  },
+  {
+   "name": "Spark Ring Earth",
+   "file": "spark-ring-earth.webp",
+   "coins": 500
+  },
+  {
+   "name": "Starry Fluff",
+   "file": "starry-fluff.webp",
+   "coins": 500
+  },
+  {
+   "name": "VR Goggles",
+   "file": "vr-goggles.webp",
+   "coins": 500
+  },
+  {
+   "name": "XXXL Flowers",
+   "file": "xxxl-flowers.webp",
+   "coins": 500
+  },
+  {
+   "name": "You’re Amazing",
+   "file": "you-re-amazing.webp",
+   "coins": 500
+  },
+  {
+   "name": "Bubbly Kiss",
+   "file": "bubbly-kiss.webp",
+   "coins": 530
+  },
+  {
+   "name": "Drum Hamster",
+   "file": "drum-hamster.webp",
+   "coins": 549
+  },
+  {
+   "name": "Hive Escape",
+   "file": "hive-escape.webp",
+   "coins": 549
+  },
+  {
+   "name": "Purrfect Pitch",
+   "file": "purrfect-pitch.webp",
+   "coins": 550
+  },
+  {
+   "name": "Fruit Box",
+   "file": "fruit-box.webp",
+   "coins": 599
+  },
+  {
+   "name": "Soccer Holo",
+   "file": "soccer-holo.webp",
+   "coins": 599
+  },
+  {
+   "name": "Join Butterflies",
+   "file": "join-butterflies.webp",
+   "coins": 600
+  },
+  {
+   "name": "Sakura Flute",
+   "file": "sakura-flute.webp",
+   "coins": 600
+  },
+  {
+   "name": "Sakura-style DJ",
+   "file": "sakura-style-dj.webp",
+   "coins": 600
+  },
+  {
+   "name": "Seahorse Pop",
+   "file": "seahorse-pop.webp",
+   "coins": 649
+  },
+  {
+   "name": "Swan",
+   "file": "swan.webp",
+   "coins": 699
+  },
+  {
+   "name": "Cafe Racer",
+   "file": "cafe-racer.webp",
+   "coins": 700
+  },
+  {
+   "name": "Colorful Wings",
+   "file": "colorful-wings.webp",
+   "coins": 700
+  },
+  {
+   "name": "Sax Appeal",
+   "file": "sax-appeal.webp",
+   "coins": 700
+  },
+  {
+   "name": "Which Bro?",
+   "file": "which-bro.webp",
+   "coins": 799
+  },
+  {
+   "name": "Epic Pianist",
+   "file": "epic-pianist.webp",
+   "coins": 800
+  },
+  {
+   "name": "Box of destiny",
+   "file": "box-of-destiny.webp",
+   "coins": 899
+  },
+  {
+   "name": "Kindom of Night",
+   "file": "kindom-of-night.webp",
+   "coins": 899
+  },
+  {
+   "name": "Stage Wiggle",
+   "file": "stage-wiggle.webp",
+   "coins": 899
+  },
+  {
+   "name": "Train",
+   "file": "train.webp",
+   "coins": 899
+  },
+  {
+   "name": "Funky Hatter",
+   "file": "funky-hatter.webp",
+   "coins": 900
+  },
+  {
+   "name": "Grand show",
+   "file": "grand-show.webp",
+   "coins": 999
+  },
+  {
+   "name": "Lucky Airdrop Box",
+   "file": "lucky-airdrop-box.webp",
+   "coins": 999
+  },
+  {
+   "name": "Travel with You",
+   "file": "travel-with-you.webp",
+   "coins": 999
+  },
+  {
+   "name": "Trending Figure",
+   "file": "trending-figure.webp",
+   "coins": 999
+  },
+  {
+   "name": "A Garden Yonder",
+   "file": "a-garden-yonder.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Blooming Ribbons",
+   "file": "blooming-ribbons.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Desert Blitzy",
+   "file": "desert-blitzy.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Desert Cooper",
+   "file": "desert-cooper.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Desert Diny",
+   "file": "desert-diny.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Desert Tom",
+   "file": "desert-tom.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Fairy Wings",
+   "file": "fairy-wings.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Firepit Blitzy",
+   "file": "firepit-blitzy.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Firepit Cooper",
+   "file": "firepit-cooper.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Firepit Diny",
+   "file": "firepit-diny.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Firepit Tom",
+   "file": "firepit-tom.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Flamingo Groove",
+   "file": "flamingo-groove.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Galaxy",
+   "file": "galaxy.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Gerry the Giraffe",
+   "file": "gerry-the-giraffe.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Giraffe",
+   "file": "giraffe.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Glowing Jellyfish",
+   "file": "glowing-jellyfish.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Iron Rod",
+   "file": "iron-rod.webp",
+   "coins": 1000
+  },
+  {
+   "name": "LIVE Pro Badge",
+   "file": "live-pro-badge.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Magic Potion",
+   "file": "magic-potion.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Shiny Air Balloon",
+   "file": "shiny-air-balloon.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Silver Sports Car",
+   "file": "silver-sports-car.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Sparkle Dance",
+   "file": "sparkle-dance.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Tundra Blitzy",
+   "file": "tundra-blitzy.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Tundra Cooper",
+   "file": "tundra-cooper.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Tundra Diny",
+   "file": "tundra-diny.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Tundra Tom",
+   "file": "tundra-tom.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Watermelon Love",
+   "file": "watermelon-love.webp",
+   "coins": 1000
+  },
+  {
+   "name": "Candy Puffs",
+   "file": "candy-puffs.webp",
+   "coins": 1030
+  },
+  {
+   "name": "Joy Floats",
+   "file": "joy-floats.webp",
+   "coins": 1030
+  },
+  {
+   "name": "Pumpkin Carriage",
+   "file": "pumpkin-carriage.webp",
+   "coins": 1031
+  },
+  {
+   "name": "Fireworks",
+   "file": "fireworks.webp",
+   "coins": 1088
+  },
+  {
+   "name": "Diamond",
+   "file": "diamond.webp",
+   "coins": 1099
+  },
+  {
+   "name": "Exclusive Spark",
+   "file": "exclusive-spark.webp",
+   "coins": 1099
+  },
+  {
+   "name": "Bunny DJ",
+   "file": "bunny-dj.webp",
+   "coins": 1200
+  },
+  {
+   "name": "Starlight Sceptre",
+   "file": "starlight-sceptre.webp",
+   "coins": 1200
+  },
+  {
+   "name": "Umbrella of Love",
+   "file": "umbrella-of-love.webp",
+   "coins": 1200
+  },
+  {
+   "name": "Frozen Magic",
+   "file": "frozen-magic.webp",
+   "coins": 1299
+  },
+  {
+   "name": "Halloween Drink",
+   "file": "halloween-drink.webp",
+   "coins": 1299
+  },
+  {
+   "name": "Autumn Picnic",
+   "file": "autumn-picnic.webp",
+   "coins": 1300
+  },
+  {
+   "name": "Party Laser",
+   "file": "party-laser.webp",
+   "coins": 1300
+  },
+  {
+   "name": "Vibrant Stage",
+   "file": "vibrant-stage.webp",
+   "coins": 1400
+  },
+  {
+   "name": "Anybody Home?",
+   "file": "anybody-home.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Astrobear",
+   "file": "astrobear.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Chasing the Dream",
+   "file": "chasing-the-dream.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Future Encounter",
+   "file": "future-encounter.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Greeting Card",
+   "file": "greeting-card.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Ignition Check",
+   "file": "ignition-check.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Level Ship",
+   "file": "level-ship.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Lover’s Lock",
+   "file": "lover-s-lock.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Racing Debut",
+   "file": "racing-debut.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Under Control",
+   "file": "under-control.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Viking Hammer",
+   "file": "viking-hammer.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Wedding",
+   "file": "wedding.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Wild Mic",
+   "file": "wild-mic.webp",
+   "coins": 1500
+  },
+  {
+   "name": "You're So Fly",
+   "file": "you-re-so-fly.webp",
+   "coins": 1500
+  },
+  {
+   "name": "Shooting Stars",
+   "file": "shooting-stars.webp",
+   "coins": 1580
+  },
+  {
+   "name": "Blooming Heart",
+   "file": "blooming-heart.webp",
+   "coins": 1599
+  },
+  {
+   "name": "Penlight",
+   "file": "penlight.webp",
+   "coins": 1599
+  },
+  {
+   "name": "Hug It Better",
+   "file": "hug-it-better.webp",
+   "coins": 1600
+  },
+  {
+   "name": "Here We Go",
+   "file": "here-we-go.webp",
+   "coins": 1799
+  },
+  {
+   "name": "Fox Legend",
+   "file": "fox-legend.webp",
+   "coins": 1800
+  },
+  {
+   "name": "Love Drop",
+   "file": "love-drop.webp",
+   "coins": 1800
+  },
+  {
+   "name": "Catch the Harvest",
+   "file": "catch-the-harvest.webp",
+   "coins": 1999
+  },
+  {
+   "name": "Cooper Flies Home",
+   "file": "cooper-flies-home.webp",
+   "coins": 1999
+  },
+  {
+   "name": "Getting Ready",
+   "file": "getting-ready.webp",
+   "coins": 1999
+  },
+  {
+   "name": "Mystery Firework",
+   "file": "mystery-firework.webp",
+   "coins": 1999
+  },
+  {
+   "name": "Star of Red Carpet",
+   "file": "star-of-red-carpet.webp",
+   "coins": 1999
+  },
+  {
+   "name": "Crystal Crown",
+   "file": "crystal-crown.webp",
+   "coins": 2000
+  },
+  {
+   "name": "Maple Fireworks",
+   "file": "maple-fireworks.webp",
+   "coins": 2000
+  },
+  {
+   "name": "Sky Drift",
+   "file": "sky-drift.webp",
+   "coins": 2000
+  },
+  {
+   "name": "Whale Diving",
+   "file": "whale-diving.webp",
+   "coins": 2150
+  },
+  {
+   "name": "Blow Rosie Kisses",
+   "file": "blow-rosie-kisses.webp",
+   "coins": 2199
+  },
+  {
+   "name": "Jollie's Heartland",
+   "file": "jollie-s-heartland.webp",
+   "coins": 2199
+  },
+  {
+   "name": "Rocky's Punch",
+   "file": "rocky-s-punch.webp",
+   "coins": 2199
+  },
+  {
+   "name": "Sage's Coinbot",
+   "file": "sage-s-coinbot.webp",
+   "coins": 2199
+  },
+  {
+   "name": "Spooky Rock",
+   "file": "spooky-rock.webp",
+   "coins": 2200
+  },
+  {
+   "name": "Wave Lights",
+   "file": "wave-lights.webp",
+   "coins": 2200
+  },
+  {
+   "name": "By the Glaziers",
+   "file": "by-the-glaziers.webp",
+   "coins": 2380
+  },
+  {
+   "name": "Chopper Bike",
+   "file": "chopper-bike.webp",
+   "coins": 2499
+  },
+  {
+   "name": "Tom Thunderfoot",
+   "file": "tom-thunderfoot.webp",
+   "coins": 2499
+  },
+  {
+   "name": "Animal Band",
+   "file": "animal-band.webp",
+   "coins": 2500
+  },
+  {
+   "name": "Wanted a Treat?",
+   "file": "wanted-a-treat.webp",
+   "coins": 2599
+  },
+  {
+   "name": "Celebration Tape",
+   "file": "celebration-tape.webp",
+   "coins": 2800
+  },
+  {
+   "name": "Crownfish",
+   "file": "crownfish.webp",
+   "coins": 2800
+  },
+  {
+   "name": "Samfaring Tom",
+   "file": "samfaring-tom.webp",
+   "coins": 2850
+  },
+  {
+   "name": "Ice Cream Truck",
+   "file": "ice-cream-truck.webp",
+   "coins": 2988
+  },
+  {
+   "name": "Motorcycle",
+   "file": "motorcycle.webp",
+   "coins": 2988
+  },
+  {
+   "name": "Pink Dream",
+   "file": "pink-dream.webp",
+   "coins": 2988
+  },
+  {
+   "name": "Beacon",
+   "file": "beacon.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Legends Scroll",
+   "file": "legends-scroll.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Level-up Spotlight",
+   "file": "level-up-spotlight.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Love in Sunset",
+   "file": "love-in-sunset.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Match Maniac",
+   "file": "match-maniac.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Party Bus",
+   "file": "party-bus.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Ray Serenade",
+   "file": "ray-serenade.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Rhythmic Bear",
+   "file": "rhythmic-bear.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Rosie on Stage",
+   "file": "rosie-on-stage.webp",
+   "coins": 2999
+  },
+  {
+   "name": "Car Drifting",
+   "file": "car-drifting.webp",
+   "coins": 3000
+  },
+  {
+   "name": "Meteor Shower",
+   "file": "meteor-shower.webp",
+   "coins": 3000
+  },
+  {
+   "name": "Rotary Backpack",
+   "file": "rotary-backpack.webp",
+   "coins": 3000
+  },
+  {
+   "name": "Summoning Horn",
+   "file": "summoning-horn.webp",
+   "coins": 3000
+  },
+  {
+   "name": "Sea Blitzy",
+   "file": "sea-blitzy.webp",
+   "coins": 3088
+  },
+  {
+   "name": "Sea Cooper",
+   "file": "sea-cooper.webp",
+   "coins": 3088
+  },
+  {
+   "name": "Sea Diny",
+   "file": "sea-diny.webp",
+   "coins": 3088
+  },
+  {
+   "name": "Sea Tom",
+   "file": "sea-tom.webp",
+   "coins": 3088
+  },
+  {
+   "name": "Halloween Idol",
+   "file": "halloween-idol.webp",
+   "coins": 3200
+  },
+  {
+   "name": "Hip-Hop Hen",
+   "file": "hip-hop-hen.webp",
+   "coins": 3200
+  },
+  {
+   "name": "Dream Big",
+   "file": "dream-big.webp",
+   "coins": 3350
+  },
+  {
+   "name": "Look Up",
+   "file": "look-up.webp",
+   "coins": 3350
+  },
+  {
+   "name": "LIVE Ranking Party",
+   "file": "live-ranking-party.webp",
+   "coins": 3999
+  },
+  {
+   "name": "Spark Stage Earth",
+   "file": "spark-stage-earth.webp",
+   "coins": 3999
+  },
+  {
+   "name": "Compact EV",
+   "file": "compact-ev.webp",
+   "coins": 4000
+  },
+  {
+   "name": "Magic World",
+   "file": "magic-world.webp",
+   "coins": 4088
+  },
+  {
+   "name": "Shine Bright",
+   "file": "shine-bright.webp",
+   "coins": 4088
+  },
+  {
+   "name": "Your Concert",
+   "file": "your-concert.webp",
+   "coins": 4500
+  },
+  {
+   "name": "Fiery Dragon",
+   "file": "fiery-dragon.webp",
+   "coins": 4888
+  },
+  {
+   "name": "Leon the Kitten",
+   "file": "leon-the-kitten.webp",
+   "coins": 4888
+  },
+  {
+   "name": "Private Jet",
+   "file": "private-jet.webp",
+   "coins": 4888
+  },
+  {
+   "name": "Signature Jet",
+   "file": "signature-jet.webp",
+   "coins": 4888
+  },
+  {
+   "name": "Sugar Whiskers",
+   "file": "sugar-whiskers.webp",
+   "coins": 4918
+  },
+  {
+   "name": "Guardian's Pledge",
+   "file": "guardian-s-pledge.webp",
+   "coins": 4999
+  },
+  {
+   "name": "Hero Space Ship",
+   "file": "hero-space-ship.webp",
+   "coins": 4999
+  },
+  {
+   "name": "Sage’s Venture",
+   "file": "sage-s-venture.webp",
+   "coins": 4999
+  },
+  {
+   "name": "Sports Car",
+   "file": "sports-car.webp",
+   "coins": 4999
+  },
+  {
+   "name": "Squitchy Morph",
+   "file": "squitchy-morph.webp",
+   "coins": 4999
+  },
+  {
+   "name": "The Trial of Sea",
+   "file": "the-trial-of-sea.webp",
+   "coins": 4999
+  },
+  {
+   "name": "Arcane Card",
+   "file": "arcane-card.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Community Power",
+   "file": "community-power.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Desert Wolf",
+   "file": "desert-wolf.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Diamond Gun",
+   "file": "diamond-gun.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Flying Jets",
+   "file": "flying-jets.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Leon's Sigil Cape",
+   "file": "leon-s-sigil-cape.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Mystic Rod",
+   "file": "mystic-rod.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Seaside Romance",
+   "file": "seaside-romance.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Unicorn Fantasy",
+   "file": "unicorn-fantasy.webp",
+   "coins": 5000
+  },
+  {
+   "name": "Fluffy Buddies",
+   "file": "fluffy-buddies.webp",
+   "coins": 5388
+  },
+  {
+   "name": "Wolf",
+   "file": "wolf.webp",
+   "coins": 5500
+  },
+  {
+   "name": "Cub on Clouds",
+   "file": "cub-on-clouds.webp",
+   "coins": 5888
+  },
+  {
+   "name": "Valiant Odyssey",
+   "file": "valiant-odyssey.webp",
+   "coins": 5888
+  },
+  {
+   "name": "Devoted Heart",
+   "file": "devoted-heart.webp",
+   "coins": 5999
+  },
+  {
+   "name": "My Dream Stage",
+   "file": "my-dream-stage.webp",
+   "coins": 5999
+  },
+  {
+   "name": "Future City",
+   "file": "future-city.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Lovely to Have You",
+   "file": "lovely-to-have-you.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Night of Yokai",
+   "file": "night-of-yokai.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Rust Reforged",
+   "file": "rust-reforged.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Sam in New City",
+   "file": "sam-in-new-city.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Strike a Pose",
+   "file": "strike-a-pose.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Strong Finish",
+   "file": "strong-finish.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Work Hard Play Harder",
+   "file": "work-hard-play-harder.webp",
+   "coins": 6000
+  },
+  {
+   "name": "Lili the Leopard",
+   "file": "lili-the-leopard.webp",
+   "coins": 6599
+  },
+  {
+   "name": "Celebration Time",
+   "file": "celebration-time.webp",
+   "coins": 6999
+  },
+  {
+   "name": "Happy Party",
+   "file": "happy-party.webp",
+   "coins": 6999
+  },
+  {
+   "name": "Last Riff Roar",
+   "file": "last-riff-roar.webp",
+   "coins": 6999
+  },
+  {
+   "name": "Rally Car",
+   "file": "rally-car.webp",
+   "coins": 7000
+  },
+  {
+   "name": "Majestic Hearts",
+   "file": "majestic-hearts.webp",
+   "coins": 7238
+  },
+  {
+   "name": "Jack-o' Morph",
+   "file": "jack-o-morph.webp",
+   "coins": 7999
+  },
+  {
+   "name": "Star Throne",
+   "file": "star-throne.webp",
+   "coins": 7999
+  },
+  {
+   "name": "Bird of Paradise",
+   "file": "bird-of-paradise.webp",
+   "coins": 8000
+  },
+  {
+   "name": "Stormwave Armor",
+   "file": "stormwave-armor.webp",
+   "coins": 8999
+  },
+  {
+   "name": "Leon and Lili",
+   "file": "leon-and-lili.webp",
+   "coins": 9699
+  },
+  {
+   "name": "You Are Wanted!",
+   "file": "you-are-wanted.webp",
+   "coins": 9999
+  },
+  {
+   "name": "Crystal Rod",
+   "file": "crystal-rod.webp",
+   "coins": 10000
+  },
+  {
+   "name": "Henry",
+   "file": "henry.webp",
+   "coins": 10000
+  },
+  {
+   "name": "Interstellar",
+   "file": "interstellar.webp",
+   "coins": 10000
+  },
+  {
+   "name": "Sunset Speedway",
+   "file": "sunset-speedway.webp",
+   "coins": 10000
+  },
+  {
+   "name": "Falcon",
+   "file": "falcon.webp",
+   "coins": 10999
+  },
+  {
+   "name": "Verified Glider",
+   "file": "verified-glider.webp",
+   "coins": 10999
+  },
+  {
+   "name": "Fangster Morph",
+   "file": "fangster-morph.webp",
+   "coins": 11999
+  },
+  {
+   "name": "Glampire Morph",
+   "file": "glampire-morph.webp",
+   "coins": 11999
+  },
+  {
+   "name": "Hot Rods",
+   "file": "hot-rods.webp",
+   "coins": 12000
+  },
+  {
+   "name": "White Wolf",
+   "file": "white-wolf.webp",
+   "coins": 12000
+  },
+  {
+   "name": "Legend Rider",
+   "file": "legend-rider.webp",
+   "coins": 12999
+  },
+  {
+   "name": "Level-up Spectacle",
+   "file": "level-up-spectacle.webp",
+   "coins": 12999
+  },
+  {
+   "name": "Daylight Debut",
+   "file": "daylight-debut.webp",
+   "coins": 13999
+  },
+  {
+   "name": "Monster Truck",
+   "file": "monster-truck.webp",
+   "coins": 14000
+  },
+  {
+   "name": "Crystal Heart",
+   "file": "crystal-heart.webp",
+   "coins": 14999
+  },
+  {
+   "name": "Iron Resolve",
+   "file": "iron-resolve.webp",
+   "coins": 14999
+  },
+  {
+   "name": "Proof of the King",
+   "file": "proof-of-the-king.webp",
+   "coins": 14999
+  },
+  {
+   "name": "Snowmoon Parasol",
+   "file": "snowmoon-parasol.webp",
+   "coins": 14999
+  },
+  {
+   "name": "A Fun House",
+   "file": "a-fun-house.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Arabian Cheetah",
+   "file": "arabian-cheetah.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Black Wolf",
+   "file": "black-wolf.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Corgi's Happy Chuseok",
+   "file": "corgi-s-happy-chuseok.webp",
+   "coins": 15000
+  },
+  {
+   "name": "DJ Peak",
+   "file": "dj-peak.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Firelight Kingdom",
+   "file": "firelight-kingdom.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Future Journey",
+   "file": "future-journey.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Legendary Aegis",
+   "file": "legendary-aegis.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Leopard",
+   "file": "leopard.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Look! Meteor Shower",
+   "file": "look-meteor-shower.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Party On&On",
+   "file": "party-on-on.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Riyadh",
+   "file": "riyadh.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Rosa Nebula",
+   "file": "rosa-nebula.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Vintage Car",
+   "file": "vintage-car.webp",
+   "coins": 15000
+  },
+  {
+   "name": "Stadium",
+   "file": "stadium.webp",
+   "coins": 15999
+  },
+  {
+   "name": "White Tiger",
+   "file": "white-tiger.webp",
+   "coins": 15999
+  },
+  {
+   "name": "Amusement Park",
+   "file": "amusement-park.webp",
+   "coins": 17000
+  },
+  {
+   "name": "Jet Car",
+   "file": "jet-car.webp",
+   "coins": 17000
+  },
+  {
+   "name": "Shell Castle",
+   "file": "shell-castle.webp",
+   "coins": 18000
+  },
+  {
+   "name": "Rust vs World",
+   "file": "rust-vs-world.webp",
+   "coins": 18999
+  },
+  {
+   "name": "Super Car",
+   "file": "super-car.webp",
+   "coins": 19000
+  },
+  {
+   "name": "Fantastic Fly Love",
+   "file": "fantastic-fly-love.webp",
+   "coins": 19999
+  },
+  {
+   "name": "Fly Love",
+   "file": "fly-love.webp",
+   "coins": 19999
+  },
+  {
+   "name": "Castle Fantasy",
+   "file": "castle-fantasy.webp",
+   "coins": 20000
+  },
+  {
+   "name": "Gyeongbokgung",
+   "file": "gyeongbokgung.webp",
+   "coins": 20000
+  },
+  {
+   "name": "Premium Shuttle",
+   "file": "premium-shuttle.webp",
+   "coins": 20000
+  },
+  {
+   "name": "TikTok Shuttle",
+   "file": "tiktok-shuttle.webp",
+   "coins": 20000
+  },
+  {
+   "name": "Legacy in Bloom",
+   "file": "legacy-in-bloom.webp",
+   "coins": 21000
+  },
+  {
+   "name": "Pop Out",
+   "file": "pop-out.webp",
+   "coins": 21000
+  },
+  {
+   "name": "Siren's Aria",
+   "file": "siren-s-aria.webp",
+   "coins": 22500
+  },
+  {
+   "name": "Infinite Heart",
+   "file": "infinite-heart.webp",
+   "coins": 23999
+  },
+  {
+   "name": "Adam’s Dream",
+   "file": "adam-s-dream.webp",
+   "coins": 25999
+  },
+  {
+   "name": "Phoenix",
+   "file": "phoenix.webp",
+   "coins": 25999
+  },
+  {
+   "name": "Rin the Snowborn",
+   "file": "rin-the-snowborn.webp",
+   "coins": 25999
+  },
+  {
+   "name": "Villainy Slain",
+   "file": "villainy-slain.webp",
+   "coins": 25999
+  },
+  {
+   "name": "Dragon Flame",
+   "file": "dragon-flame.webp",
+   "coins": 26999
+  },
+  {
+   "name": "Lion",
+   "file": "lion.webp",
+   "coins": 29999
+  },
+  {
+   "name": "LIVE Legends",
+   "file": "live-legends.webp",
+   "coins": 29999
+  },
+  {
+   "name": "Community Legends",
+   "file": "community-legends.webp",
+   "coins": 30000
+  },
+  {
+   "name": "Magic Rod",
+   "file": "magic-rod.webp",
+   "coins": 30000
+  },
+  {
+   "name": "Sam the Whale",
+   "file": "sam-the-whale.webp",
+   "coins": 30000
+  },
+  {
+   "name": "Leon and Lion",
+   "file": "leon-and-lion.webp",
+   "coins": 34000
+  },
+  {
+   "name": "Zeus",
+   "file": "zeus.webp",
+   "coins": 34000
+  },
+  {
+   "name": "TikTok Universe+",
+   "file": "tiktok-universe.webp",
+   "coins": 34999
+  },
+  {
+   "name": "Thunder Falcon",
+   "file": "thunder-falcon.webp",
+   "coins": 39999
+  },
+  {
+   "name": "TikTok Stars",
+   "file": "tiktok-stars.webp",
+   "coins": 39999
+  },
+  {
+   "name": "Fire Phoenix",
+   "file": "fire-phoenix.webp",
+   "coins": 41999
+  },
+  {
+   "name": "Pegasus",
+   "file": "pegasus.webp",
+   "coins": 42999
+  },
+  {
+   "name": "The Fair King",
+   "file": "the-fair-king.webp",
+   "coins": 42999
+  },
+  {
+   "name": "Yuki's Vigilance",
+   "file": "yuki-s-vigilance.webp",
+   "coins": 42999
+  }
+ ]
+}

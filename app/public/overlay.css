@@ -364,12 +364,12 @@ html, body {
   background: linear-gradient(135deg, rgba(35, 14, 18, 0.94), rgba(65, 20, 28, 0.94));
   border: 2px solid #ffbe53;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 230, 160, 0.4);
-  border-radius: 20px;
-  padding: 5px 18px;
+  border-radius: 30px;
+  padding: 8px 22px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 17px;
+  gap: 12px;
+  font-size: 27px;
   font-weight: 800;
   color: #fff6de;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
@@ -398,10 +398,13 @@ html, body {
 
 .wedding-guest {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 135px;
   height: 175px;
   transform-origin: 50% 100%;
-  will-change: transform, left, top;
+  /* Vị trí và độ to nhỏ theo chiều sâu đặt bằng translate / scale (overlay.js: khách đi lại) */
+  will-change: transform, translate, scale;
   transition: opacity 0.4s ease;
   animation: guest-idle-sway var(--dur, 3.6s) ease-in-out infinite alternate;
   animation-delay: var(--delay, 0s);
@@ -430,6 +433,14 @@ html, body {
 @keyframes guest-breathe {
   0%, 100% { transform: scale(1, 1); }
   50% { transform: scale(0.994, 1.016); }
+}
+
+/* Đang đi: nhún theo bước chân, hơi nghiêng về phía đang đi (--lean) */
+.wedding-guest.walking .guest-sprite { animation: guest-walk 0.42s ease-in-out infinite alternate; }
+@keyframes guest-walk {
+  0% { transform: translateY(0) rotate(calc(var(--lean, 0deg) - 1.8deg)); }
+  50% { transform: translateY(-8px) rotate(var(--lean, 0deg)); }
+  100% { transform: translateY(0) rotate(calc(var(--lean, 0deg) + 1.8deg)); }
 }
 
 /* Phản ứng ngắn: vỗ tay, nhảy cẫng, vẫy, quay ngó sân khấu */
@@ -522,6 +533,46 @@ html, body {
   white-space: nowrap;
 }
 
+/* Người giữ danh hiệu (Đại Gia Đám Cưới, Thần Động Phòng, Trùm Phá Đám...): thẻ vàng hai dòng, danh hiệu ở trên */
+.wedding-guest.vip .guest-name-badge {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 2px 6px;
+  top: -8px;
+  max-width: none;
+  padding: 4px 12px 5px;
+  border: 2px solid #fff6c9;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff3b0 0%, #ffc531 55%, #f79a1c 100%);
+  box-shadow: 0 0 0 2px rgba(140, 83, 5, 0.85), 0 0 18px rgba(255, 205, 80, 0.85), 0 6px 14px rgba(0, 0, 0, 0.7);
+  font-size: 15px;
+  transform: translate(-50%, -100%) scale(calc(var(--inv, 1) * 0.92));
+  transform-origin: 50% 100%;
+  animation: vip-badge-glow 1.6s ease-in-out infinite alternate;
+  z-index: 2;
+}
+.wedding-guest.vip .guest-status-tag {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: center;
+  padding: 1px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #b3122e, #7a0d24);
+  color: #ffe9a8;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+.wedding-guest.vip .badge-av { grid-row: 2; justify-self: end; }
+.wedding-guest.vip .badge-name { grid-row: 2; max-width: 150px; font-size: 15px; }
+.wedding-guest.vip .guest-sprite { filter: drop-shadow(0 0 10px rgba(255, 214, 102, 0.9)) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.65)); }
+@keyframes vip-badge-glow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.14); }
+}
+
 /* Bong bóng chat bình luận trắng chữ đen chuẩn Live TikTok (Image 4) */
 .wedding-chat-bubble {
   position: absolute;
@@ -607,6 +658,7 @@ html, body {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.75);
   white-space: nowrap;
 }
+.actor-gift-icon.has-gift-img { width: 40px; height: 40px; flex: none; margin: -8px 0 -8px -8px; }
 
 .actor-label {
   position: absolute;
@@ -974,6 +1026,16 @@ html, body {
   width: 26px;
   text-align: center;
 }
+/* Hình quà thật của TikTok (app/public/gifts) thay cho emoji */
+.guide-icon.has-gift-img { width: 34px; height: 34px; flex: none; margin: -3px 0 -3px -2px; }
+.guide-icon.has-gift-img img,
+.actor-gift-icon.has-gift-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+}
 
 .guide-info {
   display: flex;
@@ -1160,9 +1222,9 @@ html, body {
 }
 .cl-av {
   display: inline-flex;
-  width: 30px;
-  height: 30px;
-  font-size: 14px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
   border-radius: 50%;
   border: 2px solid #ffbe53;
   flex: none;
@@ -1864,23 +1926,24 @@ html, body {
 /* PHỤ ĐỀ LỜI MC */
 .mc-caption {
   position: absolute;
-  left: 70px;
-  right: 70px;
-  bottom: 118px;
+  left: 30px;
+  right: 30px;
+  bottom: 112px;
   z-index: 60;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 18px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(20, 8, 12, 0.9), rgba(60, 12, 28, 0.9));
-  border: 1.5px solid rgba(255, 210, 110, 0.75);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+  gap: 16px;
+  padding: 18px 26px 20px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(20, 8, 12, 0.95), rgba(72, 12, 30, 0.95));
+  border: 3px solid #ffd76e;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 22px rgba(255, 200, 90, 0.45);
   color: #fff8e6;
-  font-size: 22px;
-  font-weight: 750;
-  line-height: 1.35;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  /* Chữ to cho người xem trên điện thoại đọc được; câu càng dài chữ càng nhỏ bớt (overlay.js đặt data-size) */
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.28;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
   pointer-events: none;
   opacity: 0;
   transform: translateY(14px);
@@ -2009,6 +2072,7 @@ html, body {
 .gift-guide-list.compact { gap: 5px; }
 .gift-guide-list.compact .gift-guide-item { padding: 3px 8px; }
 .gift-guide-list.compact .guide-icon { font-size: 17px; }
+.gift-guide-list.compact .guide-icon.has-gift-img { width: 27px; height: 27px; margin: -2px 0 -2px -2px; }
 .gift-guide-list.compact .guide-info b { font-size: 11px; }
 .gift-guide-list.compact .guide-info span { font-size: 9.5px; }
 
@@ -2190,5 +2254,744 @@ html, body {
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
+  filter: contrast(1.04) brightness(1.02);
 }
 .stage-bg-fx.on { opacity: 1; }
+
+/* Cô dâu, chú rể đứng riêng chờ ghép đôi: phủ đúng khung ảnh cặp đôi, tách ra hai bên.
+   Đủ đôi: hai người lại gần nhau (0,8 giây) rồi ảnh cặp đôi hiện ra thay. */
+#solo-pair {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+/* Bóng đổ đặt ở lớp ảnh, tách khỏi lớp làm mờ: gộp drop-shadow với grayscale trên cùng phần tử
+   (hoặc ở khung ngoài) thì Chrome bỏ không vẽ cô dâu khi cả hai vai cùng trống */
+.solo-sprite {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
+}
+#solo-pair .actor-layer { filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.65)); }
+.solo-mode #solo-pair { opacity: 1; }
+.solo-mode #solo-bride { transform: translateX(-28%); }
+.solo-mode #solo-groom { transform: translateX(28%); }
+/* Vai chưa có ai nhận: người mờ mờ chờ, kèm ô hướng dẫn cách nhận vai; nhận vai thì sáng hẳn lên */
+.solo-sprite.vacant { opacity: 0.5; filter: grayscale(0.6) brightness(0.9); }
+/* Ô hướng dẫn đặt giữa thân từng người (cô dâu ~7%, chú rể ~100% bề ngang khung sau khi tách hai bên) */
+.solo-tip {
+  position: absolute;
+  top: 46%;
+  width: 168px;
+  transform: translate(-50%, -50%) scale(0.9);
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(120, 18, 38, 0.92), rgba(70, 10, 22, 0.92));
+  border: 2px solid rgba(255, 210, 120, 0.85);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+  color: #fff6de;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+#tip-bride { left: 7%; }
+#tip-groom { left: 100%; }
+.solo-tip.on { opacity: 1; transform: translate(-50%, -50%) scale(1); animation: solo-tip-pulse 2.4s ease-in-out infinite; }
+@keyframes solo-tip-pulse {
+  0%, 100% { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55); }
+  50% { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 200, 100, 0.7); }
+}
+#couple-wrapper.solo-mode #couple-sprite { opacity: 0; transition: transform 0.3s ease, filter 0.3s ease, opacity 0.4s ease; }
+/* Vừa đủ đôi: đợi hai người bước lại gần xong mới đổi sang ảnh cặp đôi */
+#couple-wrapper.solo-leave #solo-pair { transition: opacity 0.5s ease 0.8s; }
+#couple-wrapper.solo-leave #couple-sprite { transition: transform 0.3s ease, filter 0.3s ease, opacity 0.5s ease 0.8s; }
+/* Thẻ vai đang quay tên ghép đôi ngẫu nhiên */
+.role-card.rolling .rc-name { color: #ffe08a; text-shadow: 0 0 10px rgba(255, 200, 80, 0.9); }
+
+/* Chuyển cảnh giữa các phông (theo diễn biến hôn lễ): video che kín rồi mờ dần ra phông mới */
+.stage-bg-tx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  filter: contrast(1.04) brightness(1.02);
+}
+.stage-bg-tx.on { opacity: 1; transition-duration: 0.3s; }
+/* Không có video chuyển cảnh: phông mới mờ dần lên */
+.stage-bg-next {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+  filter: contrast(1.04) brightness(1.02);
+}
+.stage-bg-next.on { opacity: 1; }
+
+/* Khung tên dưới sân khấu: chưa ai nhận vai thì ẩn; vai còn trống ghi "Đang tìm…" */
+#couple-label { transition: opacity 0.4s ease; }
+#couple-label.empty { opacity: 0; }
+#couple-label .seeking { font-weight: 700; font-style: italic; color: #ffd98a; opacity: 0.9; }
+/* Khung tên được JS đưa ra #scene: nổi trên các hàng khách (khách có z-index = vị trí ghế / 10, tối đa ~190) */
+#scene > #couple-label {
+  position: absolute;
+  z-index: 195;
+  margin: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Nút bật tiếng khi trình duyệt chặn tự phát (không hiện trong OBS vì OBS cho phát tự do) */
+#sound-unlock {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 14px 26px;
+  border: 2px solid #ffd27a;
+  border-radius: 999px;
+  background: rgba(120, 18, 38, 0.95);
+  color: #fff6de;
+  font: 800 22px/1.2 system-ui, sans-serif;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  animation: solo-tip-pulse 1.6s ease-in-out infinite;
+}
+
+/* ========================================================
+   CƯỚP VAI: người cũ quay mòng mòng rồi văng khỏi màn hình, người mới rơi xuống thế chỗ
+   ======================================================== */
+#steal-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 60;
+}
+.steal-flyer { position: absolute; will-change: transform; }
+.steal-flyer .sf-lift,
+.steal-flyer .sf-spin { position: absolute; inset: 0; will-change: transform; }
+.steal-flyer canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.6));
+}
+.sf-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 150px; }
+.sf-tag {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px 4px 8px;
+  border-radius: 999px;
+  background: rgba(24, 8, 12, 0.92);
+  border: 2px solid #ffd87d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.sf-tag .sf-av { display: inline-flex; width: 30px; height: 30px; font-size: 15px; flex: none; }
+.sf-tag b { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Chữ "BỐP!" kiểu truyện tranh ngay chỗ bị đánh bật */
+.steal-pow {
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  margin: -115px 0 0 -115px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  color: #d1102f;
+  font-size: 36px;
+  font-weight: 900;
+  white-space: nowrap;
+  -webkit-text-stroke: 2px #fff;
+  paint-order: stroke fill;
+  text-shadow: 3px 3px 0 #5a0010;
+  animation: steal-pow 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+.steal-pow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle, #fffbd0 0%, #ffd21f 48%, #ff7a00 100%);
+  clip-path: polygon(50.0% 0.0%, 56.4% 17.6%, 69.1% 3.8%, 68.3% 22.6%, 85.4% 14.6%, 77.4% 31.7%, 96.2% 30.9%, 82.4% 43.6%, 100.0% 50.0%, 82.4% 56.4%, 96.2% 69.1%, 77.4% 68.3%, 85.4% 85.4%, 68.3% 77.4%, 69.1% 96.2%, 56.4% 82.4%, 50.0% 100.0%, 43.6% 82.4%, 30.9% 96.2%, 31.7% 77.4%, 14.6% 85.4%, 22.6% 68.3%, 3.8% 69.1%, 17.6% 56.4%, 0.0% 50.0%, 17.6% 43.6%, 3.8% 30.9%, 22.6% 31.7%, 14.6% 14.6%, 31.7% 22.6%, 30.9% 3.8%, 43.6% 17.6%);
+}
+@keyframes steal-pow {
+  0% { transform: scale(0.2) rotate(-25deg); opacity: 0; }
+  25% { transform: scale(1.1) rotate(-8deg); opacity: 1; }
+  70% { transform: scale(1) rotate(-8deg); opacity: 1; }
+  100% { transform: scale(1.35) rotate(-8deg); opacity: 0; }
+}
+.steal-star {
+  position: absolute;
+  font-size: 34px;
+  line-height: 1;
+  animation: steal-star 0.8s ease-out forwards;
+}
+@keyframes steal-star {
+  0% { transform: translate(-50%, -50%) scale(0.5) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(1.3) rotate(170deg); opacity: 0; }
+}
+.steal-twinkle {
+  position: absolute;
+  font-size: 110px;
+  line-height: 1;
+  animation: steal-twinkle 0.75s ease-out forwards;
+}
+@keyframes steal-twinkle {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+  35% { transform: translate(-50%, -50%) scale(1.5) rotate(60deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0) rotate(160deg); opacity: 0; }
+}
+.steal-react {
+  position: absolute;
+  font-size: 58px;
+  line-height: 1;
+  animation: steal-react 1.3s ease-out forwards;
+}
+@keyframes steal-react {
+  0% { transform: translate(-50%, -60%) scale(0.2); opacity: 0; }
+  18% { transform: translate(-50%, -110%) scale(1.25); opacity: 1; }
+  75% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -130%) scale(0.9); opacity: 0; }
+}
+.steal-dust {
+  position: absolute;
+  font-size: 44px;
+  line-height: 1;
+  animation: steal-dust 0.7s ease-out forwards;
+}
+@keyframes steal-dust {
+  0% { transform: translate(-50%, -50%) scaleX(var(--flip, 1)) scale(0.5); opacity: 0.95; }
+  100% { transform: translate(calc(-50% + var(--dx, 60px)), -70%) scaleX(var(--flip, 1)) scale(1.4); opacity: 0; }
+}
+
+/* Lúc diễn cảnh cướp vai: hiện hai người đứng riêng (kể cả khi đang dùng ảnh cặp đôi) để tách được người bị cướp */
+#couple-wrapper.steal-mode #solo-pair { opacity: 1; transition: none; }
+#couple-wrapper.steal-mode #couple-sprite { opacity: 0; transition: none; }
+#couple-wrapper.steal-mode:not(.solo-mode) .solo-tip { opacity: 0; animation: none; }
+#couple-wrapper.steal-mode:not(.solo-mode) .solo-sprite.vacant { opacity: 1; filter: none; }
+.solo-sprite.stolen { opacity: 0 !important; transition: none; }
+.solo-sprite.dropping { transition: none; }
+#wedding-stage.jolt { animation: stage-shake 0.3s ease-in-out 2; }
+.role-card.robbed { animation: card-robbed 0.12s linear 8; }
+@keyframes card-robbed {
+  0%, 100% { transform: translateX(0) rotate(0deg); filter: none; }
+  25% { transform: translateX(-8px) rotate(-2.5deg); filter: brightness(1.3) saturate(1.3); }
+  75% { transform: translateX(8px) rotate(2.5deg); filter: brightness(1.3) saturate(1.3); }
+}
+
+/* ========================================================
+   BẢNG "AI DÁM PHÁ ĐÁM?": hiện lúc đủ đôi đang đếm ngược tới lễ
+   ======================================================== */
+#crash-panel {
+  position: absolute;
+  left: 50%;
+  top: 452px;
+  width: 520px;
+  padding: 10px 12px 12px;
+  border-radius: 22px;
+  border: 3px solid #ffd24a;
+  background: linear-gradient(160deg, rgba(132, 8, 26, 0.97), rgba(52, 6, 16, 0.97));
+  box-shadow: 0 0 0 3px rgba(90, 0, 16, 0.7), 0 0 28px rgba(255, 86, 60, 0.8), 0 10px 26px rgba(0, 0, 0, 0.7);
+  transform: translateX(-50%) scale(0.85);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 44;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+#crash-panel.on {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  animation: crash-pulse 0.9s ease-in-out infinite alternate;
+}
+#crash-panel.on.urgent { animation: crash-urgent 0.32s ease-in-out infinite alternate; }
+@keyframes crash-pulse {
+  from { box-shadow: 0 0 0 3px rgba(90, 0, 16, 0.7), 0 0 16px rgba(255, 86, 60, 0.55), 0 10px 26px rgba(0, 0, 0, 0.7); }
+  to { box-shadow: 0 0 0 3px rgba(90, 0, 16, 0.7), 0 0 40px rgba(255, 120, 60, 1), 0 10px 26px rgba(0, 0, 0, 0.7); }
+}
+@keyframes crash-urgent {
+  from { transform: translateX(-50%) scale(1) rotate(-0.6deg); box-shadow: 0 0 0 3px rgba(90, 0, 16, 0.7), 0 0 20px rgba(255, 60, 40, 0.8), 0 10px 26px rgba(0, 0, 0, 0.7); }
+  to { transform: translateX(-50%) scale(1.035) rotate(0.6deg); box-shadow: 0 0 0 3px rgba(90, 0, 16, 0.7), 0 0 46px rgba(255, 60, 40, 1), 0 10px 26px rgba(0, 0, 0, 0.7); }
+}
+.crash-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #ffe9a8;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 0 #4a0010, 0 0 12px rgba(255, 120, 60, 0.8);
+  white-space: nowrap;
+}
+#crash-timer {
+  padding: 1px 12px;
+  border-radius: 999px;
+  background: #ffd24a;
+  color: #5a0010;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: none;
+}
+.crash-list { display: flex; gap: 8px; margin-top: 9px; }
+.crash-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 6px 7px;
+  border-radius: 16px;
+  border: 2px solid #fff3b0;
+  background: linear-gradient(180deg, #ffe07a 0%, #ffb02e 100%);
+  color: #4a0510;
+  text-align: center;
+  line-height: 1.15;
+}
+.crash-icon { width: 62px; height: 62px; font-size: 46px; line-height: 62px; }
+.crash-icon img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)); }
+.crash-item b { font-size: 19px; font-weight: 900; white-space: nowrap; }
+.crash-item span,
+.crash-item i {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: 800;
+}
+.crash-item span { font-size: 14px; color: #a3122c; }
+.crash-item i { margin-top: 2px; padding: 1px 9px; border-radius: 999px; background: #7a0d24; color: #ffe9a8; font-size: 13.5px; }
+
+/* ========================================================
+   HIỆU ỨNG NHẬN QUÀ: thẻ cảm ơn, mưa hình quà, quà lớn phóng to
+   ======================================================== */
+#gift-fx { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 58; }
+#gift-thanks {
+  position: absolute;
+  left: 50%;
+  top: 204px;
+  width: 520px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+.gift-thanks-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 6px 18px 6px 8px;
+  border-radius: 999px;
+  border: 2px solid #ffe08a;
+  background: linear-gradient(100deg, rgba(214, 28, 72, 0.96), rgba(120, 14, 80, 0.96) 60%, rgba(60, 12, 70, 0.9));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 120, 160, 0.6);
+  color: #fff;
+  animation: gt-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.gift-thanks-card.big { border-color: #fff3b0; background: linear-gradient(100deg, #f7a81c, #e8590c 55%, #b3122e); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 28px rgba(255, 200, 70, 0.95); }
+.gift-thanks-card.out { animation: gt-out 0.45s ease-in both; }
+@keyframes gt-in { from { transform: translateX(-70px) scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gt-out { to { transform: translateY(-18px) scale(0.92); opacity: 0; } }
+.gt-av { display: inline-flex; width: 54px; height: 54px; flex: none; font-size: 26px; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
+.gt-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.gt-text b { font-size: 22px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px; }
+.gt-text span { font-size: 15px; font-weight: 700; color: #ffe9c2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+.gt-gift { width: 66px; height: 66px; flex: none; margin: -8px 0; font-size: 50px; line-height: 66px; text-align: center; }
+.gt-gift img, .gift-drop img, .gift-pop-icon img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)); }
+.gt-count {
+  flex: none;
+  font-size: 34px;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffe45c;
+  -webkit-text-stroke: 1.5px #7a0d24;
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(90, 0, 16, 0.8);
+  transform-origin: 0% 60%;
+}
+.gt-count.bump { animation: gt-bump 0.4s cubic-bezier(0.2, 1.8, 0.4, 1); }
+@keyframes gt-bump { from { transform: scale(2.1); } to { transform: scale(1); } }
+.gift-drop { position: absolute; top: 0; line-height: 1; text-align: center; will-change: transform, opacity; }
+.gift-pop {
+  position: absolute;
+  left: 50%;
+  top: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translate(-50%, -50%);
+  animation: gift-pop 2.2s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+.gift-pop-icon { width: 300px; height: 300px; font-size: 230px; line-height: 300px; text-align: center; filter: drop-shadow(0 0 40px rgba(255, 215, 90, 0.95)); }
+.gift-pop b {
+  padding: 4px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd24a, #ff9a1f);
+  border: 2px solid #fff6c9;
+  color: #5a0010;
+  font-size: 30px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+@keyframes gift-pop {
+  0% { transform: translate(-50%, -50%) scale(0.1) rotate(-25deg); opacity: 0; }
+  18% { transform: translate(-50%, -50%) scale(1.12) rotate(4deg); opacity: 1; }
+  30%, 78% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -60%) scale(1.5); opacity: 0; }
+}
+.gift-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, rgba(255, 226, 120, 0.75), rgba(255, 170, 40, 0.25) 45%, rgba(255, 170, 40, 0) 75%); animation: gift-flash 1.1s ease-out both; }
+@keyframes gift-flash { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Phụ đề MC: cỡ chữ theo độ dài câu */
+.mc-caption[data-size="m"] { font-size: 38px; }
+.mc-caption[data-size="l"] { font-size: 33px; }
+.mc-caption .mc-badge { font-size: 0.62em; padding: 0.22em 0.7em; border-radius: 999px; margin-top: 0.12em; white-space: nowrap; flex: none; }
+
+/* ========================================================
+   BẢNG THÔNG BÁO LỚN (giữa màn hình, phía trên sân khấu): nhãn nhỏ · tên / tiêu đề thật to · mô tả
+   ======================================================== */
+#frame > .ceremony-alert {
+  left: 50%;
+  bottom: 1262px; /* mép dưới ở y≈658, bảng cao lên phía trên */
+  width: max-content;
+  min-width: 430px;
+  max-width: 548px;
+  padding: 16px 30px 20px;
+  border-width: 4px;
+  border-radius: 30px;
+  gap: 4px;
+  z-index: 66;
+}
+#frame > .ceremony-alert strong { font-size: 34px; line-height: 1.16; letter-spacing: 0.3px; overflow-wrap: anywhere; }
+#frame > .ceremony-alert[data-size="xl"] strong { font-size: 66px; }
+#frame > .ceremony-alert[data-size="l"] strong { font-size: 50px; }
+#frame > .ceremony-alert[data-size="m"] strong { font-size: 40px; }
+#frame > .ceremony-alert span { font-size: 25px; font-weight: 800; font-style: normal; line-height: 1.25; color: #fff4d6; }
+#frame > .ceremony-alert span:empty { display: none; }
+#frame > .ceremony-alert .ceremony-sparkles { font-size: 17px; }
+#frame > .ceremony-alert.has-kicker .ceremony-sparkles {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #ffe45c;
+  text-shadow: 0 2px 0 rgba(90, 0, 16, 0.8);
+}
+
+/* ========================================================
+   BÌNH LUẬN THẬT CỦA NGƯỜI XEM: ô trắng chữ to phía trên đầu nhân vật
+   ======================================================== */
+#chat-layer { position: absolute; inset: 0; pointer-events: none; z-index: 57; }
+.live-comment {
+  position: absolute;
+  max-width: 540px;
+  width: max-content;
+  padding: 12px 24px 14px;
+  border-radius: 26px;
+  background: #ffffff;
+  border: 3px solid #ffbe53;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.65);
+  color: #1a0f0d;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.22;
+  text-align: left;
+  overflow-wrap: anywhere;
+  transform: translate(-50%, -100%);
+  animation: live-comment-in 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+}
+.live-comment::after {
+  content: '';
+  position: absolute;
+  left: calc(50% + var(--tail, 0px));
+  top: 100%;
+  margin-left: -13px;
+  border: 13px solid transparent;
+  border-top-color: #ffffff;
+  filter: drop-shadow(0 3px 0 #ffbe53);
+}
+.live-comment.out { opacity: 0; transition: opacity 0.35s ease; }
+@keyframes live-comment-in {
+  from { transform: translate(-50%, -80%) scale(0.5); opacity: 0; }
+  to { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+}
+/* Lời bâng quơ của rạp (không phải bình luận thật): ô nhỏ hơn, cỡ đều nhau dù đứng xa hay gần */
+.wedding-chat-bubble { transform: translateX(-50%) scale(calc(var(--inv, 1) * 0.86)); transform-origin: 50% 100%; border-width: 1.5px; }
+
+/* ========================================================
+   THẺ TÊN KHÁCH: khách thường nền tối chữ trắng, chỉ ghi tên; người đặc biệt mới có thẻ vàng kèm danh hiệu
+   ======================================================== */
+.wedding-guest .guest-name-badge {
+  transform: translateX(-50%) scale(var(--inv, 1)); /* cỡ chữ đều nhau dù đứng hàng xa hay gần */
+  transform-origin: 50% 100%;
+}
+.wedding-guest:not(.special):not(.vip) .guest-name-badge {
+  background: rgba(28, 16, 40, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+  padding: 1px 8px 1px 3px;
+}
+.wedding-guest:not(.special):not(.vip) .guest-status-tag { display: none; }
+
+/* ========================================================
+   HAI BẢNG HƯỚNG DẪN HAI BÊN: to, rõ, ít chữ — người xem trên điện thoại nhìn là biết bình luận gì, tặng quà gì
+   ======================================================== */
+.left-widgets { width: 300px; gap: 12px; }
+.widget-card { padding: 12px 16px 14px; border-width: 2px; border-radius: 18px; background: rgba(86, 12, 32, 0.93); border-color: #ffd36b; }
+.widget-header { font-size: 22px; font-weight: 900; padding-bottom: 7px; margin-bottom: 9px; gap: 8px; color: #ffe08a; border-bottom-color: rgba(255, 211, 107, 0.5); }
+.guide-list { gap: 7px; }
+.guide-list li { display: block; font-size: 20px; font-weight: 700; line-height: 1.25; color: #ffeccc; }
+.guide-list li b { font-weight: 900; color: #ffffff; }
+.guide-list li .gold-text { font-weight: 900; }
+.wedding-registry .widget-header { font-size: 19px; }
+.registry-item { font-size: 17px; margin: 5px 0; gap: 8px; }
+.reg-rank { width: 24px; }
+
+#gift-guide-panel {
+  top: 112px; /* cao hơn bảng bên trái một chút để đủ chỗ cho 16 dòng quà mà không đè thẻ cô dâu */
+  right: 28px;
+  width: 292px;
+  padding: 12px 14px 12px;
+  border-width: 2px;
+  border-radius: 18px;
+  background: rgba(86, 12, 32, 0.93);
+  border-color: #ffd36b;
+}
+.gift-menu-title { font-size: 23px; font-weight: 900; gap: 8px; padding-bottom: 7px; margin-bottom: 8px; color: #ffe08a; border-bottom-color: rgba(255, 211, 107, 0.5); }
+.gift-guide-list { gap: 3px; }
+.gift-guide-item,
+.gift-guide-item.highlight-cmt,
+.gift-guide-item.highlight-marry,
+.gift-guide-item.highlight-dp {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  animation: none;
+  padding: 0;
+  gap: 8px;
+  min-height: 39px;
+}
+.gift-guide-item .guide-icon { width: 38px; height: 38px; flex: none; margin: 0; font-size: 29px; line-height: 38px; text-align: center; }
+.gift-guide-item .guide-icon.has-gift-img { width: 38px; height: 38px; margin: 0; }
+.gift-guide-item .guide-info b { font-size: 20px; font-weight: 800; color: #ffffff; white-space: nowrap; line-height: 1.15; }
+.gift-guide-item .guide-info span { font-size: 13px; font-weight: 700; color: #ffdca0; line-height: 1.1; }
+.gift-guide-item.highlight-marry .guide-info b { color: #ffe45c; }
+.gift-guide-item.highlight-dp .guide-info b { color: #ffb3c6; }
+.gift-guide-list.dense { gap: 2px; }
+.gift-guide-list.dense .gift-guide-item { min-height: 29px; gap: 7px; }
+.gift-guide-list.dense .guide-icon,
+.gift-guide-list.dense .guide-icon.has-gift-img { width: 28px; height: 28px; font-size: 21px; line-height: 28px; }
+.gift-guide-list.dense .guide-info b { font-size: 17.5px; }
+.gift-guide-list.dense .guide-info span { font-size: 10.5px; }
+
+/* Vùng giữa hẹp lại vì hai bảng bên to ra: bảng phá đám và thẻ cảm ơn quà thu gọn cho vừa */
+#crash-panel { width: 428px; padding: 9px 9px 10px; }
+.crash-title { font-size: 19px; gap: 7px; }
+#crash-timer { font-size: 19px; padding: 1px 9px; }
+.crash-list { gap: 6px; }
+.crash-item { padding: 5px 3px 6px; }
+.crash-icon { width: 54px; height: 54px; font-size: 40px; line-height: 54px; }
+.crash-item b { font-size: 16.5px; }
+.crash-item span { font-size: 12.5px; }
+.crash-item i { font-size: 12px; padding: 1px 6px; }
+#gift-thanks { width: 428px; }
+.gift-thanks-card { padding: 5px 14px 5px 6px; gap: 8px; }
+.gt-av { width: 46px; height: 46px; font-size: 22px; }
+.gt-text b { font-size: 20px; max-width: 150px; }
+.gt-text span { font-size: 13.5px; max-width: 160px; }
+.gt-gift { width: 56px; height: 56px; font-size: 42px; line-height: 56px; margin: -6px 0; }
+.gt-count { font-size: 30px; }
+
+
+/* ========================================================
+   CỬA PHỤC THÙ & TỈ SỐ KÈO ĐẤU: gọi tên người vừa bị cướp vai, đếm giờ đòi lại
+   ======================================================== */
+#duel-bar {
+  position: absolute;
+  left: 50%;
+  top: 288px;
+  width: 428px;
+  padding: 8px 10px 9px;
+  border-radius: 20px;
+  border: 3px solid #fff;
+  background: linear-gradient(160deg, #ff7a18, #d6142b 62%, #7a0620);
+  box-shadow: 0 0 0 3px rgba(120, 10, 20, 0.75), 0 0 30px rgba(255, 120, 30, 0.9), 0 10px 24px rgba(0, 0, 0, 0.7);
+  color: #fff;
+  transform: translateX(-50%) scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 45;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+#duel-bar.on { opacity: 1; transform: translateX(-50%) scale(1); animation: duel-pulse 0.7s ease-in-out infinite alternate; }
+#duel-bar.on.urgent { animation: duel-urgent 0.26s ease-in-out infinite alternate; }
+@keyframes duel-pulse {
+  from { box-shadow: 0 0 0 3px rgba(120, 10, 20, 0.75), 0 0 14px rgba(255, 120, 30, 0.6), 0 10px 24px rgba(0, 0, 0, 0.7); }
+  to { box-shadow: 0 0 0 3px rgba(120, 10, 20, 0.75), 0 0 42px rgba(255, 170, 40, 1), 0 10px 24px rgba(0, 0, 0, 0.7); }
+}
+@keyframes duel-urgent {
+  from { transform: translateX(-50%) scale(1); }
+  to { transform: translateX(-50%) scale(1.045); }
+}
+.duel-head { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.duel-call {
+  font-size: 21px; font-weight: 900; letter-spacing: 0.2px; line-height: 1.15; text-align: center;
+  text-shadow: 0 2px 0 #7a0620, 0 0 10px rgba(0, 0, 0, 0.45);
+  min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+#duel-timer {
+  flex: none; font-size: 22px; font-weight: 900; padding: 1px 10px; border-radius: 999px;
+  background: #fff; color: #d6142b; font-variant-numeric: tabular-nums;
+}
+.duel-body {
+  display: flex; align-items: center; gap: 9px; margin-top: 7px; padding: 6px 9px;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.96); color: #3a0a12;
+}
+.duel-av {
+  flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid #d6142b;
+  background: #ffe1e1 center / cover no-repeat; display: grid; place-items: center; font-size: 24px; font-weight: 900; color: #d6142b;
+  filter: grayscale(0.55);
+}
+.duel-av img { width: 100%; height: 100%; object-fit: cover; }
+.duel-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.duel-text b { font-size: 15.5px; font-weight: 800; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.duel-text span { font-size: 18px; font-weight: 900; color: #d6142b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.duel-gift { flex: none; width: 58px; height: 58px; font-size: 44px; line-height: 58px; text-align: center; background: center / contain no-repeat; }
+.duel-gift img { width: 100%; height: 100%; object-fit: contain; }
+.duel-score {
+  margin-top: 6px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 0.3px;
+  text-shadow: 0 2px 0 #7a0620; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Đang mở cửa phục thù: bảng "ai dám phá đám" lùi xuống nhường chỗ */
+#frame.duel-on #crash-panel { top: 484px; }
+
+
+/* ========================================================
+   BIẾN TẤU HIỆU ỨNG: mưa biểu tượng, chớp sáng, đèn sân khấu
+   ======================================================== */
+.fx-rain { position: absolute; top: 0; line-height: 1; pointer-events: none; will-change: transform, opacity; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35)); }
+.fx-flash { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; }
+.fx-beam {
+  position: absolute; top: -120px; width: 320px; height: 1500px; pointer-events: none;
+  transform-origin: 50% 0;
+  background: linear-gradient(to bottom, rgba(255, 238, 160, 0.7), rgba(255, 226, 130, 0.3) 55%, rgba(255, 226, 130, 0));
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+  filter: blur(6px);
+}
+
+/* Khung "Nhạc nền cưới" đang ẩn: bảng bên trái dời lên ngang bảng quà bên phải */
+#frame.no-bgm-badge .left-widgets { top: 112px; }
+
+/* Bình luận của cô dâu / chú rể: ô trắng ngay trên đầu họ ở sân khấu, viền theo màu vai, có dòng tên */
+.live-comment.from-role { border-width: 4px; padding-top: 8px; z-index: 2; }
+.live-comment.from-role small { display: block; font-size: 19px; font-weight: 900; line-height: 1.2; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 480px; }
+.live-comment.role-groom { border-color: #e0a100; }
+.live-comment.role-groom small { color: #b06a00; }
+.live-comment.role-groom::after { filter: drop-shadow(0 4px 0 #e0a100); }
+.live-comment.role-bride { border-color: #ff5fa2; }
+.live-comment.role-bride small { color: #d81b70; }
+.live-comment.role-bride::after { filter: drop-shadow(0 4px 0 #ff5fa2); }
+
+/* ========================================================
+   BỐ CỤC "RẠP VIRAL": cặp đôi là tâm điểm, thẻ vai gọn ở giữa phía trên, bảng tên sau lưng sân khấu,
+   thanh tim to rõ, danh hiệu nổi bật
+   ======================================================== */
+/* Thẻ vai: hai ô gọn cạnh nhau giữa hai bảng hướng dẫn, nhường hai bên sân khấu cho cặp đôi và khách */
+.role-card { top: 232px; width: 186px; padding: 0 8px 8px; gap: 3px; border-radius: 16px; }
+.role-card.groom { left: 345px; right: auto; }
+.role-card.bride { left: 549px; right: auto; }
+.rc-head { margin-top: -12px; padding: 3px 12px; font-size: 13px; }
+.rc-avatar { width: 78px; height: 78px; font-size: 34px; border-width: 3px; margin-top: 2px; }
+.rc-name { max-width: 170px; font-size: 18px; }
+.rc-bid { font-size: 12.5px; }
+.rc-hint { max-width: 172px; font-size: 11.5px; padding: 2px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Bảng tên cặp đôi trên phông, ngay trên đầu cô dâu chú rể */
+#name-plaque {
+  position: absolute;
+  left: 50%;
+  top: 446px; /* lúc đếm ngược bảng "ai dám phá đám" che kín bảng tên, hết đếm ngược bảng tên hiện ra */
+  z-index: 3;
+  min-width: 300px;
+  max-width: 460px;
+  padding: 10px 26px 12px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-radius: 140px 140px 26px 26px;
+  border: 3px solid #e8c372;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 252, 240, 0.97), rgba(255, 238, 214, 0.95) 70%);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.55), 0 0 28px rgba(255, 210, 120, 0.75), 0 10px 22px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#name-plaque.empty { opacity: 0; transform: translateX(-50%) scale(0.9); }
+#name-plaque small { font-size: 14px; font-weight: 900; letter-spacing: 3px; color: #b2873a; }
+#name-plaque .np-names { display: flex; align-items: baseline; justify-content: center; gap: 8px; max-width: 420px; }
+#name-plaque .np-names b {
+  font-family: 'Noto Serif', 'Times New Roman', Georgia, serif;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #8a1030;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 190px;
+}
+#name-plaque[data-size="m"] .np-names b { font-size: 31px; }
+#name-plaque[data-size="s"] .np-names b { font-size: 25px; }
+#name-plaque[data-size="xs"] .np-names b { font-size: 21px; }
+#name-plaque .np-names i { font-style: normal; font-size: 28px; color: #e0245e; animation: heart-beat 1.2s ease-in-out infinite; }
+#name-plaque #np-date { font-size: 15px; font-weight: 800; letter-spacing: 2px; color: #b2873a; }
+@keyframes heart-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+
+/* Hàng mục tiêu: mục chưa ai góp thì ẩn, thanh tim to và rõ */
+.wedding-goals-row .goal-pill.idle { display: none; }
+.wedding-goals-row .goal-like { flex: 2; padding: 6px 16px; border-color: #ff6f9c; box-shadow: 0 0 14px rgba(255, 60, 120, 0.45), 0 4px 12px rgba(0, 0, 0, 0.6); }
+.wedding-goals-row .goal-like .goal-icon { font-size: 20px; }
+.wedding-goals-row .goal-like .goal-text { font-size: 16px; font-weight: 900; color: #fff; order: 4; }
+.wedding-goals-row .goal-like .goal-numbers { font-size: 16px; font-weight: 900; color: #ffe08a; order: 1; }
+.wedding-goals-row .goal-like .goal-numbers::after { content: ' tim →'; color: #fff; }
+.wedding-goals-row .goal-like .goal-bar { height: 12px; order: 5; }
+.wedding-goals-row .goal-like .goal-icon { order: 0; }
+.metric-party b { color: #ffe08a; }
+
+/* Người giữ danh hiệu: thẻ vàng to hơn, nhìn từ điện thoại vẫn đọc được */
+.wedding-guest.vip .guest-name-badge { transform: translate(-50%, -100%) scale(calc(var(--inv, 1) * 1.12)); }
+.wedding-guest.vip .guest-status-tag { font-size: 16px; }
+.wedding-guest.vip .badge-name { font-size: 16.5px; max-width: 170px; }

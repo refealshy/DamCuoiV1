@@ -292,10 +292,26 @@ $('#btn-save-couple')?.addEventListener('click', async () => {
     roleMode: $('#cfg-role-mode').value,
     minCoinsToMarry: Math.max(1, Number($('#cfg-min-marry').value) || 10),
     autoCeremony: $('#cfg-auto-ceremony').value === 'true',
-    ceremonyCountdown: Math.max(5, Number($('#cfg-ceremony-countdown').value) || 45),
+    ceremonyCountdown: Math.max(5, Number($('#cfg-ceremony-countdown').value) || 20),
+    ceremonySteps: $('#cfg-ceremony-steps').value === 'auto' ? 'auto' : 'gift',
+    receptionSeconds: Math.min(600, Math.max(8, Number($('#cfg-reception-seconds').value) || 25)),
+    demoEvery: Math.min(100, Math.max(0, Number($('#cfg-demo-every')?.value ?? 8) || 0)),
+    treatQuietSeconds: Math.min(3600, Math.max(0, Math.round(Number($('#cfg-treat-quiet')?.value ?? 60) || 0))),
+    autoPair: $('#cfg-auto-pair').value === 'true',
+    autoPairSeconds: Math.min(600, Math.max(5, Number($('#cfg-auto-pair-seconds').value) || 8)),
+    pairBoth: $('#cfg-pair-both').value !== 'false',
+    partyEvery: Math.min(100, Math.max(0, Math.round(Number($('#cfg-party-every').value) || 0))),
+    partnerWaitSeconds: Math.min(600, Math.max(10, Number($('#cfg-partner-wait-seconds')?.value) || 90)),
+    hostName: $('#cfg-host-name').value.trim(),
+    freeRoles: $('#cfg-free-roles').value === 'true',
     roleSystem: $('#cfg-role-system').value,
+    roleQueue: $('#cfg-role-queue').value === 'true',
     photoAfterCeremony: $('#cfg-photo-after').value === 'true',
-    maxGuests: Number($('#cfg-max-guests').value) || 54,
+    maxGuests: Number($('#cfg-max-guests').value) || 90,
+    guestsWander: $('#cfg-guests-wander').value === 'true',
+    giftEffects: $('#cfg-gift-effects').value === 'true',
+    botsEnabled: $('#cfg-bots-enabled').value === 'true',
+    botsCount: Math.min(80, Math.max(1, Number($('#cfg-bots-count').value) || 20)),
     likeGoal: Math.max(100, Number($('#cfg-like-goal').value) || 5000),
     moneyUnit: $('#cfg-money-unit').value,
     titleDecaySeconds: Math.max(10, Number($('#cfg-title-decay').value) || 30),
@@ -448,6 +464,9 @@ function voiceConfigFromForm() {
   return {
     speech: $('#cfg-speech-enabled').value === 'true',
     voiceEngine: $('#cfg-voice-engine').value,
+    vieneuVoice: $('#cfg-vieneu-voice').value,
+    vieneuStyle: $('#cfg-vieneu-style').value,
+    vieneuReverb: $('#cfg-vieneu-reverb').value,
     browserVoice: $('#cfg-browser-voice').value,
     voiceRate: Number($('#cfg-voice-rate').value) || 1.08,
     voicePitch: Number($('#cfg-voice-pitch').value) || 1,
@@ -465,7 +484,7 @@ function voiceConfigFromForm() {
 $('#btn-save-voice')?.addEventListener('click', async () => {
   const config = voiceConfigFromForm();
   wantedBrowserVoice = config.browserVoice;
-  try { await api('/api/config', { config }); toast('✅ Đã lưu Giọng MC'); } catch {}
+  try { await api('/api/config', { config }); toast('✅ Đã lưu Giọng MC'); setTimeout(refreshVieneuInfo, 800); setTimeout(refreshVieneuInfo, 7000); } catch {}
 });
 
 function splitForTts(text) {
@@ -482,7 +501,38 @@ function splitForTts(text) {
   return out;
 }
 
-// Nghe thử ngay trên máy đang mở bảng điều khiển (giọng Google)
+// Giọng nam trên máy: báo tình trạng (chưa cài / đang nạp / sẵn sàng)
+let wantedVieneuVoice = '';
+async function refreshVieneuInfo() {
+  const info = $('#vieneu-info');
+  if (!info) return;
+  try {
+    const d = await api('/api/vieneu', null, 'GET');
+    const chosen = $('#cfg-voice-engine').value === 'vieneu';
+    // Giọng tự thêm (tools/giong-nam/them_giong.py) chưa có sẵn trong danh sách thì thêm vào
+    const sel = $('#cfg-vieneu-voice');
+    for (const v of d.voices || []) {
+      if (sel && ![...sel.options].some(o => o.value === v.name)) sel.append(new Option(`${v.name} — ${v.description || 'giọng tự thêm'}`, v.name));
+    }
+    if (sel && wantedVieneuVoice && sel.value !== wantedVieneuVoice) setVal('#cfg-vieneu-voice', wantedVieneuVoice);
+    if (!d.installed) info.textContent = '⚠️ Chưa cài giọng nam trên máy này (tools/giong-nam) — chọn nguồn này thì MC vẫn dùng giọng Google.';
+    else if (d.error) info.textContent = `⚠️ ${d.error} — MC tạm dùng giọng Google.`;
+    else if (d.ready) info.textContent = '✅ Giọng nam đã sẵn sàng.';
+    else if (d.running) info.textContent = '⏳ Giọng nam đang nạp (vài giây), trong lúc đó MC dùng giọng Google.';
+    else info.textContent = chosen ? 'Bấm "Lưu Giọng MC" để bật giọng nam.' : 'Đã cài. Chọn nguồn "Giọng nam trên máy" rồi lưu để dùng.';
+  } catch {}
+}
+$('#cfg-vieneu-voice')?.addEventListener('change', e => { wantedVieneuVoice = e.target.value; });
+$('#cfg-voice-engine')?.addEventListener('change', () => {
+  // Giọng nam đọc tốc độ tự nhiên, không cần tua nhanh như giọng Google
+  if ($('#cfg-voice-engine').value === 'vieneu' && Number($('#cfg-voice-rate').value) > 1.2) {
+    $('#cfg-voice-rate').value = '1.1';
+    updateRangeLabels();
+  }
+  refreshVieneuInfo();
+});
+
+// Nghe thử ngay trên máy đang mở bảng điều khiển (giọng Google hoặc giọng nam trên máy, theo lựa chọn trên form)
 let localAudio = null;
 async function playGoogle(text) {
   const clean = String(text || '').replace(/\p{Extended_Pictographic}|‍|️/gu, '').trim();
@@ -492,10 +542,16 @@ async function playGoogle(text) {
   const volume = Number($('#cfg-volume').value);
   for (const part of splitForTts(clean)) {
     try {
-      const res = await fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: part }) });
-      if (!res.ok) { toast('⚠️ Không lấy được giọng Google (kiểm tra Internet)', true); return; }
+      const male = $('#cfg-voice-engine').value === 'vieneu';
+      const res = await fetch('/api/speech', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: part, engine: male ? 'vieneu' : 'google', voice: $('#cfg-vieneu-voice').value, style: $('#cfg-vieneu-style').value, vang: $('#cfg-vieneu-reverb').value })
+      });
+      if (!res.ok) { toast('⚠️ Không lấy được giọng đọc (kiểm tra Internet)', true); return; }
+      const got = res.headers.get('X-Voice');
+      if (male && got !== 'vieneu') { toast('⏳ Giọng nam chưa sẵn sàng nên đang nghe giọng Google — thử lại sau vài giây', true); refreshVieneuInfo(); }
       const audio = localAudio = new Audio(URL.createObjectURL(await res.blob()));
-      audio.playbackRate = rate;
+      audio.playbackRate = got === 'vieneu' ? Math.min(rate, 1.25) : rate;
       audio.volume = Number.isFinite(volume) ? volume : 0.95;
       await new Promise(r => { audio.onended = audio.onerror = audio.onpause = r; audio.play().catch(r); });
       if (localAudio !== audio) return;
@@ -738,6 +794,7 @@ $('#btn-upload-music')?.addEventListener('click', async () => {
 function toggleBgmGroups() {
   const src = $('#cfg-bgm-source').value;
   $('#bgm-file-group').hidden = src !== 'file';
+  if ($('#bgm-rotate-group')) $('#bgm-rotate-group').hidden = src !== 'file';
   $('#bgm-youtube-group').hidden = src !== 'youtube';
 }
 $('#cfg-bgm-source')?.addEventListener('change', toggleBgmGroups);
@@ -753,6 +810,7 @@ $('#btn-save-bgm')?.addEventListener('click', async () => {
       title: $('#cfg-bgm-title').value.trim(),
       volume: Number($('#cfg-bgm-volume').value),
       playing: $('#cfg-bgm-playing').value === 'true',
+      rotate: $('#cfg-bgm-rotate')?.value || 'shuffle',
       enabled: source !== 'off'
     });
     toast(source === 'off' ? '🔇 Đã tắt nhạc nền' : '🎵 Đã áp dụng nhạc nền (màn hình LIVE/OBS sẽ phát)');
@@ -830,6 +888,7 @@ $('#btn-save-theme')?.addEventListener('click', async () => {
     theme: themePick.theme,
     themeBackground: themePick.background,
     themeVideo: $('#cfg-theme-video').value === 'true',
+    themeScenes: $('#cfg-theme-scenes').value === 'true',
     sizeCouple: Number($('#cfg-size-couple').value) || 100,
     sizeMC: Number($('#cfg-size-mc').value) || 100,
     sizeGuest: Number($('#cfg-size-guest').value) || 100
@@ -859,15 +918,32 @@ function fillForms(cfg, goals) {
   setVal('#cfg-role-mode', cfg.roleMode || 'both');
   setVal('#cfg-min-marry', cfg.minCoinsToMarry || 10);
   setVal('#cfg-auto-ceremony', cfg.autoCeremony !== false);
-  setVal('#cfg-ceremony-countdown', cfg.ceremonyCountdown || 45);
+  setVal('#cfg-ceremony-countdown', cfg.ceremonyCountdown || 20);
+  setVal('#cfg-ceremony-steps', cfg.ceremonySteps === 'auto' ? 'auto' : 'gift');
+  setVal('#cfg-reception-seconds', cfg.receptionSeconds || 25);
+  setVal('#cfg-demo-every', cfg.demoEvery ?? 8);
+  setVal('#cfg-treat-quiet', cfg.treatQuietSeconds ?? 60);
+  setVal('#cfg-auto-pair', cfg.autoPair !== false);
+  setVal('#cfg-auto-pair-seconds', cfg.autoPairSeconds || 8);
+  setVal('#cfg-pair-both', cfg.pairBoth !== false);
+  setVal('#cfg-party-every', cfg.partyEvery ?? 5);
+  setVal('#cfg-partner-wait-seconds', cfg.partnerWaitSeconds || 90);
+  setVal('#cfg-host-name', cfg.hostName || '');
+  setVal('#cfg-free-roles', cfg.freeRoles === true);
   setVal('#cfg-role-system', cfg.roleSystem || 'auction');
+  setVal('#cfg-role-queue', cfg.roleQueue === true);
   setVal('#cfg-photo-after', cfg.photoAfterCeremony !== false);
-  setVal('#cfg-max-guests', Number(cfg.maxGuests) === 24 ? 24 : 54);
+  setVal('#cfg-max-guests', [24, 54, 90].includes(Number(cfg.maxGuests)) ? Number(cfg.maxGuests) : 54);
+  setVal('#cfg-guests-wander', cfg.guestsWander !== false);
+  setVal('#cfg-gift-effects', cfg.giftEffects !== false);
+  setVal('#cfg-bots-enabled', cfg.botsEnabled === true);
+  setVal('#cfg-bots-count', cfg.botsCount || 20);
   setVal('#cfg-like-goal', cfg.likeGoal || 5000);
   setVal('#cfg-money-unit', cfg.moneyUnit || 'xu');
   setVal('#cfg-title-decay', cfg.titleDecaySeconds || 30);
   setVal('#cfg-show-mc', cfg.showMC !== false);
   setVal('#cfg-theme-video', cfg.themeVideo !== false);
+  setVal('#cfg-theme-scenes', cfg.themeScenes !== false);
   setVal('#cfg-size-couple', cfg.sizeCouple || 100);
   setVal('#cfg-size-mc', cfg.sizeMC || 100);
   setVal('#cfg-size-guest', cfg.sizeGuest || 100);
@@ -882,6 +958,11 @@ function fillForms(cfg, goals) {
   setVal('#cfg-funny-voice', cfg.funnyVoiceEnabled !== false);
   setVal('#cfg-sound-effects', cfg.soundEffects !== false);
   setVal('#cfg-voice-engine', cfg.voiceEngine || 'auto');
+  wantedVieneuVoice = cfg.vieneuVoice || 'Minh Quân';
+  setVal('#cfg-vieneu-voice', wantedVieneuVoice);
+  setVal('#cfg-vieneu-style', cfg.vieneuStyle || 'lay');
+  setVal('#cfg-vieneu-reverb', cfg.vieneuReverb || 'hoi-truong');
+  refreshVieneuInfo();
   wantedBrowserVoice = cfg.browserVoice || '';
   setVal('#cfg-browser-voice', wantedBrowserVoice);
   setVal('#cfg-voice-pitch', cfg.voicePitch || 1);
@@ -901,6 +982,7 @@ function fillForms(cfg, goals) {
   setVal('#cfg-bgm-volume', b.volume ?? 50);
   setVal('#cfg-bgm-title', b.title || '');
   setVal('#cfg-bgm-url', b.youtubeUrl || '');
+  setVal('#cfg-bgm-rotate', ['order', 'shuffle', 'off'].includes(b.rotate) ? b.rotate : 'shuffle');
   if (b.file) selectedMusic = b.file;
   toggleBgmGroups();
 }
@@ -929,8 +1011,13 @@ function renderStage(s) {
     const tick = () => { text.textContent = `💒 Lễ thành hôn sau ${Math.max(0, Math.ceil((end - performance.now()) / 1000))} giây`; };
     tick();
     ceremonyTick = setInterval(tick, 500);
+  } else if (phase === 'reception') {
+    const end = performance.now() + (Number(s.ceremony.remainingMs) || 0);
+    const tick = () => { text.textContent = `🥂 Tiệc mừng: chờ khách tặng quà (hôn, cắt bánh, động phòng) · còn ${Math.max(0, Math.ceil((end - performance.now()) / 1000))} giây`; };
+    tick();
+    ceremonyTick = setInterval(tick, 500);
   } else if (phase === 'running') {
-    text.textContent = '💒 Đang làm lễ thành hôn...';
+    text.textContent = s.ceremony.mode === 'farewell' ? '🎉 Đôi trẻ đang chào khách...' : s.ceremony.mode === 'quick' ? '🏮 Đang động phòng...' : '💒 Đang làm lễ thành hôn...';
   } else {
     text.textContent = cfg.autoCeremony !== false ? 'Chờ đủ đôi để làm lễ' : 'Tự động làm lễ đang tắt';
   }
@@ -1085,3 +1172,32 @@ async function loadAlbum() {
   } catch {}
 }
 $('#btn-album-refresh')?.addEventListener('click', loadAlbum);
+
+// ========================================================
+// SỔ THEO DÕI WEBHOOK TIKFINITY (tab Kết nối)
+// ========================================================
+const WEBHOOK_ROWS = [
+  ['chat', '💬 Bình luận'], ['gift', '🎁 Quà'], ['join', '🚪 Vào phòng (Join)'], ['like', '❤️ Thả tim (Likes)'],
+  ['share', '📤 Chia sẻ'], ['follow', '➕ Follow'], ['other', '❓ Không nhận ra']
+];
+function agoText(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  return s < 60 ? `${s} giây trước` : s < 3600 ? `${Math.floor(s / 60)} phút trước` : `${Math.floor(s / 3600)} giờ trước`;
+}
+async function refreshWebhookStats() {
+  const box = document.querySelector('#webhook-stats');
+  if (!box || !box.offsetParent) return;   // tab đang ẩn thì thôi
+  try {
+    const d = await (await fetch('/api/webhook-stats')).json();
+    box.replaceChildren(...WEBHOOK_ROWS.filter(([k]) => k !== 'other' || d.seen.other.count).map(([k, label]) => {
+      const w = d.seen[k];
+      const row = document.createElement('div');
+      const detail = w.count
+        ? `${w.count} lần · lần cuối ${agoText(d.now - w.at)}${w.who ? ' · ' + w.who : ''}${w.what ? ': ' + w.what : ''}`
+        : 'chưa nhận được lần nào';
+      row.textContent = `${w.count ? (d.now - w.at < 120000 ? '🟢' : '🟡') : '⚪'} ${label} — ${detail}`;
+      return row;
+    }));
+  } catch { box.textContent = 'Không đọc được (app đang khởi động lại?)'; }
+}
+setInterval(refreshWebhookStats, 3000);

@@ -13,9 +13,17 @@
     <div id="scene">
       <img class="stage-bg" src="/assets/wedding_stage_bg.jpg" alt="Hội trường tiệc cưới lãng mạn">
       <video class="stage-bg-fx" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video class="stage-bg-tx" muted playsinline preload="auto" aria-hidden="true"></video>
 
       <div class="chandelier-glow-layer"></div>
       <div class="stage-heart-glow"></div>
+
+      <!-- BẢNG TÊN CẶP ĐÔI SAU LƯNG SÂN KHẤU: "LỄ THÀNH HÔN · A ♥ B · ngày" -->
+      <div id="name-plaque" class="empty" aria-hidden="true">
+        <small>LỄ THÀNH HÔN</small>
+        <div class="np-names"><b id="np-groom"></b><i>♥</i><b id="np-bride"></b></div>
+        <span id="np-date"></span>
+      </div>
 
       <!-- SÂN KHẤU: CÔ DÂU & CHÚ RỂ -->
       <div id="wedding-stage">
@@ -31,6 +39,14 @@
           </div>
 
           <div id="couple-sprite" class="couple-idle"></div>
+          <!-- Cô dâu, chú rể đứng riêng chờ ghép đôi (bộ hình có bride_wait / groom_wait) -->
+          <div id="solo-pair" aria-hidden="true">
+            <div class="solo-sprite" id="solo-bride"></div>
+            <div class="solo-sprite" id="solo-groom"></div>
+            <!-- Vai còn trống: ô hướng dẫn nằm trên người mờ (vd "Tặng 10 xu để làm chú rể") -->
+            <div class="solo-tip" id="tip-bride"></div>
+            <div class="solo-tip" id="tip-groom"></div>
+          </div>
 
           <div id="couple-label">
             <span class="cl-av" id="groom-av"></span>
@@ -133,6 +149,10 @@
             <span class="metric-icon">💒</span>
             <b id="stat-couples">0 cặp</b>
           </div>
+          <div class="metric-item metric-party" id="metric-party" hidden>
+            <span class="metric-icon">🎉</span>
+            <b id="stat-party"></b>
+          </div>
         </div>
       </div>
 
@@ -151,7 +171,7 @@
         </div>
         <div class="goal-pill goal-like">
           <span class="goal-icon">❤️</span>
-          <span class="goal-text">Cả rạp quẩy</span>
+          <span class="goal-text">Cả rạp đứng dậy quẩy</span>
           <div class="goal-bar"><div class="goal-fill" id="goal-like-fill" style="width: 0%;"></div></div>
           <b class="goal-numbers" id="goal-like-num">0/5000</b>
         </div>
@@ -176,7 +196,7 @@
     <div class="left-widgets">
       <div class="widget-card how-to-play">
         <div class="widget-header">
-          <span>🎎</span> <b>CÁCH CHƠI ĐÁM CƯỚI</b>
+          <span id="howto-icon">💬</span> <b id="howto-title">BÌNH LUẬN</b>
         </div>
         <ul class="guide-list" id="howto-list"></ul>
       </div>
@@ -192,7 +212,7 @@
     <!-- BÊN PHẢI: MENU QUÀ (THEO LUẬT TRONG BẢNG ĐIỀU KHIỂN) -->
     <aside id="gift-guide-panel">
       <div class="gift-menu-title">
-        <span>🎁</span> <b>TẶNG QUÀ HỶ SỰ</b>
+        <span>🎁</span> <b>BẢNG QUÀ</b>
       </div>
       <div class="gift-guide-list" id="gift-guide-list"></div>
     </aside>

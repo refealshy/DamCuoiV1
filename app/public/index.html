@@ -322,7 +322,14 @@
                 <label>🎟️ Cách giành vai:</label>
                 <select id="cfg-role-system">
                   <option value="auction">Đấu giá — tặng nhiều hơn để cướp vai</option>
-                  <option value="queue">Hàng chờ — quà rẻ vào vai, vai có người thì xếp hàng (kiểu các rạp cưới khác)</option>
+                  <option value="queue">Quà vào vai — tặng quà (hoặc bình luận) là nhận vai (kiểu các rạp cưới khác)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>⚔️ Vai đang có người (luật Quà vào vai):</label>
+                <select id="cfg-role-queue">
+                  <option value="false">Không hàng chờ — tặng quà nhận vai là lên ngay, đá người đang giữ</option>
+                  <option value="true">Xếp hàng chờ tới lượt (kiểu cũ)</option>
                 </select>
               </div>
               <div class="form-group">
@@ -346,7 +353,59 @@
               </div>
               <div class="form-group">
                 <label>⏳ Đếm ngược trước lễ (giây) — vẫn cho cướp vai:</label>
-                <input type="number" id="cfg-ceremony-countdown" value="45" min="5" max="600">
+                <input type="number" id="cfg-ceremony-countdown" value="20" min="5" max="600">
+              </div>
+              <div class="form-group">
+                <label>🎁 Sau lễ thành hôn (hôn, cắt bánh, rót rượu, động phòng):</label>
+                <select id="cfg-ceremony-steps">
+                  <option value="gift">Chờ khách tặng quà — tặng gì đôi trẻ làm nấy</option>
+                  <option value="auto">Tự chạy đủ các bước rồi động phòng (kiểu cũ)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🥂 Tiệc mừng sau lễ (giây) — đôi trẻ ở lại chờ quà, mỗi món quà giữ thêm 8 giây:</label>
+                <input type="number" id="cfg-reception-seconds" value="25" min="8" max="600">
+              </div>
+              <div class="form-group">
+                <label>🎆 MC đãi miễn phí pháo hoa / động phòng để khoe tính năng — trung bình mấy lượt cưới một lần (0 = tắt):</label>
+                <input type="number" id="cfg-demo-every" value="8" min="0" max="100">
+              </div>
+              <div class="form-group">
+                <label>🎁 Rạp không ai tặng quà bao nhiêu giây thì MC đãi miễn phí một hiệu ứng (pháo hoa, mưa hoa, quẩy, cụng ly — ghi rõ "MC đãi"; 0 = tắt, ít nhất 20):</label>
+                <input type="number" id="cfg-treat-quiet" value="60" min="0" max="3600">
+              </div>
+              <div class="form-group">
+                <label>🎲 Ghép đôi ngẫu nhiên khi không ai nhận vai:</label>
+                <select id="cfg-auto-pair">
+                  <option value="true">Bật - vai trống quá giờ chờ thì MC chọn ngẫu nhiên khách đang ở trong phòng lên vai đó</option>
+                  <option value="false">Tắt - chờ khách tặng quà nhận vai</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>⏱️ Chờ khi sân khấu trống (giây) — hết giờ MC mời khách lên:</label>
+                <input type="number" id="cfg-auto-pair-seconds" value="8" min="5" max="600">
+              </div>
+              <div class="form-group">
+                <label>💑 Sân khấu trống thì MC chọn:</label>
+                <select id="cfg-pair-both">
+                  <option value="true">Cả cặp một lúc — sân khấu lúc nào cũng có đôi đang cưới</option>
+                  <option value="false">Một người trước — người kia để khách tặng quà giành</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>⏳ Chờ khi đã có người tặng quà / bình luận nhận một vai (giây) — hết giờ mà chưa ai nhận vai kia thì MC chọn ngẫu nhiên nửa kia:</label>
+                <input type="number" id="cfg-partner-wait-seconds" value="90" min="10" max="600">
+              </div>
+              <div class="form-group">
+                <label>🆓 Nhận vai miễn phí bằng bình luận (luật Hàng chờ):</label>
+                <select id="cfg-free-roles">
+                  <option value="false">Tắt - phải tặng quà nhận vai</option>
+                  <option value="true">Bật - cmt "chú rể" / "cô dâu" là nhận vai, quà "thay" để chen lên ngay</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>👑 Tên chủ phòng — lên vai khi hết giờ ghép đôi mà rạp chưa có khách nào:</label>
+                <input type="text" id="cfg-host-name" maxlength="40" placeholder="Để trống: dùng @id TikTok khi đã kết nối TikFinity Desktop">
               </div>
               <div class="form-group">
                 <label>💖 Khẩu hiệu:</label>
@@ -362,13 +421,43 @@
               <div class="form-group">
                 <label>👥 Số khách hiển thị trong hội trường:</label>
                 <select id="cfg-max-guests">
+                  <option value="90">Kín rạp (90 khách)</option>
                   <option value="54">Đông vui (54 khách)</option>
                   <option value="24">Thoáng (24 khách)</option>
                 </select>
               </div>
               <div class="form-group">
+                <label>🤖 Bot lấp rạp cho đỡ trống (chỉ đi lại, không tham gia tiệc cưới):</label>
+                <select id="cfg-bots-enabled">
+                  <option value="false">Tắt</option>
+                  <option value="true">Bật - khách ảo đi lại trong rạp; khách thật vào thì bot rút bớt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🤖 Giữ rạp luôn có ít nhất bao nhiêu người (tính cả khách thật):</label>
+                <input type="number" id="cfg-bots-count" value="40" min="1" max="80">
+              </div>
+              <div class="form-group">
+                <label>🎁 Hiệu ứng khi nhận quà (thẻ cảm ơn, mưa hình quà, quà lớn phóng to):</label>
+                <select id="cfg-gift-effects">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🚶 Khách đi lại trong rạp (chừa thảm đỏ làm sàn nhảy):</label>
+                <select id="cfg-guests-wander">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt (đứng yên tại chỗ)</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label>❤️ Số tim để "cả rạp đứng dậy quẩy":</label>
                 <input type="number" id="cfg-like-goal" value="5000" min="100">
+              </div>
+              <div class="form-group">
+                <label>🎉 Cứ đủ bao nhiêu cặp cưới thì cả rạp mở tiệc quẩy (0 = tắt):</label>
+                <input type="number" id="cfg-party-every" value="5" min="0" max="100">
               </div>
               <div class="form-group">
                 <label>💰 Hiển thị tiền mừng:</label>
@@ -416,6 +505,9 @@
               Chọn bộ hình cho cô dâu chú rể, MC, khách mời và phông hội trường. Bộ <b>Bán thực 3D</b> có video chuyển động:
               cặp đôi đứng, hôn, bắn tim, vẫy tay, cúi chào; MC cầm micro nói; người tặng quà đi lên thảm đỏ.
               Muốn thêm hoặc thay hình: bỏ file vào thư mục <code>bo-hinh-moi</code> rồi chạy <code>node tools/xu-ly-bo-hinh.mjs</code>.
+              <br><b>Phông theo diễn biến</b> (bộ Bán thực 3D): chờ đôi ở phông Đỏ vàng → đủ đôi chuyển sang Hồng trắng →
+              làm lễ về Đỏ vàng → thành hôn sang Champagne một lúc rồi về lại. Mỗi lần đổi có video chuyển cảnh, mỗi phông
+              có hiệu ứng riêng khi khách tặng quà. Tắt đi thì luôn dùng phông chọn bên dưới.
             </div>
             <h3 class="theme-subtitle">Bộ hình</h3>
             <div class="theme-grid" id="theme-list"></div>
@@ -427,6 +519,13 @@
                 <select id="cfg-theme-video">
                   <option value="true">Bật (đẹp nhất)</option>
                   <option value="false">Tắt (máy yếu, chỉ dùng ảnh)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🎞️ Phông tự đổi theo diễn biến lễ cưới:</label>
+                <select id="cfg-theme-scenes">
+                  <option value="true">Bật (đủ đôi, làm lễ, thành hôn mỗi lúc một phông)</option>
+                  <option value="false">Tắt (luôn dùng phông đã chọn)</option>
                 </select>
               </div>
               <div class="form-group">
@@ -583,6 +682,37 @@
                   <option value="auto">Tự động — giọng của máy nếu có, không thì Google</option>
                   <option value="browser">Giọng của máy chạy màn hình LIVE</option>
                   <option value="google">Giọng Google (cần Internet)</option>
+                  <option value="vieneu">Giọng nam trên máy (VieNeu, không cần Internet)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Giọng nam (khi chọn "Giọng nam trên máy"):</label>
+                <select id="cfg-vieneu-voice">
+                  <option value="Adam bựa">Adam bựa — Bắc, lầy lội tưng tửng</option>
+                  <option value="Minh Quân">Minh Quân — Bắc, tự nhiên</option>
+                  <option value="Mạnh Dũng">Mạnh Dũng — Bắc, tự nhiên</option>
+                  <option value="Hữu Quân">Hữu Quân — Bắc, tin tức</option>
+                  <option value="Anh Khôi">Anh Khôi — Bắc, kể chuyện (trầm)</option>
+                  <option value="Đức Trí">Đức Trí — Bắc, đọc truyện (trầm, chậm)</option>
+                  <option value="Adam">Adam — Nam, tự nhiên (trầm)</option>
+                </select>
+                <small class="hint-text" id="vieneu-info"></small>
+              </div>
+              <div class="form-group">
+                <label>Kiểu đọc của giọng nam:</label>
+                <select id="cfg-vieneu-style">
+                  <option value="tu-nhien">Tự nhiên — giọng gốc</option>
+                  <option value="lay">Lầy — giọng cao, nhanh hơn chút (hợp người xem trẻ)</option>
+                  <option value="rat-lay">Rất lầy — tưng tửng, nhí nhố</option>
+                  <option value="mc">MC đám cưới — giọng hô dẫn lễ, nhấn nhá, nhịp dẫn chương trình</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Độ vang của giọng nam (như MC cầm micro nói trong phòng thật):</label>
+                <select id="cfg-vieneu-reverb">
+                  <option value="hoi-truong">Hội trường tiệc cưới — vang rõ, có loa</option>
+                  <option value="phong">Phòng nhỏ — vang nhẹ</option>
+                  <option value="khong">Không vang — giọng khô</option>
                 </select>
               </div>
               <div class="form-group full-width">
@@ -732,6 +862,15 @@
                 <label>🏷️ Tên bài hiển thị (để trống = tên file):</label>
                 <input type="text" id="cfg-bgm-title" value="">
               </div>
+              <div class="form-group" id="bgm-rotate-group">
+                <label>🔁 Khi hết bài:</label>
+                <select id="cfg-bgm-rotate">
+                  <option value="shuffle">🔀 Tự đổi sang bài ngẫu nhiên</option>
+                  <option value="order">➡️ Tự đổi sang bài kế tiếp</option>
+                  <option value="off">🔂 Lặp lại bài đang phát</option>
+                </select>
+                <small>Bài đánh dấu bên dưới là bài phát đầu tiên; sau đó nhạc tự đổi trong cả danh sách.</small>
+              </div>
               <div class="form-group full-width" id="bgm-file-group">
                 <label>📁 Danh sách nhạc (thư mục <code>app/public/music</code>):</label>
                 <div class="input-action-group">
@@ -782,9 +921,12 @@
                   </div>
                 </li>
                 <li>Trong TikFinity Web: <b>Actions & Events</b> → tạo Action có <b>Webhook</b> với link trên → tạo Event cho <b>Gift</b> (mọi quà) và <b>Chat/Comment</b>, gắn Action đó.</li>
-                <li>(Tuỳ chọn) Tạo thêm Action webhook với link có thêm đuôi <code>&event=share</code> gắn vào Event <b>Share</b>, đuôi <code>&event=follow</code> gắn vào <b>Follow</b>, đuôi <code>&event=like</code> gắn vào <b>Likes</b> — để tool cảm ơn chia sẻ/theo dõi và đếm tim.</li>
+                <li><b>Muốn rạp đông khách:</b> tạo thêm Action webhook với link có thêm đuôi <code>&event=join</code> gắn vào Event <b>Join</b> (khách vừa vào phòng là hiện trong rạp, không cần bình luận), đuôi <code>&event=like</code> gắn vào <b>Likes</b> (ai thả tim cũng hiện và được đếm tim), đuôi <code>&event=share</code> gắn vào <b>Share</b>, đuôi <code>&event=follow</code> gắn vào <b>Follow</b>. Chỉ gắn Gift và Chat thì người xem phải bình luận hoặc tặng quà mới hiện trong rạp.</li>
               </ol>
               <p style="font-size:12px;color:#aaa;">Từ Internet chỉ gọi được webhook (đúng khóa); bảng điều khiển này không bị lộ ra ngoài.</p>
+              <h4 style="color:#ffd700;font-size:16px;margin:18px 0 8px;">📡 TikFinity đã gửi về những gì (từ lúc bật app)</h4>
+              <div id="webhook-stats" style="font-size:14px;line-height:1.9;">Đang kiểm tra…</div>
+              <p style="font-size:12px;color:#aaa;">Tự cập nhật mỗi 3 giây. Dòng nào còn ⚪ nghĩa là Event đó trong TikFinity chưa gửi về lần nào: kiểm tra Event đã gắn đúng Action webhook và link tunnel còn đúng chưa.</p>
             </div>
           </div>
         </section>
