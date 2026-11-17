@@ -3,7 +3,7 @@
 // Mỗi nhóm: nhiều câu, MC đọc luân phiên (không lặp lại câu vừa đọc).
 // Biến trong {ngoặc nhọn} được tool tự điền khi có sự kiện.
 // Sửa trong bảng điều khiển: tab "Lời thoại MC" (lưu vào wedding_state.json).
-// Câu nên ngắn (dưới ~25 từ): các bước của lễ diễn nhanh, câu dài MC đọc không kịp.
+// Câu phải ngắn (khoảng 12 từ trở xuống, một ý một câu): câu dài MC đọc không kịp, người xem nghe mệt. Riêng thơ thì để dài.
 // ========================================================
 
 const MC_GROUPS = [
@@ -14,10 +14,11 @@ const MC_GROUPS = [
     label: 'Chào khách mới vào phòng',
     vars: '{names}',
     lines: [
-      'Ố là la, {names} tới rồi! Vô lẹ đi, cỗ sắp hết mà chuyện hay thì còn nguyên nha!',
-      '{names} vừa đáp xuống rạp cưới! Ngồi xuống ăn miếng bánh, lát lên làm cô dâu chú rể luôn cũng được!',
-      'Chào {names} nha! Tới trễ không sao, miễn có mang phong bì là được!',
-      'Rạp vừa đón thêm {names}! Ai ế giơ tay, hôm nay MC bao thoát ế tại chỗ!'
+      'Ố là la, {names} tới rồi! Vô ăn cưới lẹ nè!',
+      '{names} đáp xuống rạp! Ăn cỗ trước, cưới tính sau nha!',
+      'Chào {names}! Tới trễ không sao, có phong bì là được!',
+      'Rạp đón {names}! Ai ế giơ tay, MC bao thoát ế!',
+      'Cơm nước gì chưa {names}? Vô ăn cỗ cưới nè!'
     ]
   },
   {
@@ -26,12 +27,13 @@ const MC_GROUPS = [
     label: 'Giới thiệu cách chơi & quà (MC tự nói khi vắng)',
     vars: '{groom} {bride} {min} {gifts} {afterWed}',
     lines: [
-      'Rạp cưới online xin chào cả nhà! Ở đây không cần người yêu vẫn cưới được, tặng từ {min} xu là lên xe hoa liền!',
-      'Luật siêu gọn: tặng từ {min} xu là có vai, ai tặng nhiều hơn thì cướp vai. {afterWed}',
-      'Mẹo nhỏ nè: gõ dzô để cụng ly, gõ nhảy để cả rạp quẩy, gõ hôn đi để cô dâu chú rể phát cơm chó!',
-      'Muốn làm cô dâu thì gõ làm cô dâu rồi tặng quà, muốn làm chú rể thì tặng từ {min} xu. Đủ đôi là MC chốt đơn cưới ngay!',
-      'Cảm ơn cả nhà đã ghé đám cưới của {groom} và {bride}! Thả tim đi, ngồi im là MC tưởng mọi người ế thật đó!',
-      'Sân khấu đang trống, ai ế thì đây là cơ hội! Tặng quà giành vai, đủ đôi là cưới liền. {afterWed}'
+      'Không cần người yêu, {min} xu là lên xe hoa liền!',
+      'Tặng {min} xu là có vai, tặng nhiều hơn là cướp vai!',
+      'Gõ dzô để cụng ly, gõ nhảy để cả rạp quẩy!',
+      'Gõ hôn đi là cô dâu chú rể phát cơm chó liền!',
+      'Gõ làm cô dâu rồi tặng quà là có chồng liền!',
+      'Thả tim đi cả nhà, ngồi im là MC tưởng ế thật đó!',
+      '{afterWed}'
     ]
   },
   {
@@ -40,11 +42,12 @@ const MC_GROUPS = [
     label: 'Chờ chú rể (vai chú rể đang trống)',
     vars: '{bride} {min}',
     lines: [
-      'Ét ô ét, cô dâu {bride} đứng một mình nãy giờ! Anh nào tặng {min} xu là thoát ế ngay và luôn!',
-      'Tuyển chú rể gấp! Không cần nhà, không cần xe, chỉ cần {min} xu là có vợ liền!',
-      'Cô dâu {bride} xinh vậy mà chưa ai rước hả? Mấy anh ế lâu năm đâu rồi, {min} xu thôi nè!',
-      'Hoa có rồi, nhẫn có rồi, thiếu đúng một ông chồng! Tặng {min} xu nhận vai chú rể nào!',
-      'Anh nào bị mẹ giục cưới thì vô đây, {min} xu là có ảnh cưới gửi mẹ liền!'
+      'Ét ô ét, cô dâu {bride} đứng một mình kìa!',
+      'Tuyển chú rể gấp! Không cần nhà xe, chỉ cần {min} xu!',
+      'Cô dâu {bride} xinh vậy mà chưa ai rước hả?',
+      'Thiếu đúng một ông chồng! Tặng {min} xu nhận vai nào!',
+      'Anh nào bị mẹ giục cưới? {min} xu là có vợ liền!',
+      'Vợ con gì chưa người đẹp trai? {min} xu là có vợ!'
     ]
   },
   {
@@ -53,11 +56,12 @@ const MC_GROUPS = [
     label: 'Chờ cô dâu (vai cô dâu đang trống)',
     vars: '{groom} {min}',
     lines: [
-      'Chú rể {groom} ôm hoa đứng chờ muốn mốc luôn rồi! Chị em gõ làm cô dâu rồi tặng {min} xu cứu ảnh đi!',
-      'Tuyển cô dâu gấp! Váy cưới miễn phí, chồng có sẵn, chỉ cần gõ làm cô dâu và {min} xu!',
-      'Vai cô dâu còn trống nha mấy bà! Gõ làm cô dâu, tặng {min} xu, khỏi yêu đương mệt mỏi!',
-      'Chú rể {groom} nhìn cũng được mà sao chưa ai hốt? Gõ làm cô dâu rồi tặng quà là có chồng liền!',
-      'Chị em nào muốn có chồng trong ba mươi giây thì gõ làm cô dâu và tặng {min} xu nha!'
+      'Chú rể {groom} chờ muốn mốc luôn rồi! Chị em cứu ảnh đi!',
+      'Khỏi yêu đương mệt mỏi, gõ làm cô dâu rồi tặng {min} xu!',
+      'Váy cưới miễn phí, chồng có sẵn, thiếu mỗi cô dâu!',
+      'Chú rể {groom} cũng được mà chưa ai hốt hả?',
+      'Muốn có chồng trong ba mươi giây? Gõ làm cô dâu nha!',
+      'Chồng con gì chưa người đẹp? {min} xu là có chồng!'
     ]
   },
   {
@@ -66,14 +70,31 @@ const MC_GROUPS = [
     label: 'Rủ rê làm quen, kết bạn (MC nói xen lúc rạp vắng)',
     vars: '{groomHow} {brideHow}',
     lines: [
-      'Ai đang ế thì vô đây! Lên làm cô dâu chú rể, biết đâu gặp được người trong mộng ngay tại rạp này!',
-      'Cưới ảo mà quen thật là có thiệt nha bà con! Mạnh dạn nhận vai đi, người ấy đang ngồi xem cùng đó!',
-      'Thấy ai dễ thương trong phần bình luận chưa? Lên giành vai cưới người ta liền, chậm là mất!',
-      'Rạp này không chỉ cưới cho vui đâu, làm quen kết bạn thoải mái! Bình luận chào nhau một câu đi nào!',
-      'Crush đang xem live chung hả? Rủ vô đây cưới thử một lần, tỏ tình kiểu này khỏi sợ quê!',
-      'Một mình coi live buồn lắm! Lên xe hoa với một người lạ, cưới xong follow nhau là hết cô đơn!',
-      'Ai cưới rồi thì chụp màn hình khoe bạn bè đi, rủ cả hội vô đây cưới chung cho vui!',
-      'Cô dâu chú rể tương lai đang trốn ở đâu? Muốn có đôi thì {groomHow} hoặc {brideHow}, MC se duyên liền!'
+      'Ai đang ế thì vô đây, biết đâu gặp người trong mộng!',
+      'Cưới ảo mà quen thật là có thiệt nha bà con!',
+      'Thấy ai dễ thương chưa? Lên giành vai cưới liền đi!',
+      'Bình luận chào nhau đi, ngại gì, toàn hội ế cả mà!',
+      'Crush đang xem chung hả? Rủ vô cưới thử một lần!',
+      'Một mình coi live buồn lắm, lên xe hoa cho vui!',
+      'Cưới rồi thì chụp màn hình khoe bạn bè đi!',
+      'Muốn có đôi thì {groomHow} hoặc {brideHow} nha!',
+      'Cơm nước gì chưa người đẹp? Chưa thì vô ăn cỗ cưới!'
+    ]
+  },
+  {
+    section: 'Dẫn chương trình',
+    key: 'idleFollow',
+    label: 'Mời theo dõi, bấm chuông, chia sẻ (MC nói xen lúc đang tìm cô dâu chú rể)',
+    vars: '',
+    lines: [
+      'Trong lúc chờ đủ đôi, bấm theo dõi cho MC vui nha!',
+      'Bấm chuông đi cả nhà, rạp mở là có thông báo liền!',
+      'Chia sẻ live rủ hội ế vô, đông mới dễ thoát ế!',
+      'Theo dõi, bấm chuông, chia sẻ, ba nút cứu cả hội ế!',
+      'Chưa theo dõi hả? Bấm đi, mai có đám cưới MC gọi!',
+      'Bấm chuông kẻo lỡ đám cưới sau nha cả nhà!',
+      'Rủ crush vô cưới thử đi, bấm chia sẻ liền nào!',
+      'Chờ cô dâu chú rể thì bấm theo dõi trước nha!'
     ]
   },
   {
@@ -82,9 +103,9 @@ const MC_GROUPS = [
     label: 'Khích cướp vai (đã đủ đôi, chưa làm lễ)',
     vars: '{groom} {bride} {groomBid} {brideBid}',
     lines: [
-      'Chú rể {groom} giữ ghế với {groomBid} xu, cô dâu {bride} với {brideBid} xu. Ai ghen ăn tức ở thì tặng nhiều hơn mà cướp!',
-      '{groom} với {bride} đang hạnh phúc quá, có ai muốn phá không? Tặng nhiều hơn là soán ngôi liền!',
-      'Ghế chú rể giá {groomBid} xu, ghế cô dâu {brideBid} xu. Rẻ hơn ly trà sữa mà được cưới, ai chốt nào?'
+      'Ghế chú rể {groomBid} xu, ghế cô dâu {brideBid} xu. Ai cướp không?',
+      '{groom} với {bride} hạnh phúc quá, ai muốn phá không?',
+      'Rẻ hơn ly trà sữa mà được cưới, ai chốt nào?'
     ]
   },
   {
@@ -93,9 +114,10 @@ const MC_GROUPS = [
     label: 'Đủ đôi — bắt đầu đếm ngược làm lễ',
     vars: '{groom} {bride} {seconds} {crashHow}',
     lines: [
-      'Chốt đơn! {groom} và {bride} thành một cặp, {seconds} giây nữa cưới. Ai thấy ngứa mắt thì {crashHow}!',
-      'U là trời, đủ đôi rồi! {groom} với {bride}, còn {seconds} giây. Người yêu cũ đâu, vô {crashHow} lẹ lên!',
-      'Cặp đôi lộ diện: {groom} và {bride}! {seconds} giây nữa làm lễ, muốn chen ngang thì {crashHow} nha!'
+      'Chốt đơn! {groom} và {bride}, {seconds} giây nữa cưới!',
+      'U là trời, đủ đôi! {groom} với {bride}, còn {seconds} giây!',
+      '{groom} và {bride} sắp cưới! Ai ngứa mắt thì {crashHow}!',
+      'Người yêu cũ đâu rồi? {groom} và {bride} sắp cưới kìa!'
     ]
   },
   {
@@ -104,9 +126,9 @@ const MC_GROUPS = [
     label: 'Nhắc giờ làm lễ (khi vắng, đang đếm ngược)',
     vars: '{groom} {bride} {seconds}',
     lines: [
-      'Còn {seconds} giây nữa {groom} và {bride} thành vợ chồng! Ai định cướp thì làm lẹ, chậm là ế tiếp đó!',
-      'Đồng hồ đang chạy, còn {seconds} giây! Giờ không phá thì lát đừng có khóc nha!',
-      '{seconds} giây nữa thôi! Hội ế chuẩn bị tinh thần ăn cơm chó của {groom} và {bride} nào!'
+      'Còn {seconds} giây nữa {groom} và {bride} thành vợ chồng!',
+      'Còn {seconds} giây! Giờ không phá thì lát đừng khóc nha!',
+      '{seconds} giây nữa thôi! Hội ế chuẩn bị ăn cơm chó nào!'
     ]
   },
   {
@@ -115,8 +137,8 @@ const MC_GROUPS = [
     label: 'Cảm ơn chia sẻ rạp cưới',
     vars: '{names}',
     lines: [
-      'Cảm ơn {names} đã chia sẻ rạp cưới! Rủ thêm hội ế vào đây, đông vui dễ thoát ế!',
-      '{names} vừa đi phát thiệp cưới giùm MC! Chúc sớm có bồ, không có thì quay lại đây MC gả!'
+      'Cảm ơn {names} đã chia sẻ! Rủ thêm hội ế vô nha!',
+      '{names} vừa đi phát thiệp cưới giùm MC! Chúc sớm có bồ!'
     ]
   },
   {
@@ -125,8 +147,8 @@ const MC_GROUPS = [
     label: 'Cảm ơn theo dõi kênh',
     vars: '{names}',
     lines: [
-      'Cảm ơn {names} đã theo dõi! Từ nay là người nhà rồi, ngày nào cũng có đám cưới để hóng nha!',
-      '{names} vừa bấm theo dõi, MC ghi sổ ân nhân rồi đó! Mai nhớ ghé ăn cưới tiếp nha!'
+      'Cảm ơn {names} đã theo dõi! Từ nay là người nhà rồi!',
+      '{names} vừa bấm theo dõi, MC ghi sổ ân nhân nha!'
     ]
   },
   {
@@ -135,8 +157,8 @@ const MC_GROUPS = [
     label: 'Đủ tim — cả rạp đứng dậy quẩy',
     vars: '{likes}',
     lines: [
-      'Đủ {likes} tim rồi cả nhà ơi! Đứng dậy quẩy thôi, ai ngồi im là người đó ế!',
-      'Tim ngập rạp luôn rồi! Nhạc lên, bung lụa hết mình nào!'
+      'Đủ {likes} tim rồi! Quẩy đi, ai ngồi im là ế!',
+      'Tim ngập rạp luôn rồi! Nhạc lên, bung lụa nào!'
     ]
   },
   {
@@ -145,9 +167,9 @@ const MC_GROUPS = [
     label: 'Đủ số cặp cưới — cả rạp mở tiệc quẩy',
     vars: '{couples}',
     lines: [
-      'Cặp thứ {couples} cưới xong rồi! Mở tiệc thôi, cả rạp đứng dậy quẩy nào!',
-      'Chúc mừng cặp số {couples}! Nhạc lên, ai ngồi im là người đó ế nha!',
-      'Đủ cặp rồi bà con ơi! Tiệc to tới rồi, quẩy banh nóc rạp luôn!'
+      'Cặp thứ {couples} cưới xong rồi! Mở tiệc quẩy thôi!',
+      'Chúc mừng cặp số {couples}! Ai ngồi im là ế nha!',
+      'Đủ cặp rồi bà con ơi! Quẩy banh nóc rạp luôn!'
     ]
   },
   {
@@ -202,10 +224,10 @@ const MC_GROUPS = [
     label: 'Rạp vắng quà — MC đãi miễn phí một hiệu ứng',
     vars: '{effect} {gift}',
     lines: [
-      'Rạp buồn quá, MC đãi {effect} miễn phí nè! Lần sau muốn xem nữa thì tặng {gift} nha!',
-      'Im re vậy trời! Thôi MC bao {effect} một lần, ai muốn xem lại thì tặng {gift} nha!',
-      'MC mở hàng {effect} cho rạp đỡ buồn! Muốn xem tiếp thì cả nhà tặng {gift} là có liền!',
-      'Quà đâu hết rồi cả nhà? MC tự đãi {effect} luôn nè! Thích thì tặng {gift} để MC làm lại nha!'
+      'Rạp buồn quá, MC đãi {effect} nè! Thích thì tặng {gift} nha!',
+      'Im re vậy trời! MC bao {effect} một lần nè!',
+      'MC mở hàng {effect}! Muốn xem nữa thì tặng {gift}!',
+      'Quà đâu hết rồi? MC đãi {effect} luôn, thích thì tặng {gift}!'
     ]
   },
   // ---------------- VAI CÔ DÂU – CHÚ RỂ & ĐẤU GIÁ ----------------
@@ -215,9 +237,9 @@ const MC_GROUPS = [
     label: 'Nhận vai chú rể (vai đang trống)',
     vars: '{name} {gift} {count} {bid} {bride}',
     lines: [
-      'Chúc mừng {name} thoát ế với {bid} xu! Cô dâu {bride} ơi, chồng em tới rồi nè!',
-      'Có chú rể rồi! {name} mừng {count} {gift} một phát là lên xe hoa, quá nhanh quá nguy hiểm!',
-      'Đẹp trai chưa biết nhưng nhanh tay thì có, {name} chính thức làm chú rể!'
+      'Chúc mừng {name} thoát ế với {bid} xu!',
+      'Có chú rể rồi! {name} quá nhanh quá nguy hiểm!',
+      'Đẹp trai chưa biết, nhanh tay thì có! {name} làm chú rể!'
     ]
   },
   {
@@ -226,9 +248,9 @@ const MC_GROUPS = [
     label: 'Nhận vai cô dâu (vai đang trống)',
     vars: '{name} {gift} {count} {bid} {groom}',
     lines: [
-      'Cô dâu xuất hiện! {name} chốt vai với {bid} xu, xinh hết nước chấm luôn!',
-      'Chú rể {groom} ơi hết ế rồi nha! {name} mừng {count} {gift} và thành cô dâu của anh!',
-      'Váy cưới có chủ! {name} chính thức làm cô dâu, hội chị em vỗ tay nào!'
+      'Cô dâu xuất hiện! {name} xinh hết nước chấm!',
+      'Chú rể {groom} hết ế rồi nha! Cô dâu là {name}!',
+      'Váy cưới có chủ! {name} chính thức làm cô dâu!'
     ]
   },
   {
@@ -237,9 +259,9 @@ const MC_GROUPS = [
     label: 'Cướp ngôi chú rể',
     vars: '{name} {previous} {bid} {bride}',
     lines: [
-      'Tới công chuyện! {name} quăng {bid} xu, đá bay chú rể {previous} trong một nốt nhạc!',
-      '{previous} ơi mất vợ rồi! Chú rể giờ là {name}, muốn đòi lại thì tặng hơn {bid} xu nha!',
-      'Tin chấn động: {name} cướp chú rể với {bid} xu! {previous} ra chuồng gà ngồi tạm nha!'
+      'Tới công chuyện! {name} đá bay chú rể {previous}!',
+      '{previous} ơi mất vợ rồi! Chú rể giờ là {name}!',
+      '{name} cướp chú rể với {bid} xu! {previous} ra chuồng gà nha!'
     ]
   },
   {
@@ -248,9 +270,9 @@ const MC_GROUPS = [
     label: 'Cướp ngôi cô dâu',
     vars: '{name} {previous} {bid} {groom}',
     lines: [
-      'Biến căng! {name} chi {bid} xu giật luôn vai cô dâu của {previous}!',
-      'Cô dâu mới là {name}! {previous} ơi, tặng hơn {bid} xu mà giành lại chồng đi!',
-      'Chú rể {groom} ơi vợ anh vừa đổi người rồi! Chào cô dâu {name} với {bid} xu!'
+      'Biến căng! {name} giật vai cô dâu của {previous}!',
+      'Cô dâu mới là {name}! {previous} ơi giành lại chồng đi!',
+      'Chú rể {groom} ơi, vợ anh đổi thành {name} rồi!'
     ]
   },
   {
@@ -259,9 +281,9 @@ const MC_GROUPS = [
     label: 'Đấu giá chưa đủ xu',
     vars: '{name} {role} {bid} {missing} {holder}',
     lines: [
-      '{name} đang có {bid} xu, thiếu đúng {missing} xu nữa là đá được {holder} khỏi vai {role}! Cố lên!',
-      'Suýt được rồi {name} ơi! Thêm {missing} xu nữa thôi là vai {role} về tay!',
-      '{holder} đang toát mồ hôi hột! {name} chỉ còn thiếu {missing} xu!'
+      '{name} thiếu {missing} xu nữa là đá được {holder}!',
+      'Suýt được rồi {name} ơi! Thêm {missing} xu nữa thôi!',
+      '{holder} toát mồ hôi! {name} chỉ còn thiếu {missing} xu!'
     ]
   },
   {
@@ -270,8 +292,8 @@ const MC_GROUPS = [
     label: 'Người đang giữ vai tặng thêm (giữ ngôi)',
     vars: '{name} {role} {bid}',
     lines: [
-      '{name} quyết giữ vai {role}, nâng giá lên {bid} xu! Keo lỳ quá trời, ai dám cướp nữa không?',
-      'Đừng hòng nha! {role} {name} vừa tăng giá lên {bid} xu để giữ ghế!'
+      '{name} nâng giá lên {bid} xu giữ vai {role}! Lỳ ghê!',
+      'Đừng hòng nha! {name} tăng lên {bid} xu để giữ ghế!'
     ]
   },
   {
@@ -280,8 +302,8 @@ const MC_GROUPS = [
     label: 'Đặt cọc vai cho lượt sau (tặng trong lúc làm lễ)',
     vars: '{name} {role}',
     lines: [
-      'Đang làm lễ nên {name} chờ xíu nha, vai {role} lượt sau MC để dành cho bạn rồi!',
-      'Ghi nhận {name}! Lễ xong là vai {role} thuộc về bạn liền!'
+      'Đang làm lễ, {name} chờ xíu, lượt sau làm {role} nha!',
+      'Ghi nhận {name}! Lễ xong là lên làm {role} liền!'
     ]
   },
   {
@@ -290,8 +312,8 @@ const MC_GROUPS = [
     label: 'Lượt mới: người đặt cọc nhận vai',
     vars: '{name} {role}',
     lines: [
-      'Lượt mới! {name} đã đặt chỗ từ trước nên lên làm {role} luôn!',
-      'Tới rồi tới rồi! {name} chính thức nhận vai {role}!'
+      'Lượt mới! {name} đặt chỗ trước nên làm {role} luôn!',
+      'Hàng đặt trước tới rồi! {name} lên làm {role} nào!'
     ]
   },
   {
@@ -300,8 +322,8 @@ const MC_GROUPS = [
     label: 'Hàng chờ: xếp hàng thành công',
     vars: '{name} {role} {position} {holder}',
     lines: [
-      '{name} đã xếp hàng làm {role}, số thứ tự {position}! Chờ {holder} cưới xong là tới bạn!',
-      'Ghi tên {name} vào hàng chờ {role}, số {position}. Sốt ruột thì tặng quà mà chen lên nha!'
+      '{name} bốc số {position} làm {role}, chờ xíu là có đôi!',
+      'Ghi tên {name} số {position}! Sốt ruột thì tặng quà chen lên!'
     ]
   },
   {
@@ -310,7 +332,18 @@ const MC_GROUPS = [
     label: 'Hàng chờ: nhắc lại chỗ đã giữ',
     vars: '{name} {role} {position}',
     lines: [
-      '{name} ơi bình tĩnh, bạn có chỗ trong hàng chờ {role} rồi, đang số {position} đó!'
+      '{name} ơi bình tĩnh, bạn đang số {position} rồi đó!'
+    ]
+  },
+  {
+    section: 'Vai cô dâu – chú rể & đấu giá',
+    key: 'queueHead',
+    label: 'Hàng chờ: xếp hàng đứng đầu, lên chức "lốp trưởng"',
+    vars: '{name} {role} {position} {holder}',
+    lines: [
+      '{name} lên chức lốp trưởng, chờ lên lốp chính nha!',
+      'Lốp trưởng mới: {name}! Sốt ruột thì tặng quà chen lên!',
+      '{name} đứng đầu hàng chờ làm {role}, lốp trưởng đây rồi!'
     ]
   },
   {
@@ -319,8 +352,9 @@ const MC_GROUPS = [
     label: 'Hàng chờ: tới lượt lên sân khấu',
     vars: '{name} {role}',
     lines: [
-      'Tới lượt rồi! {name} bước lên sân khấu làm {role} nào!',
-      'Chờ mỏi cổ cuối cùng cũng tới! {name} chính thức làm {role}!'
+      'Tới lượt rồi! {name} lên sân khấu làm {role} nào!',
+      'Chờ mỏi cổ cũng tới! {name} chính thức làm {role}!',
+      'Lốp trưởng {name} lên lốp chính rồi! Làm {role} nào!'
     ]
   },
   {
@@ -329,18 +363,19 @@ const MC_GROUPS = [
     label: 'Ghép đôi ngẫu nhiên: nhắc trước khi chọn',
     vars: '{seconds}',
     lines: [
-      'Còn {seconds} giây nữa MC bốc đại một người lên cưới đó! Ai muốn tự chọn thì nhanh tay lên!',
-      'Chưa ai nhận vai hả? {seconds} giây nữa MC điểm danh ngẫu nhiên, trúng ai người đó cưới!'
+      'Còn {seconds} giây nữa MC bốc đại một người lên cưới!',
+      'Chưa ai nhận vai? {seconds} giây nữa MC bốc thăm nha!'
     ]
   },
   {
+    section: 'Vai cô dâu – chú rể & đấu giá',
     key: 'partnerSoon',
     label: 'Ghép đôi ngẫu nhiên: có người đang chờ nửa kia, nhắc trước khi MC chọn',
     vars: '{name} {role} {other} {seconds}',
     lines: [
-      '{name} đứng chờ mỏi chân rồi nè! {seconds} giây nữa không ai tặng quà làm {other} là MC bốc đại một người lên cưới luôn!',
-      'Còn {seconds} giây! Ai muốn làm {other} của {name} thì tặng quà lẹ, không là MC gả đại cho người lạ đó nha!',
-      'Bà con ơi, {role} {name} ế tới nơi rồi! {seconds} giây nữa MC quay số trúng ai, người đó làm {other}!'
+      '{name} chờ mỏi chân rồi! {seconds} giây nữa MC bốc đại {other}!',
+      'Còn {seconds} giây! Ai muốn làm {other} của {name} nào?',
+      '{role} {name} ế tới nơi rồi! {seconds} giây nữa MC quay số!'
     ]
   },
   {
@@ -349,8 +384,8 @@ const MC_GROUPS = [
     label: 'Ghép đôi ngẫu nhiên: chưa ai nhận vai, MC mời một khách lên trước',
     vars: '{name} {role} {other}',
     lines: [
-      'Sân khấu vắng quá, MC bốc trúng {name} lên làm {role}! Còn thiếu {other}, ai hốt nào?',
-      '{name} đang ngồi chơi cũng bị kéo lên làm {role}! Giờ cần một {other}, nhanh tay nha!'
+      'MC bốc trúng {name} làm {role}! Còn thiếu {other}, ai hốt?',
+      '{name} bị kéo lên làm {role}! Giờ cần một {other} nha!'
     ]
   },
   {
@@ -359,8 +394,9 @@ const MC_GROUPS = [
     label: 'Ghép đôi ngẫu nhiên: MC chọn cả hai vai',
     vars: '{groom} {bride}',
     lines: [
-      'Không ai chịu cưới thì MC gả đại: chú rể {groom}, cô dâu {bride}! Không ưng thì tặng quà mà cướp!',
-      'Ông tơ bà nguyệt se duyên bừa rồi! {groom} và {bride}, lên sân khấu lẹ nào!'
+      'MC gả đại: {groom} cưới {bride}! Không ưng thì cướp!',
+      'Ông tơ bà nguyệt se bừa: {groom} và {bride} lên sân khấu!',
+      'MC bốc túi mù: {groom} bốc trúng sít rịt {bride}!'
     ]
   },
   {
@@ -369,8 +405,9 @@ const MC_GROUPS = [
     label: 'Ghép đôi ngẫu nhiên: MC chọn vai còn thiếu',
     vars: '{name} {role} {partner}',
     lines: [
-      'Vai {role} trống, MC bốc trúng {name}! {partner} ơi, nửa kia từ trên trời rơi xuống nè!',
-      '{name} bị MC gả đại làm {role}! Ai thấy không xứng thì tặng quà giành lại nha!'
+      'MC bốc trúng {name} làm {role}! {partner} ơi, nửa kia nè!',
+      '{name} bị MC gả đại làm {role}! Không ưng thì giành lại!',
+      '{partner} bốc trúng sít rịt rồi: {name} làm {role} nè!'
     ]
   },
   {
@@ -379,8 +416,8 @@ const MC_GROUPS = [
     label: 'Ghép đôi ngẫu nhiên: rạp chưa có khách, mời chủ phòng lên vai',
     vars: '{name} {role} {partner}',
     lines: [
-      'Không ai nhận vai {role} thì chủ phòng {name} xông pha luôn! {partner} ơi, nửa kia của bạn đây!',
-      'Rạp vắng quá, chủ phòng {name} phải tự lên làm {role}! Ai thương thì tặng quà lên thay giùm!'
+      'Không ai nhận thì chủ phòng {name} lên làm {role} luôn!',
+      'Ế tới mức chủ phòng {name} phải tự lên làm {role}!'
     ]
   },
   {
@@ -389,9 +426,11 @@ const MC_GROUPS = [
     label: 'Luật quà vào vai: giới thiệu cách chơi',
     vars: '{title} {gifts} {groomHow} {brideHow} {heldHow} {afterWed}',
     lines: [
-      'Chào cả nhà đến với {title}! Muốn làm chú rể thì {groomHow}, muốn làm cô dâu thì {brideHow}, ế mấy cũng cưới được!',
-      'Luật siêu dễ: {groomHow} là làm chú rể, {brideHow} là làm cô dâu, {heldHow}. {afterWed}',
-      'Ai muốn thoát ế trong ba mươi giây? Cứ {groomHow} là có vợ, {brideHow} là có chồng. Đủ đôi là MC chốt đơn cưới liền!'
+      'Chào cả nhà đến với {title}! Ế mấy cũng cưới được!',
+      'Cứ {groomHow} là có vợ, {brideHow} là có chồng!',
+      'Muốn thoát ế trong ba mươi giây? Lên sân khấu cưới liền!',
+      'Nhớ nha: {heldHow}!',
+      '{afterWed}'
     ]
   },
   {
@@ -400,9 +439,10 @@ const MC_GROUPS = [
     label: 'Luật Hàng chờ: mời nhận vai chú rể',
     vars: '{groomHow}',
     lines: [
-      'Ét ô ét, thiếu chú rể! Anh nào {groomHow} trước là có vợ liền, khỏi cần tán!',
-      'Tuyển chú rể gấp! Không cần nhà xe, chỉ cần {groomHow} là lên xe hoa!',
-      'Mấy anh bị mẹ giục cưới đâu rồi? Chỉ cần {groomHow} là có ảnh cưới gửi mẹ ngay!'
+      'Ét ô ét, thiếu chú rể! Cứ {groomHow} là có vợ!',
+      'Tuyển chú rể gấp! Chỉ cần {groomHow} là lên xe hoa!',
+      'Bị mẹ giục cưới hả? Cứ {groomHow} là xong!',
+      'Vợ con gì chưa người đẹp trai? Chưa thì {groomHow}!'
     ]
   },
   {
@@ -411,9 +451,10 @@ const MC_GROUPS = [
     label: 'Luật Hàng chờ: mời nhận vai cô dâu',
     vars: '{brideHow}',
     lines: [
-      'Vai cô dâu đang trống nha mấy bà! Chỉ cần {brideHow} là có chồng liền, khỏi yêu đương mệt mỏi!',
-      'Tuyển cô dâu gấp! Váy có sẵn, chồng có sẵn, chỉ cần {brideHow} thôi!',
-      'Chị em nào muốn mặc váy cưới hôm nay? Cứ {brideHow} là lên sân khấu liền nha!'
+      'Khỏi yêu đương mệt mỏi, cứ {brideHow} là có chồng!',
+      'Váy có sẵn, chồng có sẵn, chỉ cần {brideHow}!',
+      'Chị em muốn mặc váy cưới? Cứ {brideHow} nha!',
+      'Chồng con gì chưa người đẹp? Chưa thì {brideHow} nha!'
     ]
   },
   {
@@ -422,8 +463,9 @@ const MC_GROUPS = [
     label: 'Luật Hàng chờ: vai mở lại sau lễ',
     vars: '{groomHow} {brideHow}',
     lines: [
-      'Sân khấu trống rồi! Muốn làm chú rể thì {groomHow}, muốn làm cô dâu thì {brideHow}, nhanh tay kẻo ế!',
-      'Vai mở lại rồi cả nhà ơi! Cứ {groomHow} là có vợ, {brideHow} là có chồng, ai lẹ người đó được!'
+      'Sân khấu trống rồi! Nhanh tay kẻo ế nha cả nhà!',
+      'Vai mở lại rồi! Làm chú rể thì {groomHow} nha!',
+      'Vai mở lại rồi! Làm cô dâu thì {brideHow} nha!'
     ]
   },
   {
@@ -432,8 +474,8 @@ const MC_GROUPS = [
     label: 'Luật Hàng chờ: có người nhận vai chú rể',
     vars: '{name} {bride}',
     lines: [
-      'Chúc mừng {name} thoát ế, chính thức làm chú rể! Giờ chờ một cô dâu tới hốt thôi!',
-      'Chú rể {name} đã lên sân khấu, nhìn bảnh ghê! Chị em đâu, vô nhận chồng nào!'
+      'Chúc mừng {name} thoát ế, chính thức làm chú rể!',
+      'Chú rể {name} bảnh ghê! Chị em vô nhận chồng nào!'
     ]
   },
   {
@@ -442,38 +484,41 @@ const MC_GROUPS = [
     label: 'Luật Hàng chờ: có người nhận vai cô dâu',
     vars: '{name} {groom}',
     lines: [
-      'Cô dâu {name} đã xuất hiện, xinh hết nước chấm! Mấy anh đâu, vô rước dâu lẹ!',
-      'Chúc mừng {name} thành cô dâu! Váy cưới hôm nay đỉnh nóc kịch trần luôn!'
+      'Cô dâu {name} xuất hiện, xinh hết nước chấm!',
+      'Chúc mừng {name} thành cô dâu! Mấy anh vô rước dâu lẹ!'
     ]
   },
   {
+    section: 'Vai cô dâu – chú rể & đấu giá',
     key: 'revengeCall',
     label: 'Kèo đấu: khích người vừa bị đá đòi lại vai (đọc nối sau câu cướp vai)',
     vars: '{name} {previous} {role} {seconds}',
     lines: [
-      '{previous} ơi, có {seconds} giây tặng quà đòi lại ghế {role} nè, nhịn là mất luôn đó!',
-      '{previous} định nhịn thiệt hả? {seconds} giây phục thù bắt đầu, cả rạp đang hóng!',
-      'Nóng nè! {previous} có {seconds} giây để đá lại {name}, chơi không?'
+      '{previous} ơi, {seconds} giây đòi lại ghế nè!',
+      '{previous} nhịn thiệt hả? Có {seconds} giây phục thù đó!',
+      '{previous} có {seconds} giây đá lại {name}, chơi không?'
     ]
   },
   {
+    section: 'Vai cô dâu – chú rể & đấu giá',
     key: 'revengeDone',
     label: 'Kèo đấu: phục thù thành công (người bị đá giành lại vai)',
     vars: '{name} {previous} {role} {round} {a} {b}',
     lines: [
-      'Phục thù thành công! {name} quay lại đá {previous} bay màu, lấy lại ghế {role}! Tỉ số {a} – {b}!',
-      'Ối dồi ôi, {name} không nhịn! {previous} vừa ngồi chưa ấm ghế {role} đã văng! Tỉ số {a} – {b}, {previous} gỡ không?',
-      'Có thù phải trả! {name} đòi lại ghế {role} từ tay {previous}! Hiệp {round} rồi bà con ơi!'
+      'Phục thù! {name} lấy lại ghế {role}, tỉ số {a} – {b}!',
+      'Ối dồi ôi, {previous} chưa ấm ghế đã văng! Tỉ số {a} – {b}!',
+      'Có thù phải trả! {name} đòi lại ghế {role} rồi!'
     ]
   },
   {
+    section: 'Vai cô dâu – chú rể & đấu giá',
     key: 'duelRound',
     label: 'Kèo đấu: hai người giành qua giành lại (từ hiệp 2)',
     vars: '{name} {previous} {role} {round} {a} {b}',
     lines: [
-      'Hiệp {round}! {name} lại đá {previous} văng khỏi ghế {role}, tỉ số {a} – {b}! {previous} gỡ không?',
-      'Căng như dây đàn! {name} với {previous} giành ghế {role} tới hiệp {round} rồi, tỉ số {a} – {b}!',
-      'Kèo này cháy quá! {name} {a}, {previous} {b}! Ai tặng quà trước người đó ngồi ghế {role}!'
+      'Hiệp {round}! {name} lại đá văng {previous}, tỉ số {a} – {b}!',
+      'Căng như dây đàn! Hiệp {round} rồi, tỉ số {a} – {b}!',
+      'Kèo cháy quá! {name} {a}, {previous} {b}! Ai gỡ nào?'
     ]
   },
   {
@@ -482,9 +527,10 @@ const MC_GROUPS = [
     label: 'Quà thay chú rể',
     vars: '{name} {previous} {bride}',
     lines: [
-      'Tới công chuyện! {name} xông lên đá bay chú rể {previous}, đứng cạnh cô dâu {bride} luôn!',
-      'Chú rể {previous} bay màu rồi! Chồng mới của cô dâu {bride} là {name}!',
-      '{previous} ơi ra chuồng gà ngồi nha! {name} mới là chú rể!'
+      'Tới công chuyện! {name} đá bay chú rể {previous}!',
+      'Chú rể {previous} bay màu! Chồng mới của {bride} là {name}!',
+      '{previous} ra chuồng gà nha! {name} mới là chú rể!',
+      '{name} chen ngang quá gắt! Thua Gia Cát Lượng đúng cây quạt!'
     ]
   },
   {
@@ -493,9 +539,10 @@ const MC_GROUPS = [
     label: 'Quà thay cô dâu',
     vars: '{name} {previous} {groom}',
     lines: [
-      'Biến căng! {name} lên thay cô dâu {previous}, chú rể {groom} ơi vợ anh đổi người rồi!',
-      'Cô dâu {previous} bay màu! Chào cô dâu mới {name} của chú rể {groom}!',
-      '{previous} ơi mất chồng rồi! {name} mới là cô dâu nha!'
+      'Biến căng! {name} lên thay cô dâu {previous}!',
+      'Cô dâu {previous} bay màu! Vợ mới của {groom} là {name}!',
+      '{previous} ơi mất chồng rồi! {name} mới là cô dâu!',
+      '{name} chen ngang quá gắt! Thua Gia Cát Lượng đúng cây quạt!'
     ]
   },
   {
@@ -504,9 +551,9 @@ const MC_GROUPS = [
     label: 'Hủy hôn, phá đám',
     vars: '{name} {groom} {bride}',
     lines: [
-      'Toang rồi! {name} phá đám, {groom} và {bride} bay màu khỏi sân khấu! Ai muốn cưới thì lên lẹ!',
-      'Thuyền chìm! {name} tặng quà phá đám, đám cưới của {groom} và {bride} đi vào lòng đất!',
-      'Cả rạp chấn động! {name} lật bàn, {groom} với {bride} chạy mất dép!'
+      'Toang rồi! {name} phá đám, {groom} và {bride} bay màu!',
+      'Thuyền chìm! {name} phá đám cưới của {groom} và {bride}!',
+      '{name} lật bàn, {groom} với {bride} chạy mất dép!'
     ]
   },
   {
@@ -515,8 +562,8 @@ const MC_GROUPS = [
     label: 'Phá đám bị chặn (đang làm lễ)',
     vars: '{name}',
     lines: [
-      '{name} định phá đám mà đang làm lễ rồi, bảo vệ khiêng ra ngoài nha!',
-      'Trễ rồi {name} ơi, đang làm lễ không phá được! Lần sau phá sớm sớm xíu!'
+      '{name} phá đám trễ rồi, bảo vệ khiêng ra ngoài nha!',
+      'Trễ rồi {name} ơi! Lần sau phá sớm xíu nha!'
     ]
   },
   {
@@ -525,10 +572,10 @@ const MC_GROUPS = [
     label: 'Chuyện cũ: hai người từng đá nhau giành vai, giờ lại cưới nhau',
     vars: '{groom} {bride} {role} {rounds} {seconds} {crashHow}',
     lines: [
-      'Ủa gì vậy trời! {groom} với {bride} mới nãy còn đá nhau giành ghế {role}, giờ quay qua cưới nhau luôn! Ghét của nào trời trao của đó!',
-      'Cú quay xe cháy máy! Đánh nhau {rounds} hiệp xong {groom} và {bride} dắt nhau lên xe hoa! Oan gia ngõ hẹp là đây chứ đâu!',
-      'Hết giành nhau rồi hả? {groom} và {bride} từ kẻ thù thành vợ chồng luôn! Ai thấy vô lý thì {crashHow}!',
-      'Thương nhau lắm cắn nhau đau! {groom} với {bride} giành ghế {role} chán chê, giờ về chung một nhà cho đỡ phải giành!'
+      'Ủa! {groom} với {bride} mới đá nhau, giờ cưới nhau luôn!',
+      'Đấu {rounds} hiệp xong {groom} và {bride} dắt nhau lên xe hoa!',
+      '{groom} và {bride} từ kẻ thù thành vợ chồng luôn!',
+      'Ghét của nào trời trao của đó! {groom} cưới {bride}!'
     ]
   },
   {
@@ -537,9 +584,9 @@ const MC_GROUPS = [
     label: 'Chuyện cũ: cặp này đã cưới nhau rồi, giờ cưới lại',
     vars: '{groom} {bride} {before} {times} {seconds} {crashHow}',
     lines: [
-      'Ủa lại là {groom} với {bride}? Cưới {before} lần rồi chưa chán hả! {seconds} giây nữa cưới lần thứ {times}!',
-      'Người quen đây rồi! {groom} và {bride} lên xe hoa lần thứ {times}, yêu lại từ đầu hay gì? Ai ngứa mắt thì {crashHow}!',
-      'Cưới hoài cưới mãi! {groom} với {bride} lần thứ {times} rồi đó, MC thuộc luôn tên hai bạn!'
+      'Lại là {groom} với {bride}? Cưới {before} lần chưa chán hả!',
+      'Người quen đây rồi! {groom} và {bride} cưới lần thứ {times}!',
+      '{groom} với {bride} cưới hoài, MC thuộc tên luôn rồi!'
     ]
   },
   {
@@ -548,9 +595,9 @@ const MC_GROUPS = [
     label: 'Chuyện cũ: cô dâu vừa cưới người khác, giờ cưới chú rể mới',
     vars: '{groom} {bride} {ex} {seconds} {crashHow}',
     lines: [
-      'Rồi luôn! Cô dâu {bride} bỏ {ex} để cưới {groom}! {ex} ơi còn {seconds} giây, không giành lại là mất vợ đó!',
-      'Quay xe gắt quá! {bride} mới cưới {ex} xong giờ lên xe hoa với {groom}! Ai muốn can thì {crashHow}!',
-      'Chấn động! Hôm trước {bride} còn là vợ {ex}, hôm nay đã theo {groom}! Còn {seconds} giây nữa cưới!'
+      'Rồi luôn! Cô dâu {bride} bỏ {ex} để cưới {groom}!',
+      'Quay xe gắt! {bride} mới cưới {ex}, giờ theo {groom}!',
+      '{bride} bỏ {ex} theo {groom}! {ex} ơi còn {seconds} giây đó!'
     ]
   },
   {
@@ -559,9 +606,9 @@ const MC_GROUPS = [
     label: 'Chuyện cũ: chú rể vừa cưới người khác, giờ cưới cô dâu mới',
     vars: '{groom} {bride} {ex} {seconds} {crashHow}',
     lines: [
-      'Rồi luôn! Chú rể {groom} bỏ {ex} để cưới {bride}! {ex} ơi còn {seconds} giây, không giành lại là mất chồng đó!',
-      'Bẻ lái khét lẹt! {groom} mới cưới {ex} xong giờ rước {bride} về dinh! Ai muốn can thì {crashHow}!',
-      'Trời ơi tin được không! {groom} thay vợ như thay áo, bỏ {ex} cưới {bride}! Còn {seconds} giây nữa thôi!'
+      'Rồi luôn! Chú rể {groom} bỏ {ex} để cưới {bride}!',
+      'Bẻ lái khét lẹt! {groom} mới cưới {ex}, giờ rước {bride}!',
+      '{groom} bỏ {ex} cưới {bride}! {ex} ơi còn {seconds} giây đó!'
     ]
   },
   {
@@ -570,8 +617,8 @@ const MC_GROUPS = [
     label: 'Bình luận xin vai nhưng vai đang có người (không hàng chờ)',
     vars: '{name} {role} {holder} {gift}',
     lines: [
-      'Vai {role} có {holder} giữ rồi {name} ơi! Tặng {gift} là đá bay liền, khỏi chờ!',
-      '{name} muốn làm {role} hả? Tặng {gift} đi, {holder} bay màu ngay!'
+      'Vai {role} có {holder} rồi, {name} tặng {gift} mà giành!',
+      '{name} muốn làm {role}? Tặng {gift} là {holder} bay màu!'
     ]
   },
   {
@@ -580,8 +627,8 @@ const MC_GROUPS = [
     label: 'Người giữ vai đã rời phòng — mở lại vai',
     vars: '{name} {role}',
     lines: [
-      '{name} trốn mất tiêu rồi! Vai {role} mở lại nè, ai nhanh tay thì lên!',
-      'Chờ hoài không thấy {name} đâu, chắc sợ cưới! Vai {role} trống rồi, mời người khác!'
+      '{name} trốn mất tiêu rồi! Vai {role} mở lại nè!',
+      '{name} chắc sợ cưới nên chuồn rồi! Vai {role} trống nha!'
     ]
   },
   {
@@ -590,7 +637,360 @@ const MC_GROUPS = [
     label: 'Mở lại vai (khi bấm nút trong bảng điều khiển)',
     vars: '{min}',
     lines: [
-      'Vai cô dâu chú rể mở lại rồi! Tặng từ {min} xu là lên xe hoa, ế chi cho khổ!'
+      'Vai mở lại! {min} xu là lên xe hoa, ế chi cho khổ!'
+    ]
+  },
+  // ---------------- BIẾN CỐ & VAI PHỤ ----------------
+  // Trend TikTok chỉ dùng ở chỗ tình huống trên màn hình đúng là tình huống người ta dùng câu đó ngoài đời:
+  // "lốp trưởng" cho người đứng đầu hàng chờ, "dạ gỗ xà cừ" lúc chú rể né câu hỏi của bố vợ, "hướng nội hết phần đời
+  // còn lại" cho người vừa bị bẽ mặt, "thua Gia Cát Lượng đúng cây quạt" cho người tính nước khéo, "bốc trúng sít rịt" lúc
+  // bốc thăm ghép đôi. Không hợp cảnh thì không dùng. Trend cũ đi thì sửa ở tab "Lời thoại MC" của bảng điều khiển.
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExStart',
+    label: 'Người yêu cũ xông vào phản đối (một khách bất kỳ được MC chọn)',
+    vars: '{name} {target} {groom} {bride}',
+    lines: [
+      'Khoan đã! {name} xông vào đòi lại {target} kìa!',
+      'Biến căng! Người yêu cũ {name} tới phản đối đám cưới!',
+      'Tình cũ không rủ cũng tới! {name} đòi lại {target}!',
+      'Toang! {name} tới đòi lại tiền trà sữa của {target}!',
+      'Người yêu cũ {name} tới rồi! Ai làm vệ sĩ cho đôi trẻ nào?'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExQueue',
+    label: 'Lốp trưởng đòi lên: người đứng đầu hàng chờ xông ra đòi thay vai',
+    vars: '{name} {target} {role} {holder}',
+    lines: [
+      'Khoan đã! Lốp trưởng {name} chờ hết nổi, đòi lên làm {role}!',
+      'Xếp hàng mỏi cổ rồi! Lốp trưởng {name} đòi thay {holder} luôn!',
+      'Lốp trưởng {name} tuyên bố: lốp dự phòng cũng chạy tốt nha!',
+      'Lốp trưởng {name} đòi lên lốp chính! Ai che chắn cho {holder} nào?'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExReal',
+    label: 'Người xông vào là vợ / chồng cũ thật trong sổ cưới',
+    vars: '{name} {target} {times}',
+    lines: [
+      'Check VAR: {name} từng cưới {target} rồi, giờ quay lại đòi người!',
+      'Vợ chồng cũ thật luôn! {name} tới giành lại {target}!',
+      'Sổ cưới còn ghi rõ: {name} cưới {target} {times} lần rồi!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExWin',
+    label: 'Cả rạp che chắn thành công, người xông vào ra về',
+    vars: '{name} {hero}',
+    lines: [
+      'Che chắn thành công! {name} ôm hận ra về!',
+      '{name} bị đẩy ra giữa rạp, xin hướng nội hết phần đời còn lại!',
+      '{hero} che chắn nhiệt nhất, phong làm vệ sĩ tình yêu!',
+      'Tình yêu đấm bay {name} rồi, khỏi đòi tiền trà sữa!',
+      'Tạm biệt {name}! Hẹn lượt sau quay lại nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExSteal',
+    label: 'Che chắn không kịp: người xông vào cướp vai (vai do MC chọn ngẫu nhiên)',
+    vars: '{name} {previous} {role} {partner}',
+    lines: [
+      'Cướp trắng trợn! {name} đá bay {previous}, lên làm {role} luôn!',
+      'Rạp che chắn chậm quá! {previous} mất {partner} về tay {name}!',
+      'Quay xe khét lẹt! {name} cưới {partner}, {previous} ra chuồng gà!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExStay',
+    label: 'Che chắn không kịp nhưng vai đã có người tự nhận: người xông vào ở lại dự cưới',
+    vars: '{name}',
+    lines: [
+      '{name} không chịu về! Thôi ở lại làm khách bất đắc dĩ!',
+      'Vai có chủ rồi! {name} ngồi mâm trên dự cưới cho cay!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistExBought',
+    label: 'Người xông vào tự tặng quà thay vai giữa biến cố: cướp thành công',
+    vars: '{name} {previous} {role} {partner}',
+    lines: [
+      '{name} chơi lớn, tặng quà cướp {partner} luôn!',
+      'Khỏi cần giành giật! {name} tặng quà lên làm {role}, {previous} bay màu!',
+      '{name} tính nước này, thua Gia Cát Lượng đúng cây quạt!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCut',
+    label: 'Người khác tặng quà thay vai giữa biến cố: chen ngang, biến cố giải tán',
+    vars: '{name} {previous} {role} {partner}',
+    lines: [
+      '{name} chen ngang lên làm {role}! Biến cố giải tán!',
+      'Trai cò đánh nhau, {name} làm ngư ông đắc lợi!',
+      '{name} chờ đúng lúc mới ra tay, thua Gia Cát Lượng đúng cây quạt!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftEx',
+    label: 'Có người tặng quà lúc đang che chắn: người tặng làm vệ sĩ',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tung {gift} làm vệ sĩ, kẻ phá đám lùi ba bước!',
+      'Vệ sĩ {name} ra tay! {gift} đỡ đạn cho đôi trẻ!',
+      '{name} bảo kê đám cưới bằng {gift}, uy tín luôn!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistDowryStart',
+    label: 'Bố vợ thách cưới',
+    vars: '{dad} {groom} {bride} {need}',
+    lines: [
+      'Bố vợ {dad} thách cưới! Bình luận dạ bố lẹ lên!',
+      'Bố vợ hỏi lương, chú rể {groom} đáp: dạ gỗ xà cừ ạ!',
+      'Bố vợ hỏi {groom}: nhà đâu, xe đâu, sổ đỏ đâu?',
+      '{groom} đang trong quá trình tích lũy tài sản, cả rạp cứu với!',
+      'Bố vợ {dad} đòi sính lễ! Ai góp một lễ vật giùm {groom} nào?'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistDowryWin',
+    label: 'Bố vợ gật đầu',
+    vars: '{dad} {groom} {hero}',
+    lines: [
+      'Bố vợ gật đầu! Gửi luôn thiệp hoa hồng lấp lánh chúc mừng!',
+      'Bố vợ cắn thử vàng rồi, vàng thật! Cho cưới!',
+      '{hero} góp sính lễ nhiệt nhất, bố vợ nhận làm con nuôi!',
+      'Bố vợ gật đầu rồi! {groom} được tặng luôn sổ đỏ!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistDowryKick',
+    label: 'Bố vợ lắc đầu: chú rể do MC chọn bị đuổi',
+    vars: '{groom} {bride}',
+    lines: [
+      'Bố vợ lắc đầu! {groom} bị đuổi, tuyển rể mới gấp!',
+      'Bố vợ rút chổi lông gà! {groom} chạy mất dép!',
+      '{groom} bị đuổi giữa rạp, xin hướng nội hết phần đời còn lại!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistDowrySoft',
+    label: 'Bố vợ lắc đầu nhưng chú rể đã tự nhận vai: chỉ bị phạt vui',
+    vars: '{groom}',
+    lines: [
+      'Bố vợ chưa ưng! Phạt {groom} ở rể ba năm rửa chén!',
+      'Thiếu sính lễ! {groom} cưới được nhưng phải ở rể nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftDowry',
+    label: 'Có người tặng quà lúc bố vợ thách cưới: món quà thành sính lễ',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} góp {gift} làm sính lễ, bố vợ gật gù!',
+      'Mâm sính lễ có thêm {gift} của {name}! Bố vợ cười rồi!',
+      '{name} mừng {gift}, bố vợ đòi nhận làm con nuôi luôn!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistBlackoutStart',
+    label: 'Cúp điện',
+    vars: '',
+    lines: [
+      'Ối, cúp điện rồi! Ai quên đóng tiền điện vậy?',
+      'Mất điện toàn rạp! Thả tim quay máy phát điện lẹ!',
+      'Cúp điện! Ai đang nắm tay ai thì buông ra nha!',
+      'Cúp điện rồi! Ai thắp giùm rạp một ngọn nến nào?'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistBlackoutWin',
+    label: 'Điện về: một khách bị bắt quả tang',
+    vars: '{name} {gag} {hero}',
+    lines: [
+      'Điện về rồi! Bắt quả tang {name} đang {gag}!',
+      'Sáng đèn là lộ hết! {name} tranh thủ {gag} kìa!',
+      '{name} đang {gag} hả? Xin hướng nội hết phần đời còn lại!',
+      'Cảm ơn thợ điện {hero}! Mà {name} đang {gag} kìa!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistBlackoutLose',
+    label: 'Không kịp có điện: cưới bằng ánh nến',
+    vars: '',
+    lines: [
+      'Hết giờ! Thôi cưới bằng ánh nến cho lãng mạn!',
+      'Máy phát không nổ! Đám cưới ánh nến, tình hơn hẳn!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftBlackout',
+    label: 'Có người tặng quà lúc cúp điện: món quà thành ngọn nến',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} thắp {gift} lên, rạp sáng hẳn một góc!',
+      'Thợ điện {name} tới rồi! {gift} thay luôn máy phát!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistMassStart',
+    label: 'Cưới tập thể: mời bình luận "cưới" để cưới ké',
+    vars: '{slots}',
+    lines: [
+      'Hôm nay ngày đẹp, cưới tập thể! Còn {slots} suất cưới ké!',
+      'Chồng con gì chưa người đẹp? Chưa thì gõ cưới lẹ!',
+      'Ai ế giơ tay! Gõ cưới là được cưới ké liền!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistMassDone',
+    label: 'Cưới tập thể: chốt các cặp cưới ké',
+    vars: '{pairs}',
+    lines: [
+      'Chốt cưới ké: {pairs}! Lên xe hoa cả đám!',
+      'Cưới tập thể có thêm {pairs}! Vỗ tay nào!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistMassNone',
+    label: 'Cưới tập thể: không có ai cưới ké',
+    vars: '',
+    lines: [
+      'Không ai cưới ké hả? Thôi đôi chính cưới một mình!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftMass',
+    label: 'Có người tặng quà lúc cưới tập thể: nhận suất cưới ké hạng nhất',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift}, nhận suất cưới ké hạng thương gia!',
+      'Suất hạng nhất về tay {name}! Cưới ké mà sang như chính chủ!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoachStart',
+    label: 'Nếu em biến thành con gián: cô dâu hóa gián thử lòng chú rể',
+    vars: '{groom} {bride}',
+    lines: [
+      '{bride} hỏi: nếu em biến thành con gián, anh còn yêu không?',
+      'Thử lòng chú rể! {bride} biến thành con gián rồi kìa!',
+      'Úm ba la! {bride} hóa gián! {groom} còn yêu không?',
+      '{bride} hóa gián rồi! Ai tiếp sức tình yêu cho đôi trẻ nào?'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoachWin',
+    label: 'Con gián: cả rạp nói yêu đủ, cô dâu trở lại',
+    vars: '{groom} {bride} {hero}',
+    lines: [
+      'Tình yêu thắng! {bride} hết làm gián, xinh lại rồi!',
+      'Cả rạp làm chứng: gián cũng yêu! Cưới tiếp nào!',
+      '{hero} tin vào tình yêu nhất rạp, phong làm thần tình yêu!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoachProved',
+    label: 'Con gián: chính chú rể nói yêu (hoặc tặng quà), qua bài thử lòng ngay',
+    vars: '{groom} {bride}',
+    lines: [
+      '{groom} hôn luôn con gián! Chồng quốc dân là đây!',
+      '{groom} nói yêu không cần nghĩ! Qua bài thử lòng!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoachFlee',
+    label: 'Con gián: không đủ lời yêu, chú rể do MC chọn bỏ chạy',
+    vars: '{groom} {bride}',
+    lines: [
+      '{groom} bỏ chạy mất dép! Không yêu đương gì tầm này!',
+      '{groom} thấy gián là chuồn! {bride} chờ rể khác nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoachSoft',
+    label: 'Con gián: không đủ lời yêu nhưng chú rể đã tự nhận vai, chỉ bị phạt vui',
+    vars: '{groom} {bride}',
+    lines: [
+      '{groom} đứng hình không nói gì! Phạt ngủ sô pha một tháng!',
+      'Cưới thì vẫn cưới, nhưng {groom} nợ {bride} một lời yêu!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftRoach',
+    label: 'Có người tặng quà lúc cô dâu hóa gián: tiếp sức tình yêu',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift} tiếp sức tình yêu! Gián cũng cảm động!',
+      '{name} tin vào tình yêu, {gift} bay tới tấp!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistHero',
+    label: 'Vinh danh người tặng quà cứu đám cưới (đọc nối sau câu kết của biến cố)',
+    vars: '{hero} {gift}',
+    lines: [
+      'Vinh danh {hero}, người hùng của đám cưới này!',
+      'Không có {gift} của {hero} là toang rồi, vỗ tay nào!',
+      '{hero} được ghi công cạnh đôi trẻ tới hết đám cưới!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'attendantTaken',
+    label: 'Có người bình luận nhận vai phù dâu / phù rể',
+    vars: '{name} {role}',
+    lines: [
+      '{name} nhanh tay làm {role}! Lượt sau tới bạn lên xe hoa!',
+      'Có {role} rồi nha: {name}! Đứng gần lấy vía cưới!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'attendantPromoted',
+    label: 'Phù dâu / phù rể lượt trước được MC chọn lên vai chính',
+    vars: '{name} {role} {from}',
+    lines: [
+      'Lấy vía thành công! {name} từ {from} lên thẳng {role}!',
+      '{name} làm {from} lượt trước, giờ lên làm {role} luôn!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'attendantsWed',
+    label: 'Cả phù dâu lẫn phù rể lượt trước lên làm cô dâu, chú rể',
+    vars: '{groom} {bride}',
+    lines: [
+      'Phù dâu phù rể lượt trước lên xe hoa: {groom} và {bride}!',
+      'Lấy vía quá đỉnh! {groom} với {bride} từ vai phụ lên vai chính!'
     ]
   },
   // ---------------- LỄ THÀNH HÔN & ĐỘNG PHÒNG ----------------
@@ -600,9 +1000,9 @@ const MC_GROUPS = [
     label: 'Mở đầu lễ thành hôn',
     vars: '{groom} {bride}',
     lines: [
-      'Giờ lành tới rồi! Mời chú rể {groom} và cô dâu {bride} lên lễ đường!',
-      'Chốt đơn cưới! {groom} và {bride}, hai bạn hết đường lui rồi nha!',
-      'Nghiêm túc nào cả nhà! Lễ cưới của {groom} và {bride} bắt đầu!'
+      'Giờ lành tới! Mời {groom} và {bride} lên lễ đường!',
+      'Chốt đơn cưới! {groom} và {bride} hết đường lui nha!',
+      'Nghiêm túc nào! Lễ cưới của {groom} và {bride} bắt đầu!'
     ]
   },
   {
@@ -611,8 +1011,8 @@ const MC_GROUPS = [
     label: 'Thành hôn xong — mời tặng quà cho các bước tiếp theo',
     vars: '{groom} {bride}',
     lines: [
-      'Xong! {groom} và {bride} thành vợ chồng rồi! Giờ cả nhà tặng quà đi, muốn xem hôn, cắt bánh hay động phòng là có liền!',
-      'Hết ế chính thức! Tặng gì là {groom} và {bride} làm nấy, cơ hội hành cô dâu chú rể đây rồi!'
+      '{groom} và {bride} thành vợ chồng rồi! Tặng quà xem hôn nào!',
+      'Hết ế chính thức! Tặng gì là {groom} và {bride} làm nấy!'
     ]
   },
   {
@@ -621,12 +1021,12 @@ const MC_GROUPS = [
     label: 'Sau khi thành hôn: rủ đôi trẻ kết bạn, nói chuyện với nhau',
     vars: '{groom} {bride}',
     lines: [
-      'Cưới xong rồi thì {groom} với {bride} follow nhau, nhắn tin làm quen ở ngoài luôn nha! Biết đâu cưới ảo thành yêu thật!',
-      '{groom} ơi, vợ mới cưới đó! Vô trang cá nhân {bride} bấm follow rồi nhắn tin hỏi thăm đi chứ!',
-      'Hai bạn {groom} và {bride} kết bạn nói chuyện với nhau đi nha, cưới rồi mà không quen nhau thì kỳ lắm!',
-      'Rạp này mai mối có tâm lắm! {groom} với {bride} cứ làm quen ngoài đời, thành đôi thật nhớ mời MC ăn cưới!',
-      'Duyên số là đây chứ đâu! {bride} với {groom} thử nhắn cho nhau một câu xem, biết đâu hợp cạ!',
-      '{bride} ơi, chồng {groom} đang chờ tin nhắn kìa! Cưới trên live rồi thì ra ngoài cà phê làm quen một bữa đi!'
+      '{groom} với {bride} cưới xong nhớ follow nhau nha!',
+      '{groom} ơi, vô trang {bride} bấm follow đi chứ!',
+      '{groom} và {bride} kết bạn đi, cưới rồi mà lạ nhau kỳ lắm!',
+      'Thành đôi thật thì {groom} với {bride} nhớ mời MC nha!',
+      '{bride} với {groom} nhắn nhau một câu xem, biết đâu hợp!',
+      '{bride} ơi, chồng {groom} đang chờ tin nhắn kìa!'
     ]
   },
   {
@@ -635,9 +1035,9 @@ const MC_GROUPS = [
     label: 'MC đãi: thỉnh thoảng bắn pháo hoa miễn phí để khoe tính năng',
     vars: '{groom} {bride} {gift}',
     lines: [
-      'MC khao một tràng pháo hoa mừng {groom} và {bride}! Lần sau ai muốn xem nữa thì tặng {gift} nha!',
-      'Hôm nay MC vui, bắn pháo hoa tặng đôi trẻ luôn! Thích thì lần sau tặng {gift} là có liền!',
-      'Pháo hoa cây nhà lá vườn đây bà con! Muốn bắn hoài thì tặng {gift} cho MC đỡ tốn nha!'
+      'MC khao pháo hoa mừng {groom} và {bride}! Thích thì tặng {gift}!',
+      'MC vui nên bắn pháo hoa! Lần sau tặng {gift} nha!',
+      'Pháo hoa cây nhà lá vườn! Muốn nữa thì tặng {gift}!'
     ]
   },
   {
@@ -646,9 +1046,9 @@ const MC_GROUPS = [
     label: 'MC đãi: thỉnh thoảng cho đôi trẻ động phòng miễn phí để khoe tính năng',
     vars: '{groom} {bride} {gift}',
     lines: [
-      'Hôm nay MC chơi lớn, khao {groom} và {bride} một suất động phòng! Lần sau muốn xem thì tặng {gift} nha!',
-      'Thấy đôi trẻ đứng chờ tội quá, MC cho vô động phòng luôn! Cặp sau muốn vậy thì tặng {gift} nhé bà con!',
-      'Khuyến mãi động phòng miễn phí cho {groom} với {bride}! Chỉ lần này thôi, lần sau nhớ tặng {gift}!'
+      'MC chơi lớn, khao {groom} và {bride} một suất động phòng!',
+      'MC cho đôi trẻ động phòng luôn! Cặp sau nhớ tặng {gift}!',
+      'Khuyến mãi động phòng miễn phí! Lần sau tặng {gift} nha!'
     ]
   },
   {
@@ -657,9 +1057,9 @@ const MC_GROUPS = [
     label: 'Tiệc mừng: nhắc tặng quà trước khi đôi trẻ rời sân khấu',
     vars: '{groom} {bride} {seconds}',
     lines: [
-      'Còn {seconds} giây nữa {groom} và {bride} về mất! Muốn xem hôn hay động phòng thì tặng quà lẹ!',
-      'Chưa ai cho đôi trẻ động phòng hả? Còn {seconds} giây, tặng quà đi rồi cả nhà cùng hóng!',
-      'Cô dâu chú rể đứng chờ quà mỏi chân rồi! Tặng một cái cho {groom} với {bride} hôn nhau coi!'
+      'Còn {seconds} giây nữa đôi trẻ về mất, tặng quà lẹ!',
+      'Chưa ai cho đôi trẻ động phòng hả? Còn {seconds} giây!',
+      'Tặng một cái cho {groom} với {bride} hôn nhau coi!'
     ]
   },
   {
@@ -668,8 +1068,8 @@ const MC_GROUPS = [
     label: 'Quà "động phòng luôn" (bỏ qua các bước lễ)',
     vars: '{name} {groom} {bride}',
     lines: [
-      'Chơi lớn! {name} tặng quà cho {groom} và {bride} vô động phòng luôn, khỏi vòng vo!',
-      'Gấp lắm rồi! Nhờ {name}, {groom} với {bride} được đẩy thẳng vô động phòng!'
+      'Chơi lớn! {name} cho {groom} và {bride} động phòng luôn!',
+      'Gấp lắm rồi! Nhờ {name}, đôi trẻ vô thẳng động phòng!'
     ]
   },
   {
@@ -678,8 +1078,8 @@ const MC_GROUPS = [
     label: 'Trao nhẫn',
     vars: '{groom} {bride}',
     lines: [
-      'Trao nhẫn nào! Đeo vô là hết đường chạy nha hai bạn!',
-      'Nhẫn nhỏ mà trách nhiệm to! Mời {groom} và {bride} trao nhẫn!'
+      'Trao nhẫn nào! Đeo vô là hết đường chạy nha!',
+      'Nhẫn nhỏ mà trách nhiệm to nha {groom} và {bride}!'
     ]
   },
   {
@@ -688,8 +1088,9 @@ const MC_GROUPS = [
     label: 'Hôn cô dâu',
     vars: '{groom} {bride}',
     lines: [
-      'Hôn đi hôn đi! Cả rạp đếm: một, hai, ba!',
-      'Chú rể hôn cô dâu nào! Hội ế quay mặt đi chỗ khác nha!'
+      'Hôn đi hôn đi! Cả rạp đếm nào: một, hai, ba!',
+      'Chú rể hôn cô dâu nào! Hội ế quay mặt đi!',
+      'Hôn đi! Tuyệt đối điện ảnh luôn cả nhà ơi!'
     ]
   },
   {
@@ -698,8 +1099,8 @@ const MC_GROUPS = [
     label: 'Cắt bánh cưới',
     vars: '{groom} {bride}',
     lines: [
-      'Cắt bánh thôi! Cắt khéo vô, chia MC một miếng nha!',
-      'Bánh cưới tới rồi! Mời {groom} và {bride} cùng cắt, ngọt như tình yêu của hai bạn!'
+      'Cắt bánh thôi! Nhớ chia MC một miếng nha!',
+      'Bánh cưới tới! {groom} và {bride} cắt lẹ, MC đói rồi!'
     ]
   },
   {
@@ -708,8 +1109,8 @@ const MC_GROUPS = [
     label: 'Rót rượu sâm panh',
     vars: '{groom} {bride}',
     lines: [
-      'Khui rượu! Rót tràn ly, say thì về mà yêu thì ở lại!',
-      'Sâm panh nổ rồi! Cả rạp nâng ly mừng cô dâu chú rể nào!'
+      'Khui rượu! Say thì về mà yêu thì ở lại!',
+      'Sâm panh nổ rồi! Cả rạp nâng ly nào!'
     ]
   },
   {
@@ -718,8 +1119,8 @@ const MC_GROUPS = [
     label: 'Mời vào động phòng',
     vars: '{groom} {bride}',
     lines: [
-      'Tới giờ rồi! Mời {groom} và {bride} vô động phòng, cả nhà đứng ngoài hóng thôi nha!',
-      'Tiệc tàn rồi, cô dâu chú rể vô động phòng! Ai nhìn trộm là bị đau mắt đỏ đó!'
+      'Tới giờ rồi! {groom} và {bride} vô động phòng, cấm hóng!',
+      'Đôi trẻ vô động phòng! Ai nhìn trộm là đau mắt đỏ!'
     ]
   },
   {
@@ -728,8 +1129,8 @@ const MC_GROUPS = [
     label: 'Sau động phòng',
     vars: '{groom} {bride}',
     lines: [
-      'Xong rồi! Chúc {groom} và {bride} trăm năm hạnh phúc, sang năm có em bé cho MC bế!',
-      'Cửa mở rồi! {groom} với {bride} bước ra mặt tươi rói, chúc hai bạn ở với nhau tới già!'
+      'Xong rồi! Chúc {groom} và {bride} sang năm có em bé!',
+      'Cửa mở rồi! {groom} với {bride} bước ra mặt tươi rói!'
     ]
   },
   {
@@ -738,9 +1139,9 @@ const MC_GROUPS = [
     label: 'Kết thúc lễ — mở vai cho lượt mới',
     vars: '{groom} {bride}',
     lines: [
-      'Tiễn {groom} và {bride} về chung một nhà! Sân khấu trống rồi, cặp tiếp theo đâu?',
-      'Xong một cặp! Hội ế còn lại đâu rồi, lên sân khấu nào!',
-      '{groom} với {bride} cưới xong rồi, ai muốn thoát ế tiếp theo thì nhanh tay nha!'
+      'Tiễn {groom} và {bride} về dinh! Cặp tiếp theo đâu?',
+      'Xong một cặp! Hội ế còn lại lên sân khấu nào!',
+      '{groom} với {bride} cưới xong rồi, ai thoát ế tiếp nào?'
     ]
   },
   // ---------------- CẢM ƠN QUÀ TẶNG ----------------
@@ -750,12 +1151,12 @@ const MC_GROUPS = [
     label: 'Cảm ơn quà — MC hài hước (quà không gán nghi thức)',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      'U là trời! {name} mừng hẳn {count} {gift}! Đại gia tới rồi, cả rạp đứng dậy chào!',
-      'Cảm ơn {name} đã mừng {count} {gift}! Hào phóng vậy chắc chắn không ế được lâu đâu!',
-      '{name} chơi lớn quá, {count} {gift} luôn! Chúc bạn tiền vô như nước, bồ tới như mưa!',
-      'Đỉnh nóc kịch trần! {name} mừng {count} {gift}, tối nay cô dâu chú rể đếm quà mỏi tay!',
-      'Cảm ơn {name} nha! Mừng quà xịn vậy, năm sau MC làm đám cưới miễn phí cho bạn!',
-      '{name} vừa mừng {count} {gift}! Người gì đâu vừa giàu vừa dễ thương, có bồ chưa vậy?'
+      'U là trời! {name} mừng {count} {gift}! Đại gia tới rồi!',
+      'Cảm ơn {name} mừng {count} {gift}! Hào phóng vậy sao mà ế!',
+      '{name} chơi lớn, {count} {gift} luôn! Chúc bồ tới như mưa!',
+      'Đỉnh nóc kịch trần! {name} mừng {count} {gift}!',
+      'Cảm ơn {name}! Năm sau MC làm đám cưới miễn phí cho!',
+      '{name} mừng {count} {gift}! Giàu vậy có bồ chưa?'
     ]
   },
   {
@@ -764,8 +1165,8 @@ const MC_GROUPS = [
     label: 'Cảm ơn quà — lịch sự (khi tắt MC hài hước)',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      'Cảm ơn {name} đã mừng {count} {gift} cho {groom} và {bride}! Chúc bạn luôn vui và gặp nhiều may mắn!',
-      'Rạp cưới cảm ơn {name} đã gửi {count} {gift}! Chúc bạn sức khỏe và thật nhiều niềm vui!'
+      'Cảm ơn {name} đã mừng {count} {gift}! Chúc bạn may mắn!',
+      'Rạp cưới cảm ơn {name} đã gửi {count} {gift}!'
     ]
   },
   {
@@ -774,8 +1175,8 @@ const MC_GROUPS = [
     label: 'Quà → Mưa hoa hồng',
     vars: '{name} {gift} {count}',
     lines: [
-      'Cảm ơn {name} mừng {count} {gift}! Hoa rơi đầy rạp, lãng mạn muốn xỉu!',
-      'Mưa hoa hồng tới! {name} làm cả rạp thơm phức luôn!'
+      'Cảm ơn {name} mừng {count} {gift}! Lãng mạn muốn xỉu!',
+      'Mưa hoa hồng tới! {name} làm cả rạp thơm phức!'
     ]
   },
   {
@@ -784,8 +1185,8 @@ const MC_GROUPS = [
     label: 'Quà → Cô dâu chú rể hôn',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      '{name} hô hôn đi! {groom} và {bride} phát cơm chó cho cả rạp nè!',
-      'Cảm ơn {name}! Hôn một cái cho hội ế ghen tị chơi!'
+      '{name} hô hôn đi! {groom} và {bride} phát cơm chó nè!',
+      'Cảm ơn {name}! Hôn một cái cho hội ế ghen chơi!'
     ]
   },
   {
@@ -794,8 +1195,8 @@ const MC_GROUPS = [
     label: 'Quà → Lên sàn nhảy',
     vars: '{name} {gift} {count}',
     lines: [
-      '{name} lên sàn quẩy cháy máy! Cả rạp bung lụa theo nào!',
-      'Nhạc lên! {name} nhảy sung quá, ai ngồi im là già đó nha!'
+      '{name} lên sàn quẩy cháy máy! Cả rạp bung lụa nào!',
+      'Nhạc lên! {name} quẩy sung, ai ngồi im là già!'
     ]
   },
   {
@@ -804,8 +1205,8 @@ const MC_GROUPS = [
     label: 'Quà → Cắt bánh cưới',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      'Cảm ơn {name}! Cô dâu chú rể cắt bánh nào, nhớ chừa MC một miếng!',
-      '{name} đãi bánh cưới! {groom} và {bride} cắt lẹ cho cả rạp ăn với!'
+      'Cảm ơn {name}! Cắt bánh nào, chừa MC một miếng nha!',
+      '{name} đãi bánh cưới! Cắt lẹ cho cả rạp ăn với!'
     ]
   },
   {
@@ -814,8 +1215,8 @@ const MC_GROUPS = [
     label: 'Quà → Rót rượu sâm panh',
     vars: '{name} {gift} {count}',
     lines: [
-      '{name} khui sâm panh! Rót tràn ly, hôm nay không say không về!',
-      'Bốp! {name} mở rượu mừng, cả rạp nâng ly nào!'
+      '{name} khui sâm panh! Hôm nay không say không về!',
+      'Bốp! {name} mở rượu mừng, nâng ly nào cả rạp!'
     ]
   },
   {
@@ -824,8 +1225,8 @@ const MC_GROUPS = [
     label: 'Quà → Cụng ly',
     vars: '{name} {gift} {count}',
     lines: [
-      '{name} mời cả rạp! Một, hai, ba, dzô! Hai, ba, uống!',
-      'Cụng ly nào! {name} bao, cả rạp cứ uống thoải mái!'
+      '{name} mời cả rạp! Một, hai, ba, dzô!',
+      'Cụng ly nào! {name} bao, cả rạp uống thoải mái!'
     ]
   },
   {
@@ -834,7 +1235,7 @@ const MC_GROUPS = [
     label: 'Quà → Trao nhẫn',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      '{name} giục trao nhẫn! {groom} và {bride} đeo vô là hết đường chạy nha!'
+      '{name} giục trao nhẫn! Đeo vô là hết đường chạy nha!'
     ]
   },
   {
@@ -843,8 +1244,8 @@ const MC_GROUPS = [
     label: 'Quà → Động phòng',
     vars: '{name} {gift} {count} {groom} {bride}',
     lines: [
-      'Gấp lắm rồi! {name} mừng {gift}, đẩy {groom} và {bride} vô động phòng luôn!',
-      'U là trời, {name} chơi lớn! Cô dâu {bride} và chú rể {groom} vô động phòng, cả nhà hóng nào!'
+      'Gấp lắm rồi! {name} đẩy {groom} và {bride} vô động phòng!',
+      '{name} chơi lớn! Đôi trẻ vô động phòng, cả nhà hóng nào!'
     ]
   },
   {
@@ -853,9 +1254,9 @@ const MC_GROUPS = [
     label: 'Quà → Tung hoa cưới',
     vars: '{name} {catcher} {bride}',
     lines: [
-      'Cô dâu tung hoa! Người bắt được là {catcher}! Sắp thoát ế rồi nha!',
-      'Bó hoa bay vèo trúng ngay {catcher}! Chuẩn bị thiệp cưới đi là vừa!',
-      'Cảm ơn {name}! Hoa cưới rơi vô tay {catcher}, năm nay không cưới là MC phạt!'
+      'Cô dâu tung hoa! {catcher} bắt được, sắp thoát ế rồi!',
+      'Hoa bay trúng ngay {catcher}! Chuẩn bị thiệp cưới đi!',
+      'Cảm ơn {name}! Hoa cưới rơi vô tay {catcher} rồi!'
     ]
   },
   {
@@ -864,8 +1265,8 @@ const MC_GROUPS = [
     label: 'Quà → Bắn pháo hoa',
     vars: '{name}',
     lines: [
-      'Bùm chíu! {name} bắn pháo hoa, sáng rực cả rạp luôn!',
-      'Pháo hoa tới! Cảm ơn {name}, đẹp muốn xỉu ngang!'
+      'Bùm chíu! {name} bắn pháo hoa sáng rực cả rạp!',
+      'Pháo hoa tới! Cảm ơn {name}, đẹp muốn xỉu!'
     ]
   },
   {
@@ -874,8 +1275,8 @@ const MC_GROUPS = [
     label: 'Quà → Đổi nhạc',
     vars: '{name} {track}',
     lines: [
-      '{name} đổi nhạc! Bài {track} lên rồi, quẩy tiếp nào cả nhà!',
-      'Nhạc mới theo yêu cầu của {name}! Ai không nhún là hơi kỳ nha!'
+      '{name} đổi nhạc! Bài {track} lên rồi, quẩy tiếp nào!',
+      'Nhạc mới của {name}! Ai không nhún là hơi kỳ nha!'
     ]
   },
   {
@@ -884,9 +1285,9 @@ const MC_GROUPS = [
     label: 'Quà → Cưới MC',
     vars: '{name}',
     lines: [
-      'Ơ kìa, {name} tặng quà đòi cưới MC! Mẹ ơi con có người hốt rồi!',
-      '{name} cầu hôn MC giữa rạp! MC ngại quá mà MC đồng ý nha!',
-      'Cứu! {name} đòi cưới MC! Thôi được, MC ế lâu rồi nên chốt luôn!'
+      '{name} tặng quà đòi cưới MC! Mẹ ơi con có người hốt!',
+      '{name} cầu hôn MC giữa rạp! MC ngại mà MC đồng ý!',
+      'Cứu! {name} đòi cưới MC! Thôi được, MC chốt luôn!'
     ]
   },
   {
@@ -895,8 +1296,9 @@ const MC_GROUPS = [
     label: 'Chụp ảnh cưới / ảnh chung (MC nói)',
     vars: '{name} {groom} {bride} {number}',
     lines: [
-      'Cả nhà nhìn đây! Một, hai, ba, cười! Ai nhắm mắt MC không chịu trách nhiệm nha!',
-      'Tách! Ảnh cưới của {groom} và {bride} lên sóng, chụp màn hình lưu lại lẹ!'
+      'Một, hai, ba, cười! Ai nhắm mắt MC không chịu trách nhiệm!',
+      'Tách! Ảnh cưới của {groom} và {bride} lên sóng!',
+      'Tách! Tấm này tuyệt đối điện ảnh luôn!'
     ]
   },
   {
@@ -925,7 +1327,7 @@ const MC_GROUPS = [
     label: 'Đạt mục tiêu mưa hoa hồng',
     vars: '{groom} {bride}',
     lines: [
-      'Đủ hoa hồng rồi cả nhà ơi! Mưa hoa đổ xuống, lãng mạn hết nấc!'
+      'Đủ hoa hồng rồi! Mưa hoa đổ xuống, lãng mạn hết nấc!'
     ]
   },
   {
@@ -934,7 +1336,7 @@ const MC_GROUPS = [
     label: 'Đạt mục tiêu cắt bánh',
     vars: '{groom} {bride}',
     lines: [
-      'Đủ chỉ tiêu bánh rồi! Mời cô dâu chú rể cắt cái bánh to nhất rạp!'
+      'Đủ chỉ tiêu bánh rồi! Cắt cái bánh to nhất rạp nào!'
     ]
   },
   {

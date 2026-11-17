@@ -230,6 +230,21 @@
               <button class="action-btn" data-action="music">
                 <span class="act-icon">🎵</span><b>Đổi nhạc</b><small>Bài kế tiếp trong danh sách</small>
               </button>
+              <button class="action-btn" data-twist="ex" style="border-color:#ff5a7c;">
+                <span class="act-icon">💔</span><b>Biến cố: có người đòi thay vai</b><small>Người đầu hàng chờ (lốp trưởng) hoặc người yêu cũ xông vào</small>
+              </button>
+              <button class="action-btn" data-twist="dowry" style="border-color:#ffc24a;">
+                <span class="act-icon">🧧</span><b>Biến cố: bố vợ thách cưới</b><small>Diễn lúc đôi trên sân khấu sắp làm lễ</small>
+              </button>
+              <button class="action-btn" data-twist="blackout" style="border-color:#9fe0ff;">
+                <span class="act-icon">⚡</span><b>Biến cố: cúp điện</b><small>Diễn lúc đôi trên sân khấu sắp làm lễ</small>
+              </button>
+              <button class="action-btn" data-twist="mass" style="border-color:#ff9ac4;">
+                <span class="act-icon">💒</span><b>Biến cố: cưới tập thể</b><small>Diễn lúc đôi trên sân khấu sắp làm lễ</small>
+              </button>
+              <button class="action-btn" data-twist="roach" style="border-color:#c8ff7a;">
+                <span class="act-icon">🪳</span><b>Biến cố: cô dâu hóa gián</b><small>"Nếu em biến thành con gián" thử lòng chú rể</small>
+              </button>
             </div>
           </div>
 
@@ -373,6 +388,42 @@
               <div class="form-group">
                 <label>🎁 Rạp không ai tặng quà bao nhiêu giây thì MC đãi miễn phí một hiệu ứng (pháo hoa, mưa hoa, quẩy, cụng ly — ghi rõ "MC đãi"; 0 = tắt, ít nhất 20):</label>
                 <input type="number" id="cfg-treat-quiet" value="60" min="0" max="3600">
+              </div>
+              <div class="form-group">
+                <label>🎭 Biến cố lúc sắp làm lễ, để lượt cưới nào cũng khác nhau — trung bình mấy lượt cưới một lần (0 = tắt):</label>
+                <input type="number" id="cfg-twist-every" value="3" min="0" max="50">
+              </div>
+              <div class="form-group">
+                <label>🎭 Loại biến cố được diễn. Mỗi màn có hai cửa: cả rạp thả tim / bình luận (miễn phí), hoặc tặng quà để làm người hùng của màn đó. Người đã tự nhận vai không bị mất vai vì biến cố:</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <select id="cfg-twist-ex">
+                    <option value="true">💔 Có người xông vào đòi thay vai: bật</option>
+                    <option value="false">💔 Có người xông vào đòi thay vai: tắt</option>
+                  </select>
+                  <select id="cfg-twist-dowry">
+                    <option value="true">🧧 Bố vợ thách cưới: bật</option>
+                    <option value="false">🧧 Bố vợ thách cưới: tắt</option>
+                  </select>
+                  <select id="cfg-twist-blackout">
+                    <option value="true">⚡ Cúp điện: bật</option>
+                    <option value="false">⚡ Cúp điện: tắt</option>
+                  </select>
+                  <select id="cfg-twist-mass">
+                    <option value="true">💒 Cưới tập thể: bật</option>
+                    <option value="false">💒 Cưới tập thể: tắt</option>
+                  </select>
+                  <select id="cfg-twist-roach">
+                    <option value="true">🪳 Cô dâu hóa gián: bật</option>
+                    <option value="false">🪳 Cô dâu hóa gián: tắt</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>💐 Vai phụ phù dâu, phù rể — khách bình luận "phù dâu" / "phù rể" để lên sân khấu, lượt sau được MC ưu tiên chọn làm cô dâu, chú rể:</label>
+                <select id="cfg-attendants">
+                  <option value="true">Bật</option>
+                  <option value="false">Tắt</option>
+                </select>
               </div>
               <div class="form-group">
                 <label>🎲 Ghép đôi ngẫu nhiên khi không ai nhận vai:</label>

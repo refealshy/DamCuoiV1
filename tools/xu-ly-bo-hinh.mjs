@@ -20,7 +20,9 @@
 //   couple_<động tác>        cặp đôi: idle (bắt buộc), kiss, heart, wave, bow, và tùy chọn:
 //                            ring (trao nhẫn), cake (cắt bánh), cheers (cụng ly), dance (khiêu vũ),
 //                            carry (bế vào động phòng), bouquet (tung hoa), shock hoặc cancel (bị phá đám),
-//                            thanks (cảm ơn quà), petal (mưa hoa), fireworks (pháo hoa). couple_ref bị bỏ qua.
+//                            thanks (cảm ơn quà), petal (mưa hoa), fireworks (pháo hoa),
+//                            roach (cô dâu hóa gián trong biến cố "nếu em biến thành con gián"; sửa từ ảnh couple_idle,
+//                            chú rể giữ nguyên, cô dâu thành bạn gián đội khăn voan). couple_ref bị bỏ qua.
 //   bride_wait, groom_wait   cô dâu / chú rể đứng riêng chờ ghép đôi (ảnh, thêm video cùng tên nếu có).
 //                            Sửa từ ảnh couple_idle: giữ nguyên vị trí và cỡ người, xóa người kia.
 //   chinh-video.json         (tùy chọn) chỉnh riêng từng video, vd {"groom_wait": {"diVe": true}}.
@@ -31,6 +33,19 @@
 //   guest_m<số>, guest_f<số> khách nam, khách nữ
 //   guest_m<số>_dance        (video) khách đó nhảy trên sàn nhảy (tùy chọn)
 //   guest_m<số>_idle         (video) khách đó đứng cử động nhẹ, lặp lại; thành ảnh động WebP (tùy chọn)
+//
+// Hình cho các biến cố lúc sắp làm lễ (tùy chọn; chưa có thì overlay mượn hình khách và vẽ hiệu ứng bằng CSS).
+// Thêm hoặc sửa nhóm này thì chỉ cần chạy:  node tools/xu-ly-bo-hinh.mjs --chi=bc
+//   bc_ex_m, bc_ex_f         người yêu cũ nam / nữ xông vào đòi thay vai (ảnh nền xanh, thêm video cùng tên nếu có).
+//                            Nhân vật đứng bên phải sân khấu nên quay người và chỉ tay về phía bên TRÁI ảnh.
+//   bc_bovo_angry, _happy    bố vợ thách cưới: đang khó chịu, và lúc gật đầu cười (ảnh nền xanh, thêm video nếu có)
+//   bc_dark.jpg              hội trường lúc cúp điện (ảnh 9:16 đủ cảnh, cùng bố cục với phông lúc đủ đôi)
+//   bc_fx_<tên>.mp4          hiệu ứng tràn màn hình 9:16, phát một lượt: shatter (kính vỡ lúc "KHOAN ĐÃ"),
+//                            lightning (sét lúc cúp điện), goldrain (mưa vàng khi bố vợ gật đầu), shield (che chắn thành công).
+//                            Nền xanh lá thì xóa nền; nền đen (hợp với tia sáng, tia lửa) thì hòa sáng vào khung hình.
+//
+// Nhân vật hoặc đạo cụ có màu xanh lá (vd áo và nón tài xế công nghệ): tạo trên nền xanh dương #0000FF thay cho xanh lá.
+// Công cụ tự nhận ra nền xanh dương theo màu ở các mép ảnh và xóa đúng màu đó; khi ấy trên người không được có màu xanh dương.
 //
 // Mỗi nhóm (cặp đôi, MC, từng người đi lên, khách) dùng chung một khung cắt để
 // chuyển giữa ảnh và video không bị nhảy vị trí. Chạy lại bất cứ lúc nào khi thêm file.
@@ -44,6 +59,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // --chi=bride,groom : chỉ xử lý các nhóm này, giữ nguyên phần còn lại của theme.json (nhanh, không mã hóa lại cả bộ)
 const ONLY = (process.argv.find(a => a.startsWith('--chi='))?.slice(6) || '').split(',').map(s => s.trim()).filter(Boolean);
+// --chi=bc : mọi hình của biến cố (người yêu cũ, bố vợ, hội trường tối, hiệu ứng tràn màn hình)
+const ONLY_EVENTS = ONLY.includes('bc');
+if (ONLY_EVENTS) ONLY.push('bc_ex_m', 'bc_ex_f', 'bc_bovo');
 const ARGV = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const SRC = path.resolve(ARGV[0] || path.join(ROOT, 'bo-hinh-moi'));
 const THEME_ID = (ARGV[1] || 'ban-thuc-3d').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'ban-thuc-3d';
@@ -64,7 +82,11 @@ const GROUPS = {
   mc: { test: n => /^mc_[a-z0-9]+$/.test(n), imgH: 560, vidH: 400 },
   walker_m: { test: n => n === 'walker_m', imgH: 640, vidH: 440 },
   walker_f: { test: n => n === 'walker_f', imgH: 640, vidH: 440 },
-  guest: { test: n => /^guest_[mf]\d+(_(dance|idle))?$/.test(n), imgH: 440, vidH: 440 }
+  guest: { test: n => /^guest_[mf]\d+(_(dance|idle))?$/.test(n), imgH: 440, vidH: 440 },
+  // Nhân vật của biến cố: người yêu cũ nam / nữ mỗi người một khung cắt, bố vợ dùng chung một khung cho mọi nét mặt
+  bc_ex_m: { test: n => n === 'bc_ex_m', imgH: 900, vidH: 640 },
+  bc_ex_f: { test: n => n === 'bc_ex_f', imgH: 900, vidH: 640 },
+  bc_bovo: { test: n => /^bc_bovo_[a-z0-9]+$/.test(n), imgH: 900, vidH: 640 }
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
@@ -124,10 +146,17 @@ async function pool(items, limit, fn) {
 
 const even = n => Math.max(2, Math.round(n / 2) * 2);
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-const labelMask = 'drawbox=x=0:y=0:w=iw*' + LABEL.w + ':h=ih*' + LABEL.h + ':color=0x00FF00@1:t=fill';
-const alphaExpr = k => `clip(255-(g(X,Y)-max(r(X,Y),b(X,Y))-${k.t1})*255/${k.t2 - k.t1},0,255)`;
+// Nền cần xóa là xanh lá (mặc định) hoặc xanh dương (k.blue): nhân vật có đồ màu xanh lá (vd áo tài xế công nghệ)
+// thì tạo trên nền xanh dương #0000FF, công cụ tự nhận ra theo màu ở các mép ảnh.
+// Ô che nhãn AI ở góc trên trái cũng tô đúng màu nền để bị xóa cùng nền.
+const maskOf = k => `drawbox=x=0:y=0:w=iw*${LABEL.w}:h=ih*${LABEL.h}:color=${k?.blue ? '0x0000FF' : '0x00FF00'}@1:t=fill`;
+const labelMask = maskOf(null);
+const alphaExpr = k => (k.blue
+  ? `clip(255-(b(X,Y)-max(r(X,Y),g(X,Y))-${k.t1})*255/${k.t2 - k.t1},0,255)`
+  : `clip(255-(g(X,Y)-max(r(X,Y),b(X,Y))-${k.t1})*255/${k.t2 - k.t1},0,255)`);
 
-// Đo độ trội xanh của nền ở mép trên và hai mép bên (phần trên), nơi chỉ có nền.
+// Đo độ trội màu của nền ở mép trên và hai mép bên (phần trên), nơi chỉ có nền. Trội xanh dương nhiều hơn xanh lá
+// thì coi là nền xanh dương.
 function estimateKey(file, isVideo) {
   const SW = 90;
   const SH = 160;
@@ -135,32 +164,42 @@ function estimateKey(file, isVideo) {
     '-frames:v', isVideo ? '12' : '1', '-f', 'rawvideo', 'pipe:1'], { maxBuffer: 64 * 1024 * 1024 });
   const buf = r.stdout || Buffer.alloc(0);
   const frameBytes = SW * SH * 3;
-  const ds = [];
+  const green = [];
+  const blue = [];
   const at = (f, x, y) => {
     const i = f * frameBytes + (y * SW + x) * 3;
-    return buf[i + 1] - Math.max(buf[i], buf[i + 2]);
+    green.push(buf[i + 1] - Math.max(buf[i], buf[i + 2]));
+    blue.push(buf[i + 2] - Math.max(buf[i], buf[i + 1]));
   };
   for (let f = 0; f < Math.floor(buf.length / frameBytes); f++) {
     for (let x = Math.round(SW * 0.12); x < SW * 0.88; x += 2) {
-      for (const y of [3, 5, 7]) ds.push(at(f, x, y));
+      for (const y of [3, 5, 7]) at(f, x, y);
     }
     for (let y = Math.round(SH * 0.06); y < SH * 0.4; y += 2) {
-      for (const x of [1, 3, SW - 4, SW - 2]) ds.push(at(f, x, y));
+      for (const x of [1, 3, SW - 4, SW - 2]) at(f, x, y);
     }
   }
-  const bg = ds.filter(d => d >= 20).sort((a, b) => a - b);
+  const strong = ds => ds.filter(d => d >= 20).sort((a, b) => a - b);
+  const bgGreen = strong(green);
+  const bgBlue = strong(blue);
+  const isBlue = bgBlue.length > bgGreen.length;
+  const bg = isBlue ? bgBlue : bgGreen;
   if (bg.length < 20) return { t1: T1_MAX, t2: T2_MAX, d: null };
   const dLow = bg[Math.floor(bg.length * 0.08)];
   const t2 = clamp(Math.round(dLow * 0.82), 26, T2_MAX);
   const t1 = clamp(Math.round(t2 * 0.3), 6, T1_MAX);
-  return { t1, t2, d: dLow };
+  return { t1, t2, d: dLow, blue: isBlue };
 }
 
 function keyFilter(k, { featherL = false, featherR = false } = {}) {
   let a = alphaExpr(k);
   if (featherL) a = `${a}*min(1,X/(W*${FEATHER}))`;
   if (featherR) a = `${a}*min(1,(W-1-X)/(W*${FEATHER}))`;
-  return `format=gbrap,geq=r='r(X,Y)':g='min(g(X,Y),max(r(X,Y),b(X,Y)))':b='b(X,Y)':a='${a}'`;
+  // Khử viền ám màu nền: kênh màu của nền không được trội hơn hai kênh còn lại
+  const rgb = k.blue
+    ? "r='r(X,Y)':g='g(X,Y)':b='min(b(X,Y),max(r(X,Y),g(X,Y)))'"
+    : "r='r(X,Y)':g='min(g(X,Y),max(r(X,Y),b(X,Y)))':b='b(X,Y)'";
+  return `format=gbrap,geq=${rgb}:a='${a}'`;
 }
 
 // Khung chứa nhân vật (tỷ lệ 0..1 theo khung gốc), gộp qua mọi khung hình nếu là video.
@@ -168,7 +207,7 @@ async function detectBox(file, isVideo, k) {
   const { w, h } = probe(file);
   const W = 360;
   const H = even((W * h) / w);
-  const vf = [isVideo ? 'fps=8' : null, `scale=${W}:${H}`, labelMask,
+  const vf = [isVideo ? 'fps=8' : null, `scale=${W}:${H}`, maskOf(k),
     `format=gbrap,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='${alphaExpr(k)}'`,
     'alphaextract', 'cropdetect=limit=2:round=2:reset=0:skip=0'].filter(Boolean).join(',');
   const err = await sh('ffmpeg', ['-hide_banner', '-i', file, '-vf', vf, '-f', 'null', '-']);
@@ -201,7 +240,7 @@ async function fitToCouple(m, coupleBox, ratio, tmpDir) {
   const oy = Math.round(coupleBox.y2 * h - box.y2 * sh2);
   const isVid = m.kind === 'vid';
   const out = path.join(tmpDir, `${m.name}_fit.${isVid ? 'mp4' : 'png'}`);
-  const fc = `color=c=${bgColor(m.file)}:s=${w}x${h}${isVid ? `:r=${FPS}` : ''}[bg];[0:v]${labelMask},scale=${sw}:${sh2}:flags=lanczos[p];[bg][p]overlay=${ox}:${oy}:shortest=1`;
+  const fc = `color=c=${bgColor(m.file)}:s=${w}x${h}${isVid ? `:r=${FPS}` : ''}[bg];[0:v]${maskOf(m.key)},scale=${sw}:${sh2}:flags=lanczos[p];[bg][p]overlay=${ox}:${oy}:shortest=1`;
   await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', m.file, '-filter_complex', fc,
     ...(isVid ? ['-an', '-c:v', 'libx264', '-crf', '12', '-pix_fmt', 'yuv420p'] : ['-frames:v', '1']), out]);
   console.log(`  ${m.name}: co ${Math.round(s * 100)}%, dời chân ${Math.round(dy * 100)}% cho khớp cặp đôi`);
@@ -224,7 +263,7 @@ function unionBox(boxes) {
 const cropExpr = c => `crop=w=iw*${c.w.toFixed(5)}:h=ih*${c.h.toFixed(5)}:x=iw*${c.x.toFixed(5)}:y=ih*${c.y.toFixed(5)}`;
 
 async function makeStill(file, crop, outH, outFile, k) {
-  const vf = [labelMask, cropExpr(crop), `scale=-2:${outH}:flags=lanczos`,
+  const vf = [maskOf(k), cropExpr(crop), `scale=-2:${outH}:flags=lanczos`,
     keyFilter(k, { featherL: crop.touchL, featherR: crop.touchR }), 'format=yuva420p'].join(',');
   await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-vf', vf,
     '-frames:v', '1', '-c:v', 'libwebp', '-quality', '90', '-compression_level', '6', outFile]);
@@ -247,7 +286,7 @@ async function makeVideo(file, crop, outH, outFile, key, { diVe = false } = {}) 
   } else {
     filters.push(`[0:v]fps=${FPS}[lp]`);
   }
-  filters.push(`[lp]${labelMask},${cropExpr(crop)},scale=-2:${even(outH)}:flags=lanczos,` +
+  filters.push(`[lp]${maskOf(key)},${cropExpr(crop)},scale=-2:${even(outH)}:flags=lanczos,` +
     `${keyFilter(key, { featherL: crop.touchL, featherR: crop.touchR })},format=yuva420p[out]`);
   await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-filter_complex', filters.join(';'),
     '-map', '[out]', '-an', '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', '32',
@@ -269,7 +308,7 @@ async function makeAnimWebp(file, crop, outH, outFile, key) {
   } else {
     filters.push(`[0:v]fps=${fps}[lp]`);
   }
-  filters.push(`[lp]${labelMask},${cropExpr(crop)},scale=-2:${even(outH)}:flags=lanczos,` +
+  filters.push(`[lp]${maskOf(key)},${cropExpr(crop)},scale=-2:${even(outH)}:flags=lanczos,` +
     `${keyFilter(key, { featherL: crop.touchL, featherR: crop.touchR })},format=yuva420p[out]`);
   await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-filter_complex', filters.join(';'),
     '-map', '[out]', '-an', '-c:v', 'libwebp_anim', '-lossless', '0', '-quality', '62', '-compression_level', '4', '-loop', '0', outFile]);
@@ -293,6 +332,21 @@ async function makeBackgroundVideo(file, outFile) {
   const vf = `fps=${FPS},delogo=x=${lx}:y=${ly}:w=${lw}:h=${lh},scale=720:1280:force_original_aspect_ratio=increase:flags=lanczos,crop=720:1280,format=yuv420p`;
   await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-vf', vf, '-an',
     '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '34', '-deadline', 'good', '-cpu-used', '3', '-row-mt', '1', outFile]);
+}
+
+// Hiệu ứng tràn màn hình của biến cố, phát một lượt (không nối vòng lặp). Nền xanh lá hoặc xanh dương: xóa nền thành
+// video trong suốt. Nền đen (không đo được nền màu ở các mép): giữ nguyên, overlay hòa sáng (screen) nên phần đen tự biến mất.
+async function makeFxVideo(file, outFile) {
+  const key = estimateKey(file, true);
+  const keyed = key.d !== null;
+  // Ô che nhãn AI ở góc: cùng màu nền để bị xóa theo; nền đen thì tô đen
+  const mask = keyed ? maskOf(key) : `drawbox=x=0:y=0:w=iw*${LABEL.w}:h=ih*${LABEL.h}:color=black@1:t=fill`;
+  const vf = [`fps=${FPS}`, mask, 'scale=720:1280:force_original_aspect_ratio=increase:flags=lanczos', 'crop=720:1280',
+    keyed ? keyFilter(key) : null, `format=${keyed ? 'yuva420p' : 'yuv420p'}`].filter(Boolean).join(',');
+  await sh('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', file, '-vf', vf, '-an',
+    '-c:v', 'libvpx-vp9', '-pix_fmt', keyed ? 'yuva420p' : 'yuv420p', '-b:v', '0', '-crf', '34',
+    '-deadline', 'good', '-cpu-used', '3', '-row-mt', '1', '-auto-alt-ref', '0', outFile]);
+  return keyed ? '' : 'screen';
 }
 
 async function makeBackground(file, outFile, thumbFile) {
@@ -449,7 +503,7 @@ async function main() {
           entry.videoHD = hd;
         }
       }
-      const t = m.key.d === null ? 'ngưỡng mặc định' : `nền ${m.key.d}, ngưỡng ${m.key.t1}/${m.key.t2}`;
+      const t = m.key.d === null ? 'ngưỡng mặc định' : `nền ${m.key.blue ? 'xanh dương ' : ''}${m.key.d}, ngưỡng ${m.key.t1}/${m.key.t2}`;
       console.log(`✓ ${gid}: ${m.name}${m.kind === 'vid' ? ' (video)' : ''} · ${t}`);
     });
     const pct = v => `${Math.round(v * 100)}%`;
@@ -494,6 +548,32 @@ async function main() {
     };
   }
 
+  // Biến cố lúc sắp làm lễ: người yêu cũ, bố vợ, hội trường lúc cúp điện, hiệu ứng tràn màn hình
+  const events = {};
+  const ex = {};
+  for (const [gid, key] of [['bc_ex_m', 'male'], ['bc_ex_f', 'female']]) {
+    const g = groupOut[gid];
+    if (g?.assets[gid]) ex[key] = { aspect: g.aspect, ...g.assets[gid] };
+  }
+  if (Object.keys(ex).length) events.ex = ex;
+  const bovo = pickStates('bc_bovo', 'bc_bovo_');
+  if (bovo && Object.keys(bovo.states).length) events.bovo = bovo;
+  if (!ONLY.length || ONLY_EVENTS) {
+    const dark = items.find(i => i.kind === 'img' && i.name === 'bc_dark');
+    if (dark) {
+      await makeBackground(dark.file, path.join(OUT, 'bc_dark.jpg'));
+      events.dark = 'bc_dark.jpg';
+      console.log('✓ biến cố: hội trường lúc cúp điện');
+    }
+    for (const v of items.filter(i => i.kind === 'vid' && /^bc_fx_[a-z0-9]+$/.test(i.name))) {
+      const out = `${v.name}.webm`;
+      const blend = await makeFxVideo(v.file, path.join(OUT, out));
+      (events.fx ||= {})[v.name.slice('bc_fx_'.length)] = blend ? { src: out, blend } : { src: out };
+      console.log(`✓ biến cố: hiệu ứng ${v.name.slice('bc_fx_'.length)} (${blend ? 'nền đen, hòa sáng' : 'nền xanh, đã xóa nền'})`);
+    }
+  }
+  manifest.events = Object.keys(events).length ? events : null;
+
   if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true });
   if (ONLY.length) {
     // Ghép vào theme.json đang có: chỉ thay phần của các nhóm vừa xử lý
@@ -504,6 +584,7 @@ async function main() {
     for (const r of ['bride', 'groom']) {
       if (ONLY.includes(r) && solo[r]) old.solo = { ...(old.solo || {}), [r]: solo[r] };
     }
+    if (ONLY_EVENTS) old.events = manifest.events;
     old.version = Date.now();
     fs.writeFileSync(file, JSON.stringify(old, null, 2));
     console.log(`\nXong sau ${Math.round((Date.now() - t0) / 1000)} giây. Cập nhật ${path.relative(ROOT, file)}`);

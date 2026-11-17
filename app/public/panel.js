@@ -121,6 +121,15 @@ $$('[data-action]').forEach(btn => {
     } catch {}
   });
 });
+// Thử một biến cố: đang đếm ngược tới lễ thì diễn luôn, chưa đủ đôi thì diễn khi đôi kế tiếp sắp làm lễ
+$$('[data-twist]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    try {
+      const r = await api('/api/twist', { kind: btn.dataset.twist });
+      toast(r.now ? '🎭 Biến cố đang diễn trên màn hình LIVE' : '🎭 Đã hẹn: biến cố sẽ diễn khi đôi trên sân khấu sắp làm lễ');
+    } catch {}
+  });
+});
 
 // ========================================================
 // MÔ PHỎNG
@@ -297,6 +306,9 @@ $('#btn-save-couple')?.addEventListener('click', async () => {
     receptionSeconds: Math.min(600, Math.max(8, Number($('#cfg-reception-seconds').value) || 25)),
     demoEvery: Math.min(100, Math.max(0, Number($('#cfg-demo-every')?.value ?? 8) || 0)),
     treatQuietSeconds: Math.min(3600, Math.max(0, Math.round(Number($('#cfg-treat-quiet')?.value ?? 60) || 0))),
+    twistEvery: Math.min(50, Math.max(0, Math.round(Number($('#cfg-twist-every')?.value ?? 3) || 0))),
+    twists: Object.fromEntries(['ex', 'dowry', 'blackout', 'mass', 'roach'].map(k => [k, $(`#cfg-twist-${k}`)?.value !== 'false'])),
+    attendants: $('#cfg-attendants')?.value !== 'false',
     autoPair: $('#cfg-auto-pair').value === 'true',
     autoPairSeconds: Math.min(600, Math.max(5, Number($('#cfg-auto-pair-seconds').value) || 8)),
     pairBoth: $('#cfg-pair-both').value !== 'false',
@@ -923,6 +935,9 @@ function fillForms(cfg, goals) {
   setVal('#cfg-reception-seconds', cfg.receptionSeconds || 25);
   setVal('#cfg-demo-every', cfg.demoEvery ?? 8);
   setVal('#cfg-treat-quiet', cfg.treatQuietSeconds ?? 60);
+  setVal('#cfg-twist-every', cfg.twistEvery ?? 3);
+  for (const k of ['ex', 'dowry', 'blackout', 'mass', 'roach']) setVal(`#cfg-twist-${k}`, cfg.twists?.[k] !== false);
+  setVal('#cfg-attendants', cfg.attendants !== false);
   setVal('#cfg-auto-pair', cfg.autoPair !== false);
   setVal('#cfg-auto-pair-seconds', cfg.autoPairSeconds || 8);
   setVal('#cfg-pair-both', cfg.pairBoth !== false);
