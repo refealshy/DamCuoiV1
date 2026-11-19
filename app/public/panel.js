@@ -126,7 +126,9 @@ $$('[data-twist]').forEach(btn => {
   btn.addEventListener('click', async () => {
     try {
       const r = await api('/api/twist', { kind: btn.dataset.twist });
-      toast(r.now ? '🎭 Biến cố đang diễn trên màn hình LIVE' : '🎭 Đã hẹn: biến cố sẽ diễn khi đôi trên sân khấu sắp làm lễ');
+      const party = ['kiss', 'cake', 'cheers', 'room'].includes(btn.dataset.twist);
+      toast(r.now ? (party ? '🧯 Sự cố sẽ diễn ngay trong tiệc mừng này' : '🎭 Biến cố đang diễn trên màn hình LIVE')
+        : party ? '🧯 Đã hẹn: sự cố sẽ diễn trong tiệc mừng của lượt cưới kế tiếp' : '🎭 Đã hẹn: biến cố sẽ diễn khi đôi trên sân khấu sắp làm lễ');
     } catch {}
   });
 });
@@ -200,6 +202,8 @@ const ACTION_LABEL = {
   music: '🎵 Đổi nhạc (bài kế tiếp)',
   mc: '🎤 Cưới MC',
   photo: '📸 Chụp ảnh chung',
+  babyBoy: '👶 Sinh bé trai (tặng lúc cửa phòng tân hôn đóng)',
+  babyGirl: '🎀 Sinh bé gái (tặng lúc cửa phòng tân hôn đóng)',
   thanks: '💌 Mừng phong bì (cảm ơn)'
 };
 
@@ -307,10 +311,13 @@ $('#btn-save-couple')?.addEventListener('click', async () => {
     demoEvery: Math.min(100, Math.max(0, Number($('#cfg-demo-every')?.value ?? 8) || 0)),
     treatQuietSeconds: Math.min(3600, Math.max(0, Math.round(Number($('#cfg-treat-quiet')?.value ?? 60) || 0))),
     twistEvery: Math.min(50, Math.max(0, Math.round(Number($('#cfg-twist-every')?.value ?? 3) || 0))),
-    twists: Object.fromEntries(['ex', 'dowry', 'blackout', 'mass', 'roach'].map(k => [k, $(`#cfg-twist-${k}`)?.value !== 'false'])),
+    babySeconds: Math.min(60, Math.max(0, Math.round(Number($('#cfg-baby-seconds')?.value ?? 15) || 0))),
+    hitchEvery: Math.min(50, Math.max(0, Math.round(Number($('#cfg-hitch-every')?.value ?? 2) || 0))),
+    partyFree: $('#cfg-party-free')?.value !== 'false',
+    twists: Object.fromEntries(['ex', 'dowry', 'blackout', 'mass', 'roach', 'ring', 'kiss', 'cake', 'cheers', 'room'].map(k => [k, $(`#cfg-twist-${k}`)?.value !== 'false'])),
     attendants: $('#cfg-attendants')?.value !== 'false',
     autoPair: $('#cfg-auto-pair').value === 'true',
-    autoPairSeconds: Math.min(600, Math.max(5, Number($('#cfg-auto-pair-seconds').value) || 8)),
+    autoPairSeconds: Math.min(600, Math.max(5, Number($('#cfg-auto-pair-seconds').value) || 60)),
     pairBoth: $('#cfg-pair-both').value !== 'false',
     partyEvery: Math.min(100, Math.max(0, Math.round(Number($('#cfg-party-every').value) || 0))),
     partnerWaitSeconds: Math.min(600, Math.max(10, Number($('#cfg-partner-wait-seconds')?.value) || 90)),
@@ -936,10 +943,13 @@ function fillForms(cfg, goals) {
   setVal('#cfg-demo-every', cfg.demoEvery ?? 8);
   setVal('#cfg-treat-quiet', cfg.treatQuietSeconds ?? 60);
   setVal('#cfg-twist-every', cfg.twistEvery ?? 3);
-  for (const k of ['ex', 'dowry', 'blackout', 'mass', 'roach']) setVal(`#cfg-twist-${k}`, cfg.twists?.[k] !== false);
+  setVal('#cfg-hitch-every', cfg.hitchEvery ?? 2);
+  setVal('#cfg-party-free', cfg.partyFree !== false);
+  setVal('#cfg-baby-seconds', cfg.babySeconds ?? 15);
+  for (const k of ['ex', 'dowry', 'blackout', 'mass', 'roach', 'ring', 'kiss', 'cake', 'cheers', 'room']) setVal(`#cfg-twist-${k}`, cfg.twists?.[k] !== false);
   setVal('#cfg-attendants', cfg.attendants !== false);
   setVal('#cfg-auto-pair', cfg.autoPair !== false);
-  setVal('#cfg-auto-pair-seconds', cfg.autoPairSeconds || 8);
+  setVal('#cfg-auto-pair-seconds', cfg.autoPairSeconds || 60);
   setVal('#cfg-pair-both', cfg.pairBoth !== false);
   setVal('#cfg-party-every', cfg.partyEvery ?? 5);
   setVal('#cfg-partner-wait-seconds', cfg.partnerWaitSeconds || 90);

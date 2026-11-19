@@ -39,6 +39,10 @@
 //   bc_ex_m, bc_ex_f         người yêu cũ nam / nữ xông vào đòi thay vai (ảnh nền xanh, thêm video cùng tên nếu có).
 //                            Nhân vật đứng bên phải sân khấu nên quay người và chỉ tay về phía bên TRÁI ảnh.
 //   bc_bovo_angry, _happy    bố vợ thách cưới: đang khó chịu, và lúc gật đầu cười (ảnh nền xanh, thêm video nếu có)
+//   bc_baby_boy, _girl       em bé trai / gái của đôi trẻ, hiện lúc cửa phòng tân hôn mở lại (ảnh nền xanh, nhìn thẳng)
+//   bc_uncle, bc_kid, bc_friends   nhân vật của sự cố trong tiệc mừng: ông chú giành mic lúc cụng ly, Bé Tí quẹt sập bánh
+//                            cưới, hội bạn thân chặn cửa phòng tân hôn (ảnh nền xanh quay về bên TRÁI, thêm video nếu có).
+//                            Bố vợ chặn hôn dùng lại bc_bovo.
 //   bc_dark.jpg              hội trường lúc cúp điện (ảnh 9:16 đủ cảnh, cùng bố cục với phông lúc đủ đôi)
 //   bc_fx_<tên>.mp4          hiệu ứng tràn màn hình 9:16, phát một lượt: shatter (kính vỡ lúc "KHOAN ĐÃ"),
 //                            lightning (sét lúc cúp điện), goldrain (mưa vàng khi bố vợ gật đầu), shield (che chắn thành công).
@@ -61,7 +65,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ONLY = (process.argv.find(a => a.startsWith('--chi='))?.slice(6) || '').split(',').map(s => s.trim()).filter(Boolean);
 // --chi=bc : mọi hình của biến cố (người yêu cũ, bố vợ, hội trường tối, hiệu ứng tràn màn hình)
 const ONLY_EVENTS = ONLY.includes('bc');
-if (ONLY_EVENTS) ONLY.push('bc_ex_m', 'bc_ex_f', 'bc_bovo');
+if (ONLY_EVENTS) ONLY.push('bc_ex_m', 'bc_ex_f', 'bc_bovo', 'bc_baby', 'bc_uncle', 'bc_kid', 'bc_friends');
 const ARGV = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const SRC = path.resolve(ARGV[0] || path.join(ROOT, 'bo-hinh-moi'));
 const THEME_ID = (ARGV[1] || 'ban-thuc-3d').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'ban-thuc-3d';
@@ -86,7 +90,12 @@ const GROUPS = {
   // Nhân vật của biến cố: người yêu cũ nam / nữ mỗi người một khung cắt, bố vợ dùng chung một khung cho mọi nét mặt
   bc_ex_m: { test: n => n === 'bc_ex_m', imgH: 900, vidH: 640 },
   bc_ex_f: { test: n => n === 'bc_ex_f', imgH: 900, vidH: 640 },
-  bc_bovo: { test: n => /^bc_bovo_[a-z0-9]+$/.test(n), imgH: 900, vidH: 640 }
+  bc_bovo: { test: n => /^bc_bovo_[a-z0-9]+$/.test(n), imgH: 900, vidH: 640 },
+  bc_baby: { test: n => /^bc_baby_[a-z0-9]+$/.test(n), imgH: 600, vidH: 480 },
+  // Nhân vật của các sự cố trong tiệc mừng: ông chú giành mic, Bé Tí quẹt bánh, hội bạn thân chặn cửa phòng
+  bc_uncle: { test: n => n === 'bc_uncle', imgH: 900, vidH: 640 },
+  bc_kid: { test: n => n === 'bc_kid', imgH: 900, vidH: 640 },
+  bc_friends: { test: n => n === 'bc_friends', imgH: 900, vidH: 640 }
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
@@ -157,7 +166,9 @@ const alphaExpr = k => (k.blue
 
 // Đo độ trội màu của nền ở mép trên và hai mép bên (phần trên), nơi chỉ có nền. Trội xanh dương nhiều hơn xanh lá
 // thì coi là nền xanh dương.
-function estimateKey(file, isVideo) {
+// minShare: phần tối thiểu của các điểm đo ở mép phải mang màu nền thì mới coi là nền màu (dùng cho hiệu ứng nền đen có
+// tia sáng xanh chạm mép: vài điểm xanh không biến nền đen thành nền xanh dương).
+function estimateKey(file, isVideo, minShare = 0) {
   const SW = 90;
   const SH = 160;
   const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, '-vf', `${isVideo ? 'fps=2,' : ''}scale=${SW}:${SH},format=rgb24`,
@@ -184,7 +195,7 @@ function estimateKey(file, isVideo) {
   const bgBlue = strong(blue);
   const isBlue = bgBlue.length > bgGreen.length;
   const bg = isBlue ? bgBlue : bgGreen;
-  if (bg.length < 20) return { t1: T1_MAX, t2: T2_MAX, d: null };
+  if (bg.length < 20 || bg.length < green.length * minShare) return { t1: T1_MAX, t2: T2_MAX, d: null };
   const dLow = bg[Math.floor(bg.length * 0.08)];
   const t2 = clamp(Math.round(dLow * 0.82), 26, T2_MAX);
   const t1 = clamp(Math.round(t2 * 0.3), 6, T1_MAX);
@@ -337,7 +348,7 @@ async function makeBackgroundVideo(file, outFile) {
 // Hiệu ứng tràn màn hình của biến cố, phát một lượt (không nối vòng lặp). Nền xanh lá hoặc xanh dương: xóa nền thành
 // video trong suốt. Nền đen (không đo được nền màu ở các mép): giữ nguyên, overlay hòa sáng (screen) nên phần đen tự biến mất.
 async function makeFxVideo(file, outFile) {
-  const key = estimateKey(file, true);
+  const key = estimateKey(file, true, 0.5);
   const keyed = key.d !== null;
   // Ô che nhãn AI ở góc: cùng màu nền để bị xóa theo; nền đen thì tô đen
   const mask = keyed ? maskOf(key) : `drawbox=x=0:y=0:w=iw*${LABEL.w}:h=ih*${LABEL.h}:color=black@1:t=fill`;
@@ -558,6 +569,14 @@ async function main() {
   if (Object.keys(ex).length) events.ex = ex;
   const bovo = pickStates('bc_bovo', 'bc_bovo_');
   if (bovo && Object.keys(bovo.states).length) events.bovo = bovo;
+  // Em bé của đôi trẻ (mở cửa phòng tân hôn): bc_baby_boy, bc_baby_girl
+  const babyArt = pickStates('bc_baby', 'bc_baby_');
+  if (babyArt && Object.keys(babyArt.states).length) events.baby = babyArt;
+  // Nhân vật của sự cố trong tiệc mừng (mỗi nhân vật một ảnh, thêm video cùng tên nếu có)
+  for (const [gid, key] of [['bc_uncle', 'uncle'], ['bc_kid', 'kid'], ['bc_friends', 'friends']]) {
+    const g = groupOut[gid];
+    if (g?.assets[gid]) events[key] = { aspect: g.aspect, ...g.assets[gid] };
+  }
   if (!ONLY.length || ONLY_EVENTS) {
     const dark = items.find(i => i.kind === 'img' && i.name === 'bc_dark');
     if (dark) {

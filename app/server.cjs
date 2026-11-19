@@ -69,12 +69,14 @@ const clampNum = (v, min, max, def) => {
 // HÀNH ĐỘNG / NGHI THỨC
 // ========================================================
 const ACTIONS = ['role', 'groom', 'bride', 'replaceGroom', 'replaceBride', 'cancel', 'quickwed', 'dongphong', 'dance', 'kiss', 'cake',
-  'champagne', 'cheers', 'petal', 'ring', 'bouquet', 'fireworks', 'music', 'mc', 'photo', 'thanks'];
+  'champagne', 'cheers', 'petal', 'ring', 'bouquet', 'fireworks', 'music', 'mc', 'photo', 'babyBoy', 'babyGirl', 'thanks'];
 const ROLE_ACTIONS = ['role', 'groom', 'bride', 'replaceGroom', 'replaceBride'];
 const ROLE_LABEL = { groom: 'chú rể', bride: 'cô dâu' };
 // Các loại biến cố lúc sắp làm lễ (xem mục BIẾN CỐ bên dưới)
-const TWIST_KINDS = ['ex', 'dowry', 'blackout', 'mass', 'roach'];
-const sanitizeTwists = t => Object.fromEntries(TWIST_KINDS.map(k => [k, !(t && t[k] === false)]));
+const TWIST_KINDS = ['ex', 'dowry', 'blackout', 'mass', 'roach', 'ring'];
+// Sự cố trong tiệc mừng (sau lễ): một bước vốn miễn phí (hôn, cắt bánh, cụng ly, vào phòng tân hôn) bị chặn lại
+const PARTY_KINDS = ['kiss', 'cake', 'cheers', 'room'];
+const sanitizeTwists = t => Object.fromEntries([...TWIST_KINDS, ...PARTY_KINDS].map(k => [k, !(t && t[k] === false)]));
 
 // Bộ luật quà mẫu. Tên quà là gợi ý — kiểm tra lại bằng bảng "Quà vừa nhận" khi LIVE thử.
 const RULE_PRESETS = {
@@ -197,7 +199,7 @@ const defaultState = {
     roleMode: 'both',          // both | groom | bride : khách được giành vai nào
     autoCeremony: true,        // đủ đôi -> đếm ngược -> làm lễ thành hôn & động phòng
     autoPair: true,            // vai trống quá lâu không ai tặng quà -> MC ghép đôi ngẫu nhiên khách trong rạp
-    autoPairSeconds: 8,        // giây chờ ghép đôi (cô dâu, chú rể đứng riêng chờ nửa kia)
+    autoPairSeconds: 60,       // giây chờ ghép đôi (cô dâu, chú rể đứng riêng chờ nửa kia)
     pairBoth: true,            // sân khấu trống: MC chọn luôn cả cô dâu lẫn chú rể (false = mời một người trước, người kia để khách giành)
     partyEvery: 5,             // cứ đủ chừng này cặp cưới thì cả rạp mở tiệc quẩy (0 = tắt)
     partnerWaitSeconds: 90,    // đã có người thật nhận một vai: chờ người thật khác nhận vai kia bấy nhiêu giây rồi MC mới chọn ngẫu nhiên
@@ -209,7 +211,10 @@ const defaultState = {
     demoEvery: 8,              // MC đãi miễn phí pháo hoa / động phòng để khoe tính năng: trung bình mấy lượt cưới một lần (0 = tắt)
     receptionSeconds: 25,      // tiệc mừng sau lễ: đôi trẻ ở lại sân khấu bao lâu để khách tặng quà
     twistEvery: 3,             // biến cố lúc sắp làm lễ (người yêu cũ, bố vợ thách cưới, cúp điện, cưới tập thể): trung bình mấy lượt cưới một lần (0 = tắt)
-    twists: { ex: true, dowry: true, blackout: true, mass: true, roach: true }, // bật / tắt từng loại biến cố
+    twists: { ex: true, dowry: true, blackout: true, mass: true, roach: true, ring: true, kiss: true, cake: true, cheers: true, room: true }, // bật / tắt từng loại biến cố, sự cố
+    partyFree: true,           // tiệc mừng tự diễn: cưới xong đôi trẻ tự hôn, cắt bánh, cụng ly rồi vào phòng tân hôn (miễn phí); false = chờ quà như cũ
+    hitchEvery: 2,             // sự cố trong tiệc mừng (bố vợ chặn hôn, bánh đổ, ông chú giành mic, chặn cửa phòng): trung bình mấy lượt cưới một lần (0 = tắt)
+    babySeconds: 15,           // sinh con: sau khi đôi trẻ vào động phòng, cửa phòng đóng bao nhiêu giây để khách tặng quà "bé trai" / "bé gái" (0 = tắt)
     attendants: true,          // vai phụ: bình luận "phù dâu" / "phù rể" để lên sân khấu, lượt sau được MC ưu tiên chọn làm cô dâu, chú rể
     commentRituals: true,      // bình luận "hôn", "dzô"... kích hoạt nghi thức
     commentCooldown: 8,        // giây giữa 2 lần cùng nghi thức do bình luận
@@ -383,7 +388,7 @@ function loadState() {
     // rạp kín khách, bỏ phụ đề MC cho đỡ rối chữ
     if (!cfgIn.viralFlow) {
       Object.assign(s.config, {
-        roleSystem: 'queue', roleQueue: true, freeRoles: true, autoPair: true, autoPairSeconds: 8, pairBoth: true,
+        roleSystem: 'queue', roleQueue: true, freeRoles: true, autoPair: true, autoPairSeconds: 60, pairBoth: true,
         ceremonyCountdown: Math.min(15, Number(cfgIn.ceremonyCountdown) || 15), partyEvery: 5, maxGuests: 90, mcCaption: false
       });
       if (cfgIn.botsEnabled) s.config.botsCount = Math.max(Number(cfgIn.botsCount) || 0, 40);
@@ -494,6 +499,7 @@ function publicState() {
     attendants: state.attendants,
     patron: state.patron || null,
     twist: twistPublic(),
+    baby: babyPublic(),
     queue: {
       groom: state.queue.groom.slice(0, 5).map(q => ({ name: q.name, avatar: q.avatar })),
       bride: state.queue.bride.slice(0, 5).map(q => ({ name: q.name, avatar: q.avatar })),
@@ -508,6 +514,7 @@ function publicState() {
     ceremony: {
       phase: c.phase,
       mode: c.mode || '',
+      party: Boolean(c.party), // tiệc mừng tự diễn: các bước miễn phí, hết tiệc đôi trẻ tự vào phòng
       remainingMs: c.phase === 'countdown' || c.phase === 'reception' ? Math.max(0, c.endsAt - Date.now()) : 0
     },
     pairing: { remainingMs: pairingRemainingMs() },
@@ -773,7 +780,14 @@ const FEAT_TITLES = [
   { key: 'guard', title: '🛡️ Vệ Sĩ Tình Yêu', min: 1 },     // che chắn lúc lốp trưởng (người yêu cũ) đòi lên thay
   { key: 'flatter', title: '🧧 Nhà Tài Trợ Sính Lễ', min: 1 }, // góp sính lễ / xin cưới giùm lúc bố vợ thách cưới
   { key: 'power', title: '⚡ Thợ Điện Của Rạp', min: 1 },    // thắp nến / quay máy phát lúc cúp điện
-  { key: 'cupid', title: '💘 Thần Tình Yêu', min: 1 }        // tiếp sức tình yêu lúc cô dâu hóa gián
+  { key: 'cupid', title: '💘 Thần Tình Yêu', min: 1 },       // tiếp sức tình yêu lúc cô dâu hóa gián
+  { key: 'godparent', title: '🍼 Bố Mẹ Đỡ Đầu', min: 1 },    // tặng quà đón em bé cho đôi trẻ
+  // Người gỡ sự cố: chú rể quên nhẫn, bố vợ chặn hôn, bánh cưới đổ, ông chú giành mic, hội bạn thân chặn cửa phòng
+  { key: 'ringer', title: '💍 Người Cho Mượn Nhẫn', min: 1 },
+  { key: 'charmer', title: '🍶 Cao Thủ Dụ Bố Vợ', min: 1 },
+  { key: 'baker', title: '🎂 Nhà Tài Trợ Bánh Cưới', min: 1 },
+  { key: 'host', title: '🍻 Chủ Xị Của Rạp', min: 1 },
+  { key: 'matchmaker', title: '🏮 Ông Mai Bà Mối', min: 1 }
 ];
 let featOwners = null; // danh hiệu -> người đang giữ (để báo khi đổi chủ)
 
@@ -1075,7 +1089,7 @@ function loneRealHolder() {
 // (đủ lâu để khách khác kịp tặng quà giành vai, nhưng không bắt người đã tặng quà đứng chờ mãi).
 function pairWaitMs() {
   if (loneRealHolder()) return clampNum(state.config.partnerWaitSeconds, 10, 600, 90) * 1000;
-  return clampNum(state.config.autoPairSeconds, 5, 600, 8) * 1000;
+  return clampNum(state.config.autoPairSeconds, 5, 600, 60) * 1000;
 }
 // Mốc bắt đầu đếm: lúc vai trống, hoặc lúc người thật vừa nhận vai (đếm lại từ đầu cho người đó)
 function pairAnchor() {
@@ -1392,15 +1406,23 @@ function evaluateCeremony(roleChanged = false) {
 //           hôn / cắt bánh / rót rượu / động phòng... chỉ diễn ra khi khách tặng quà (mặc định)
 //   auto  — tự chạy đủ các bước rồi động phòng (kiểu cũ, chọn trong bảng điều khiển)
 //   quick — quà "động phòng luôn": vào thẳng động phòng. finale = đôi này đã thành hôn rồi (quà tặng trong tiệc mừng)
-function startCeremony({ quick = false, initiator = '', finale = false, demo = false } = {}) {
+function startCeremony({ quick = false, initiator = '', finale = false, demo = false, free = false } = {}) {
   if (state.ceremony.phase === 'running') return false;
   if (state.ceremony.phase === 'reception' && !(quick && finale)) return false; // đôi này vừa cưới xong, chỉ còn động phòng
   abortTwist(); // quà "động phòng luôn" giữa lúc có biến cố: bỏ biến cố, vào lễ
+  party = null; // tiệc mừng tự diễn (nếu đang chạy) dừng ở đây: đôi trẻ vào phòng
   clearTimeout(ceremonyTimer);
   const mode = quick ? 'quick' : state.config.ceremonySteps === 'auto' ? 'auto' : 'wed';
-  const ms = { quick: CEREMONY_QUICK_MS, auto: CEREMONY_MS, wed: CEREMONY_WED_MS }[mode];
+  // Động phòng xong thì cửa phòng đóng thêm một lúc cho khách tặng quà đón em bé (xem mục SINH CON)
+  const babyMs = quick && babyOn() ? babySeconds() * 1000 : 0;
+  const ms = { quick: CEREMONY_QUICK_MS, auto: CEREMONY_MS, wed: CEREMONY_WED_MS }[mode] + (babyMs ? babyMs + BABY_REVEAL_MS - 2500 : 0);
   state.ceremony = { phase: 'running', endsAt: Date.now() + ms, quick, mode, married: finale };
   const v = { ...baseVars(), name: initiator || 'MC' };
+  // Người tặng quà động phòng là ông mai / bà mối của đôi này
+  const maiP = quick && initiator && !demo ? state.people.find(p => p.name === initiator) : null;
+  const matchmaker = quick && initiator && !demo ? { name: initiator, title: maiP?.gender === 'female' ? 'Bà mối' : 'Ông mai' } : null;
+  if (maiP) maiP.baseTag = maiP.gender === 'female' ? '🏮 Bà mối' : '🏮 Ông mai';
+  if (babyMs) startBaby(babyMs);
   const keys = {
     quick: ['quickwed', 'dongphong', 'dongphongEnd', 'ceremonyEnd'],
     auto: ['ceremonyStart', 'ring', 'kiss', 'cake', 'champagne', 'dongphong', 'dongphongEnd', 'ceremonyEnd'],
@@ -1408,8 +1430,10 @@ function startCeremony({ quick = false, initiator = '', finale = false, demo = f
   }[mode];
   const lines = {};
   for (const k of keys) lines[k] = pickLine(k, v);
-  if (quick) lines.ceremonyStart = demo ? pickLine('demoDongphong', { ...v, gift: ruleGiftName(['dongphong', 'quickwed']) || 'quà động phòng' }) : lines.quickwed;
-  broadcast('action', { action: 'ceremony', quick, mode, finale, initiator, ms, ...coupleInfo(), lines });
+  if (quick) lines.ceremonyStart = demo ? pickLine('demoDongphong', { ...v, gift: ruleGiftName(['dongphong', 'quickwed']) || 'quà động phòng' })
+    : free && !initiator ? pickLine('partyRoom', v) : lines.quickwed; // free: tiệc tàn, đôi trẻ tự vào phòng (không ai tặng quà)
+  if (babyMs) lines.babyStart = pickLine('babyStart', v);
+  broadcast('action', { action: 'ceremony', quick, mode, finale, initiator, matchmaker, baby: babyMs ? { ms: babyMs, openMs: BABY_OPEN_MS } : null, ms, ...coupleInfo(), lines });
   markMc();
   broadcastState();
   ceremonyTimer = setTimeout(finishCeremony, ms);
@@ -1417,6 +1441,9 @@ function startCeremony({ quick = false, initiator = '', finale = false, demo = f
 }
 
 function resetRoles(tag = '💍 Đã thành đôi') {
+  // Đôi trẻ rời sân khấu giữa chừng (bấm "mở lại vai" lúc cửa phòng tân hôn đang đóng): bỏ luôn cửa sổ sinh con của họ
+  if (baby) { clearTimeout(baby.timer); baby = null; }
+  party = null;
   for (const r of ['groom', 'bride']) {
     const h = state.roles[r];
     const p = h && state.people.find(x => x.id === 'tik-' + h.id);
@@ -1494,7 +1521,7 @@ function finishCeremony() {
 // có người lên thay vai giữa chừng thì biến cố giải tán ("chen ngang").
 // ========================================================
 const TWIST_INTRO_MS = 4200; // màn mở đầu ("KHOAN ĐÃ!", nhân vật xuất hiện) trước khi tính giờ thử thách
-const TWIST_WINDOW_MS = { ex: 16000, dowry: 16000, blackout: 15000, mass: 12000, roach: 16000 };
+const TWIST_WINDOW_MS = { ex: 16000, dowry: 16000, blackout: 15000, mass: 12000, roach: 16000, ring: 14000, kiss: 15000, cake: 14000, cheers: 15000, room: 16000 };
 const TWIST_TAIL_MS = 6500;  // diễn xong kết cục rồi mới vào lễ
 const TWIST_GIFT_FINISH_MS = 2600; // món quà làm đầy thanh: chờ người tặng kịp bước lên sân khấu rồi mới chốt
 // Mỗi lượt tương tác được bao nhiêu điểm: tim, bình luận, xu quà, chia sẻ
@@ -1502,12 +1529,33 @@ const TWIST_POINTS = {
   ex: { like: 1, chat: 5, coin: 5, share: 20 },
   blackout: { like: 1, chat: 5, coin: 5, share: 20 },
   roach: { like: 1, chat: 5, coin: 5, share: 20 },
-  dowry: { like: 0.2, chat: 1, coin: 1, share: 3 }
+  dowry: { like: 0.2, chat: 1, coin: 1, share: 3 },
+  ring: { like: 1, chat: 5, coin: 5, share: 20 },
+  kiss: { like: 1, chat: 5, coin: 5, share: 20 },
+  cake: { like: 1, chat: 5, coin: 5, share: 20 },
+  cheers: { like: 1, chat: 5, coin: 5, share: 20 },
+  room: { like: 1, chat: 5, coin: 5, share: 20 }
 };
-const TWIST_FLOOR = { ex: 40, blackout: 40, roach: 40, dowry: 5 }; // mục tiêu thấp nhất: rạp vắng, một hai người cũng làm được
+const TWIST_FLOOR = { ex: 40, blackout: 40, roach: 40, dowry: 5, ring: 40, kiss: 40, cake: 40, cheers: 40, room: 40 }; // mục tiêu thấp nhất: rạp vắng, một hai người cũng làm được
 // Danh hiệu cho người hùng của từng màn, và nhóm câu MC cảm ơn món quà tặng giữa biến cố
-const TWIST_FEAT = { ex: 'guard', dowry: 'flatter', blackout: 'power', roach: 'cupid' };
-const TWIST_GIFT_LINE = { ex: 'twistGiftEx', dowry: 'twistGiftDowry', blackout: 'twistGiftBlackout', mass: 'twistGiftMass', roach: 'twistGiftRoach' };
+const TWIST_FEAT = { ex: 'guard', dowry: 'flatter', blackout: 'power', roach: 'cupid', ring: 'ringer', kiss: 'charmer', cake: 'baker', cheers: 'host', room: 'matchmaker' };
+const TWIST_GIFT_LINE = {
+  ex: 'twistGiftEx', dowry: 'twistGiftDowry', blackout: 'twistGiftBlackout', mass: 'twistGiftMass', roach: 'twistGiftRoach',
+  ring: 'twistGiftRing', kiss: 'twistGiftKiss', cake: 'twistGiftCake', cheers: 'twistGiftCheers', room: 'twistGiftRoom'
+};
+// SỰ CỐ: một bước vui vốn miễn phí bị một thứ chặn lại (chú rể quên nhẫn, bố vợ chen vào lúc hôn, bánh cưới đổ, ông chú
+// giành mic lúc cụng ly, hội bạn thân chặn cửa phòng tân hôn). Cả rạp gỡ bằng tim, bình luận (đúng từ khóa tính gấp đôi);
+// quà nào cũng góp sức, riêng món quà của đúng bước đó (match) thì gỡ ngay. Thua thì bước đó diễn bản chữa cháy cho vui,
+// đôi trẻ không mất gì. Mỗi sự cố có ba nhóm câu MC: twist<Tên>Start, twist<Tên>Win, twist<Tên>Lose.
+const HITCH = {
+  ring: { name: 'Ring', match: ['ring'], words: ['nhẫn', 'nhan'] },
+  kiss: { name: 'Kiss', match: ['kiss'], words: ['hôn', 'hon', 'hun'] },
+  cake: { name: 'Cake', match: ['cake'], words: ['bánh', 'banh'] },
+  cheers: { name: 'Cheers', match: ['champagne', 'cheers'], words: ['xuống', 'xuong'] },
+  room: { name: 'Room', match: ['quickwed', 'dongphong'], words: ['mở', 'mo'] }
+};
+const HITCH_TAIL_MS = 5600;    // diễn xong kết cục của sự cố rồi mới đi tiếp
+const HITCH_STEP_AT_MS = 3600; // thắng: bảng tin vinh danh hiện xong thì bước bị chặn mới diễn ra
 const MASS_MAX_SLOTS = 6;
 // Chữ nói yêu trong biến cố con gián (so khớp nguyên từ có dấu; "yeu", "iu" không dấu cũng tính)
 const LOVE_WORDS = ['yêu', 'iu', 'yeu', 'hôn', 'hun', 'thương', 'love'];
@@ -1576,7 +1624,7 @@ function pickTwistKind() {
   twistPlan.forced = '';
   if (forced) return forced; // bấm thử từ bảng điều khiển: rạp chưa có khách vẫn diễn (dùng tên mẫu)
   const guests = twistGuests().length;
-  const can = { ex: guests >= 1 || state.queue.groom.length + state.queue.bride.length > 0, dowry: true, blackout: true, mass: guests >= 2, roach: true };
+  const can = { ex: guests >= 1 || state.queue.groom.length + state.queue.bride.length > 0, dowry: true, blackout: true, mass: guests >= 2, roach: true, ring: true };
   const pool = TWIST_KINDS.filter(k => state.config.twists?.[k] !== false && can[k]);
   const fresh = pool.filter(k => k !== twistPlan.last);
   return (fresh.length ? pick(fresh) : pool[0]) || '';
@@ -1661,6 +1709,10 @@ function startTwist() {
     t.canSteal = !realHolder('groom');
     t.target = twistTarget('roach', ms);
     line = pickLine('twistRoachStart', v);
+  } else if (kind === 'ring') {
+    // Chú rể quên nhẫn: không ai mất vai, không tìm kịp thì đeo tạm dây thun
+    t.target = twistTarget('ring', ms);
+    line = pickLine('twistRingStart', v);
   } else {
     t.slots = twistGuests().length >= 4 ? 4 : 2;
     t.claims = [];
@@ -1686,7 +1738,8 @@ function twistPublic() {
   if (!t) return null;
   const now = Date.now();
   return {
-    id: t.id, kind: t.kind, ms: t.ms,
+    id: t.id, kind: t.kind, ms: t.ms, stage: t.stage || 'pre',
+    fix: HITCH[t.kind] ? ruleGiftName(HITCH[t.kind].match) : '', // món quà gỡ ngay sự cố này (nếu luật quà có gán)
     introMs: Math.max(0, t.opensAt - now), remainingMs: Math.max(0, t.endsAt - now),
     progress: Math.min(t.target, Math.floor(t.progress)), target: t.target,
     cast: t.cast || null, role: t.role || '', canSteal: Boolean(t.canSteal),
@@ -1728,6 +1781,7 @@ function twistAdd(user, kind, amount = 1, meta = {}) {
   if (!(pts > 0)) return false;
   const full = t.progress >= t.target;
   t.progress += pts;
+  if (meta.match) t.progress = Math.max(t.progress, t.target); // món quà của đúng bước đang bị chặn: gỡ ngay
   // Con gián: chính chú rể nói yêu (hoặc tặng quà) là qua bài thử lòng ngay
   const proved = t.kind === 'roach' && key === t.tested && !t.proved && (kind === 'coin' || (kind === 'chat' && (meta.love || meta.answer)));
   if (proved) {
@@ -1804,7 +1858,7 @@ function resolveTwist() {
   const t = twist;
   if (!t) return;
   clearTimeout(twistTimer);
-  if (state.ceremony.phase !== 'countdown' || !state.roles.groom || !state.roles.bride) return abortTwist();
+  if (!twistStageOk(t)) return abortTwist();
   twist = null;
   const win = t.kind === 'mass' || t.progress >= t.target;
   // Người hùng của màn: ai tặng quà nhiều xu nhất; không ai tặng quà thì người góp tim, bình luận nhiều nhất
@@ -1875,6 +1929,8 @@ function resolveTwist() {
       out.soft = true;
       line = pickLine('twistRoachSoft', v);
     }
+  } else if (HITCH[t.kind]) {
+    line = pickLine(`twist${HITCH[t.kind].name}${win ? 'Win' : 'Lose'}`, { ...v, dad: t.cast?.name || '' });
   } else {
     // Cưới tập thể: chưa đủ người bình luận thì MC bốc thêm khách trong rạp cho đủ cặp
     const list = t.claims.slice();
@@ -1900,7 +1956,9 @@ function resolveTwist() {
   }
   broadcast('twist', { ...out, line });
   markMc();
-  if (state.roles.groom && state.roles.bride) {
+  if (t.stage === 'party') {
+    partyAfterHitch(t, win, hero);
+  } else if (state.roles.groom && state.roles.bride) {
     // Còn đủ đôi: diễn xong kết cục rồi vào lễ
     state.ceremony.endsAt = Date.now() + TWIST_TAIL_MS;
     clearTimeout(ceremonyTimer);
@@ -1923,7 +1981,7 @@ function twistRoleChanged(user, r) {
   twist = null;
   clearTimeout(twistTimer);
   // Đồng hồ vào lễ đang do biến cố giữ: trả lại để evaluateCeremony(true) (gọi ngay sau khi đổi vai) đặt lại giờ làm lễ
-  state.ceremony.endsAt = Date.now();
+  if (t.stage !== 'party') state.ceremony.endsAt = Date.now();
   const partner = state.roles[r.role === 'groom' ? 'bride' : 'groom'];
   const v = { ...baseVars(), name: user.name || 'Khách', previous: r.previous || 'người cũ', role: ROLE_LABEL[r.role], partner: partner?.name || 'nửa kia' };
   const bought = t.kind === 'ex' && t.cast?.id === String(user.id);
@@ -1939,8 +1997,12 @@ function abortTwist() {
   clearTimeout(twistTimer);
   broadcast('twist', { phase: 'end', id: t.id, kind: t.kind, aborted: true });
 }
+// Biến cố trước lễ diễn trong lúc đếm ngược; sự cố của tiệc mừng diễn trong tiệc mừng. Đôi trẻ không còn đủ thì thôi.
+function twistStageOk(t) {
+  return Boolean(state.roles.groom && state.roles.bride) && state.ceremony.phase === (t.stage === 'party' ? 'reception' : 'countdown');
+}
 setInterval(() => {
-  if (twist && (state.ceremony.phase !== 'countdown' || !state.roles.groom || !state.roles.bride)) {
+  if (twist && !twistStageOk(twist)) {
     abortTwist();
     broadcastState();
   }
@@ -2098,8 +2160,145 @@ function demoDue() {
   return demo.last;
 }
 
+// ========================================================
+// TIỆC MỪNG TỰ DIỄN (partyFree): cưới xong đôi trẻ tự hôn, cắt bánh, cụng ly rồi vào phòng tân hôn, không cần ai tặng quà:
+// buổi LIVE lúc nào cũng có trò để xem. Cứ hitchEvery lượt thì một SỰ CỐ chen vào chặn đúng một bước (xem HITCH):
+// người xem đã thấy bước đó diễn trọn vẹn ở lượt trước nên muốn cứu. Gỡ được thì bước đó diễn ra, người gỡ được ghi công;
+// không gỡ được thì diễn bản chữa cháy. Quà "động phòng luôn" vẫn tiễn đôi trẻ vào phòng ngay (người tặng là ông mai, bà mối).
+// ========================================================
+const PARTY_STEPS = ['kiss', 'cake', 'cheers'];
+const PARTY_ACTION = { kiss: 'kiss', cake: 'cake', cheers: 'champagne' };
+const PARTY_FIRST_MS = 6500; // chờ bảng tin "tân lang tân nương" và ảnh cưới hiện xong rồi mới vào bước đầu
+let party = null;            // tiệc mừng đang tự diễn: { queue: các bước còn lại, hitch: bước sẽ gặp sự cố, gap }
+const hitchPlan = { since: 0, next: 0, last: '', forced: '' };
+const partyOn = () => state.config.partyFree !== false && state.config.ceremonySteps !== 'auto';
+
+// Lượt này có sự cố không, và là sự cố nào (khác loại vừa diễn lần trước)
+function pickHitch() {
+  const forced = hitchPlan.forced;
+  hitchPlan.forced = '';
+  if (forced) return forced;
+  const every = clampNum(state.config.hitchEvery, 0, 50, 2);
+  if (!every || !overlayClients.size) return '';
+  const jitter = () => (every < 3 ? every : every + Math.floor(Math.random() * 3) - 1);
+  if (!hitchPlan.next) hitchPlan.next = jitter();
+  if (++hitchPlan.since < hitchPlan.next) return '';
+  hitchPlan.since = 0;
+  hitchPlan.next = jitter();
+  const pool = PARTY_KINDS.filter(k => state.config.twists?.[k] !== false);
+  const fresh = pool.filter(k => k !== hitchPlan.last);
+  const kind = (fresh.length ? pick(fresh) : pool[0]) || '';
+  if (kind) hitchPlan.last = kind;
+  return kind;
+}
+// Đồng hồ tiệc mừng trên màn hình: còn bao lâu nữa thì đôi trẻ vào phòng tân hôn
+function partyEta(firstMs) {
+  const rest = party ? party.queue.filter(k => k !== 'room').length : 0;
+  state.ceremony.endsAt = Date.now() + firstMs + rest * (party?.gap || 0);
+}
+function startParty() {
+  const now = Date.now();
+  const total = clampNum(state.config.receptionSeconds, 8, 600, 25) * 1000;
+  party = {
+    queue: [...PARTY_STEPS, 'room'], hitch: pickHitch(),
+    gap: Math.round(Math.min(15000, Math.max(6000, (total - PARTY_FIRST_MS) / PARTY_STEPS.length)))
+  };
+  state.ceremony = { phase: 'reception', endsAt: now, startedAt: now, party: true };
+  partyEta(PARTY_FIRST_MS);
+  clearTimeout(ceremonyTimer);
+  ceremonyTimer = setTimeout(partyNext, PARTY_FIRST_MS);
+  persistState();
+  broadcastState();
+}
+// Một bước của tiệc mừng diễn ra (miễn phí). line = câu MC; sau sự cố thì MC đã nói rồi, không đọc thêm
+function partyStep(step, withLine = true) {
+  const action = PARTY_ACTION[step];
+  broadcast('action', { action, name: 'MC', initiator: '', free: true, line: withLine ? pickLine(action, baseVars()) : '' });
+  if (withLine) markMc();
+}
+function partyNext() {
+  if (!party || state.ceremony.phase !== 'reception') return;
+  clearTimeout(ceremonyTimer);
+  const step = party.queue.shift();
+  if (!step) return;
+  if (step === party.hitch && startHitch(step)) return; // gỡ xong (hoặc hết giờ) thì resolveTwist gọi partyAfterHitch đi tiếp
+  if (step === 'room') return partyRoom('');
+  partyStep(step);
+  partyEta(party.gap);
+  ceremonyTimer = setTimeout(partyNext, party.gap);
+  broadcastState();
+}
+// Sự cố chen vào ngay trước một bước của tiệc mừng: dùng chung bộ máy "hai cửa" của biến cố
+function startHitch(kind) {
+  if (twist || !HITCH[kind] || !overlayClients.size || state.ceremony.phase !== 'reception' || !state.roles.groom || !state.roles.bride) return false;
+  const now = Date.now();
+  const ms = TWIST_WINDOW_MS[kind];
+  const t = {
+    id: ++twistSeq, kind, stage: 'party', ms, opensAt: now + TWIST_INTRO_MS, endsAt: now + TWIST_INTRO_MS + ms,
+    progress: 0, target: twistTarget(kind, ms), contrib: new Map(), gifts: new Map(), last: null, n: 0
+  };
+  const guests = twistGuests();
+  if (kind === 'kiss') {
+    // Một khách (ưu tiên nhân vật nam) được mời làm bố vợ cho có tên có mặt
+    const men = guests.filter(p => p.gender === 'male');
+    t.cast = guests.length ? userOf(pick(men.length ? men : guests)) : { id: '', name: '', avatar: '', gender: 'male' };
+  } else if (kind === 'cheers') {
+    t.cast = { id: '', name: 'Chú Ba', avatar: '', gender: 'male' }; // nhân vật của rạp, không gán cho khách nào
+  } else if (kind === 'room') {
+    t.cast = guests.length ? userOf(pick(guests)) : { id: '', name: '', avatar: '', gender: 'male' }; // trưởng hội bạn thân
+  }
+  twist = t;
+  partyEta(TWIST_INTRO_MS + ms + HITCH_TAIL_MS);
+  clearTimeout(ceremonyTimer);
+  clearTimeout(twistTimer);
+  twistTimer = setTimeout(resolveTwist, t.endsAt - now);
+  broadcast('twist', { phase: 'start', ...twistPublic(), couple: coupleInfo(), line: pickLine(`twist${HITCH[kind].name}Start`, { ...baseVars(), dad: t.cast?.name || '' }) });
+  markMc();
+  broadcastState();
+  return true;
+}
+// Sự cố của tiệc mừng vừa có kết cục: thắng thì bước bị chặn diễn ra (đã có người hùng), thua thì bỏ qua bước đó
+function partyAfterHitch(t, win, hero) {
+  clearTimeout(ceremonyTimer);
+  if (!party) return;
+  if (t.kind === 'room') {
+    // Mở được cửa: người gỡ là ông mai, bà mối tiễn đôi trẻ vào phòng. Không mở được: đôi trẻ ngủ ngoài hành lang
+    const by = win ? hero?.name || '' : '';
+    partyEta(HITCH_TAIL_MS);
+    ceremonyTimer = setTimeout(() => (win ? partyRoom(by) : partyEnd()), HITCH_TAIL_MS);
+    return;
+  }
+  if (!win) {
+    partyEta(HITCH_TAIL_MS);
+    ceremonyTimer = setTimeout(partyNext, HITCH_TAIL_MS);
+    return;
+  }
+  partyEta(HITCH_STEP_AT_MS + party.gap);
+  ceremonyTimer = setTimeout(() => {
+    if (!party || state.ceremony.phase !== 'reception') return;
+    partyStep(t.kind, false);
+    ceremonyTimer = setTimeout(partyNext, party.gap);
+  }, HITCH_STEP_AT_MS);
+}
+// Hết tiệc: đôi trẻ vào phòng tân hôn. by = người gỡ sự cố chặn cửa (làm ông mai, bà mối); không có thì là tiệc tàn tự vào
+function partyRoom(by = '') {
+  party = null;
+  if (startCeremony({ quick: true, finale: true, initiator: by, free: true })) return;
+  partyEnd();
+}
+// Không vào được phòng (hội bạn thân không mở cửa): đôi trẻ chào rồi rời sân khấu
+function partyEnd() {
+  party = null;
+  clearTimeout(ceremonyTimer);
+  state.ceremony = { phase: 'running', endsAt: Date.now() + FAREWELL_MS, mode: 'farewell', married: true };
+  broadcast('action', { action: 'reception_end', hallway: true, ...coupleInfo(), line: '' });
+  broadcastState();
+  ceremonyTimer = setTimeout(endTurn, FAREWELL_MS);
+}
+
 // Tiệc mừng: đôi vừa cưới ở lại sân khấu chờ khách tặng quà. Hết giờ mà không ai cho động phòng thì đôi trẻ chào rồi rời sân khấu.
 function startReception() {
+  if (partyOn()) return startParty();
   const ms = clampNum(state.config.receptionSeconds, 8, 600, 25) * 1000;
   const now = Date.now();
   state.ceremony = { phase: 'reception', endsAt: now + ms, startedAt: now, demo: demoDue() };
@@ -2133,7 +2332,7 @@ function startReception() {
 // Có quà trong tiệc mừng: giữ đôi trẻ lại thêm để nghi thức kịp diễn ra (tối đa RECEPTION_MAX_MS)
 function extendReception() {
   const c = state.ceremony;
-  if (c.phase !== 'reception') return;
+  if (c.phase !== 'reception' || party) return; // tiệc mừng tự diễn có lịch riêng, không kéo dài theo quà
   const now = Date.now();
   const want = Math.min(c.startedAt + RECEPTION_MAX_MS, Math.max(c.endsAt + RECEPTION_GIFT_MS, now + 10000));
   if (want <= c.endsAt) return;
@@ -2147,7 +2346,9 @@ function endReception() {
   // Lượt được MC đãi động phòng: hết tiệc mừng mà chưa ai tặng quà động phòng thì MC cho đôi trẻ vào luôn
   if (state.ceremony.demo === 'dongphong' && startCeremony({ quick: true, initiator: 'MC', finale: true, demo: true })) return;
   state.ceremony = { phase: 'running', endsAt: Date.now() + FAREWELL_MS, mode: 'farewell', married: true };
-  broadcast('action', { action: 'reception_end', ...coupleInfo(), line: pickLine('ceremonyEnd', baseVars()) });
+  // Có quà động phòng trong luật mà hết giờ không ai tặng: phòng tân hôn khóa cửa, đôi trẻ lỡ phòng
+  const missed = Boolean(ruleGiftName(['dongphong', 'quickwed']));
+  broadcast('action', { action: 'reception_end', missed, ...coupleInfo(), line: pickLine(missed ? 'roomMissed' : 'ceremonyEnd', baseVars()) });
   markMc();
   broadcastState();
   ceremonyTimer = setTimeout(endTurn, FAREWELL_MS);
@@ -2176,6 +2377,56 @@ function endTurn({ quiet = false } = {}) {
   persistState();
   broadcastState();
   evaluateCeremony();
+}
+
+// ========================================================
+// SINH CON: đôi trẻ vào động phòng xong, cửa phòng đóng thêm một lúc ("chín tháng mười ngày sau...").
+// Trong lúc đó ai tặng món quà gán cho "Sinh bé trai" hoặc "Sinh bé gái" thì đôi trẻ sinh bé đó, người tặng ĐẦU TIÊN
+// của mỗi món làm bố / mẹ đỡ đầu. Có cả hai món thì sinh đôi một trai một gái: không bên nào thua, nên không thành
+// hai phe đua quà (TikTok không cho chia phe bằng quà). Không ai tặng thì cửa mở như thường, MC chúc sớm sinh quý tử.
+// Chỉ chạy khi luật quà có gán quà cho ít nhất một trong hai hành động đó; babySeconds = 0 là tắt.
+// ========================================================
+const BABY_OPEN_MS = 6000;   // từ lúc bắt đầu động phòng tới lúc cửa phòng đóng hẳn (khớp cảnh trên màn hình)
+const BABY_REVEAL_MS = 6000; // mở cửa khoe em bé rồi mới hết lượt
+let baby = null;             // cửa sổ sinh con đang mở: { endsAt, boy, girl, timer } (chỉ nhớ trong phiên)
+const babySeconds = () => clampNum(state.config.babySeconds, 0, 60, 15);
+const babyOn = () => babySeconds() > 0 && (state.config.giftRules || []).some(r => r.action === 'babyBoy' || r.action === 'babyGirl');
+const babyPublic = () => baby && { remainingMs: Math.max(0, baby.endsAt - Date.now()), boy: baby.boy, girl: baby.girl };
+
+function startBaby(ms) {
+  clearTimeout(baby?.timer);
+  baby = { endsAt: Date.now() + BABY_OPEN_MS + ms, boy: null, girl: null, timer: setTimeout(resolveBaby, BABY_OPEN_MS + ms) };
+}
+// Một món quà "bé trai" / "bé gái". Trả về true nếu người tặng thành bố / mẹ đỡ đầu (người đầu tiên của món đó).
+function babyGift(user, sex, gift) {
+  const b = baby;
+  if (!b || Date.now() > b.endsAt || b[sex]) return false;
+  b[sex] = { id: String(user.id), name: user.name || 'Khách', avatar: user.avatar || '', gift: String(gift || '') };
+  broadcast('baby', { phase: 'gift', sex, ...babyPublic(), line: pickLine(sex === 'boy' ? 'babyGiftBoy' : 'babyGiftGirl', { ...baseVars(), name: b[sex].name, gift }) });
+  markMc();
+  broadcastState();
+  return true;
+}
+function resolveBaby() {
+  const b = baby;
+  if (!b) return;
+  clearTimeout(b.timer);
+  baby = null;
+  const result = b.boy && b.girl ? 'twins' : b.boy ? 'boy' : b.girl ? 'girl' : 'none';
+  const givers = [b.boy, b.girl].filter(Boolean).filter((x, i, a) => a.findIndex(y => y.id === x.id) === i);
+  if (result !== 'none') {
+    state.stats.babies = (state.stats.babies || 0) + (result === 'twins' ? 2 : 1);
+    for (const g of givers) {
+      feat(g.id, g.name, 'godparent');
+      const me = personOf(g.id);
+      if (me) me.baseTag = result === 'twins' && givers.length === 1 ? '🍼 Đỡ đầu hai bé' : b.boy?.id === g.id ? '🍼 Đỡ đầu bé trai' : '🍼 Đỡ đầu bé gái';
+    }
+  }
+  const key = { twins: 'babyTwins', boy: 'babyBoy', girl: 'babyGirl', none: 'babyNone' }[result];
+  broadcast('baby', { phase: 'end', result, boy: b.boy, girl: b.girl, ...coupleInfo(), line: pickLine(key, { ...baseVars(), givers: givers.map(g => g.name).join(' và ') }) });
+  markMc();
+  persistState();
+  broadcastState();
 }
 
 // ========================================================
@@ -2355,7 +2606,7 @@ let seekCount = 0;
 function idleLine() {
   const v = baseVars();
   if (state.ceremony.phase === 'reception') {
-    return pickLine('receptionRemind', { ...v, seconds: Math.max(1, Math.ceil((state.ceremony.endsAt - Date.now()) / 1000)) });
+    return pickLine(state.ceremony.party ? 'partyRemind' : 'receptionRemind', { ...v, seconds: Math.max(1, Math.ceil((state.ceremony.endsAt - Date.now()) / 1000)) });
   }
   const empty = openRoles().filter(r => !state.roles[r]);
   // Đang tìm cô dâu chú rể (còn vai trống): cứ ba câu thì chen một câu mời theo dõi, bấm chuông, chia sẻ.
@@ -2576,7 +2827,8 @@ function processChatEvent(chat) {
     const love = twist.kind === 'roach' && !no && LOVE_WORDS.some(w => hasWord(low, w));
     const answer = twist.kind === 'roach' && !no && LOVE_ANSWERS.some(w => hasWord(low, w));
     const dad = twist.kind === 'dowry' && /(^| )(bo|ba|cuoi)( |$)/.test(norm(comment).replace(/[^a-z0-9 ]+/g, ' '));
-    twistAdd(user, 'chat', love || dad ? 2 : 1, { love, answer });
+    const word = Boolean(HITCH[twist.kind]?.words.some(w => hasWord(low, w))); // từ khóa của sự cố ("hôn", "xuống", "mở"...)
+    twistAdd(user, 'chat', love || dad || word ? 2 : 1, { love, answer });
     twistClaim(user, comment);
   }
   const attend = detectAttendant(comment);
@@ -2594,7 +2846,9 @@ function processChatEvent(chat) {
     const a = ritual;
     const now = Date.now();
     const cd = clampNum(state.config.commentCooldown, 0, 300, 8) * 1000;
-    if (a && now - (lastCommentRitual[a] || 0) >= cd && now - lastAnyCommentRitual >= 2500) {
+    // Bước đang bị sự cố chặn (vd bố vợ chặn hôn) thì bình luận không tự diễn bước đó được: phải gỡ sự cố trước
+    const blocked = Boolean(twist && HITCH[twist.kind]?.match.includes(a));
+    if (a && !blocked && now - (lastCommentRitual[a] || 0) >= cd && now - lastAnyCommentRitual >= 2500) {
       triggeredAction = a;
       lastCommentRitual[a] = now;
       lastAnyCommentRitual = now;
@@ -2681,6 +2935,12 @@ function processGiftEvent(g) {
   // Quà lớn không gán nghi thức thường là "chụp ảnh chung"; giữa lúc có biến cố thì không dừng màn kịch để chụp:
   // người tặng làm người hùng của màn đó, thắng thì có tên trong ảnh cưới ngay sau lễ
   if (twist && action === 'photo') action = 'thanks';
+  // Sự cố đang chặn một bước: món quà của đúng bước đó không tự diễn nữa mà gỡ luôn sự cố, người tặng là người hùng
+  let hitchFix = false;
+  if (twist && HITCH[twist.kind]?.match.includes(action)) {
+    hitchFix = true;
+    action = 'thanks';
+  }
 
   // Đấu giá: người đang đấu giá/giữ vai tặng quà lẻ (không gán nghi thức) cũng được cộng dồn vào giá
   let topUpRole = null;
@@ -2754,6 +3014,11 @@ function processGiftEvent(g) {
     skipFocus = startCeremony({ quick: true, initiator: name, finale: true });
   } else if (action === 'photo') {
     special = { photo: makePhoto('group', user) };
+  } else if (action === 'babyBoy' || action === 'babyGirl') {
+    // Quà đón em bé: chỉ có tác dụng lúc cửa phòng tân hôn đang đóng. Người đầu tiên của mỗi món làm bố / mẹ đỡ đầu,
+    // màn hình báo ngay trên cánh cửa (không chờ tới lượt đi lên thảm đỏ). Lúc khác thì là quà mừng thường.
+    if (babyGift(user, action === 'babyBoy' ? 'boy' : 'girl', gift)) skipFocus = true;
+    else action = 'thanks';
   }
 
   // Quà tặng giữa lúc đang có biến cố (quà phá đám, động phòng luôn đã tự khép biến cố ở trên):
@@ -2765,7 +3030,7 @@ function processGiftEvent(g) {
     const kind = twist.kind;
     if (roleResult?.became) {
       twistLine = twistRoleChanged(user, roleResult);
-    } else if (twistAdd(user, 'coin', coins, { gift })) {
+    } else if (twistAdd(user, 'coin', coins, { gift, match: hitchFix })) {
       twistHero = { kind, coins };
       if (action !== 'role') twistLine = pickLine(TWIST_GIFT_LINE[kind], { ...baseVars(), name, gift, count, coins });
     }
@@ -3346,13 +3611,17 @@ const server = http.createServer(async (req, res) => {
     state.config.receptionSeconds = clampNum(state.config.receptionSeconds, 8, 600, 25);
     state.config.demoEvery = clampNum(state.config.demoEvery, 0, 100, 8);
     state.config.twistEvery = clampNum(state.config.twistEvery, 0, 50, 3);
+    state.config.babySeconds = clampNum(state.config.babySeconds, 0, 60, 15);
     twistPlan.next = 0; // nhịp biến cố tính lại theo số vừa lưu, không chờ hết nhịp cũ
+    state.config.hitchEvery = clampNum(state.config.hitchEvery, 0, 50, 2);
+    state.config.partyFree = state.config.partyFree !== false;
+    hitchPlan.next = 0;
     state.config.twists = sanitizeTwists(state.config.twists);
     state.config.attendants = state.config.attendants !== false;
     if (!state.config.attendants) clearAttendants();
     state.config.autoPair = state.config.autoPair !== false;
     state.config.freeRoles = state.config.freeRoles === true;
-    state.config.autoPairSeconds = clampNum(state.config.autoPairSeconds, 5, 600, 8);
+    state.config.autoPairSeconds = clampNum(state.config.autoPairSeconds, 5, 600, 60);
     state.config.pairBoth = state.config.pairBoth !== false;
     state.config.partyEvery = clampNum(state.config.partyEvery, 0, 100, 5);
     state.config.treatQuietSeconds = clampNum(state.config.treatQuietSeconds, 0, 3600, 60);
@@ -3393,10 +3662,18 @@ const server = http.createServer(async (req, res) => {
   // Thử một biến cố: đang đếm ngược thì diễn luôn, chưa đủ đôi thì diễn ngay lúc đôi kế tiếp sắp làm lễ
   if (pathname === '/api/twist' && req.method === 'POST') {
     const data = await readJson();
-    const kind = TWIST_KINDS.includes(data.kind) ? data.kind : '';
+    const kind = TWIST_KINDS.includes(data.kind) || PARTY_KINDS.includes(data.kind) ? data.kind : '';
     if (!kind) return sendJson(res, 400, { ok: false, error: 'Không có biến cố này' });
     if (twist) return sendJson(res, 409, { ok: false, error: 'Đang có một biến cố diễn ra' });
     if (!overlayClients.size) return sendJson(res, 409, { ok: false, error: 'Chưa mở màn hình LIVE (overlay) nên không diễn được' });
+    if (PARTY_KINDS.includes(kind)) {
+      // Sự cố của tiệc mừng: đang tiệc mừng mà bước đó chưa tới thì diễn ngay trong lượt này, không thì để lượt cưới kế tiếp
+      if (!partyOn()) return sendJson(res, 409, { ok: false, error: 'Cần bật "Tiệc mừng tự diễn" thì mới có sự cố này' });
+      const now = Boolean(party && party.queue.includes(kind));
+      if (now) party.hitch = kind;
+      else hitchPlan.forced = kind;
+      return sendJson(res, 200, { ok: true, now });
+    }
     twistPlan.forced = kind;
     twistPlan.used = false;
     const now = state.ceremony.phase === 'countdown' && startTwist();
@@ -3830,10 +4107,14 @@ const server = http.createServer(async (req, res) => {
     state.feats = {};
     state.wedLog = {};
     abortTwist();
+    clearTimeout(baby?.timer);
+    baby = null;
     clearAttendants();
     nextUp = { groom: null, bride: null };
     massPairs = [];
     Object.assign(twistPlan, { since: 0, next: 0, last: '', forced: '', used: false });
+    Object.assign(hitchPlan, { since: 0, next: 0, last: '', forced: '' });
+    party = null;
     featOwners = null;
     seenGuests.clear();
     specialHolders = { star: null, dance: null };

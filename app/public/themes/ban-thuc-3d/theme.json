@@ -1,7 +1,7 @@
 {
   "id": "ban-thuc-3d",
   "name": "Bán thực 3D",
-  "version": 1794404925607,
+  "version": 1795014539942,
   "display": {
     "couple": 460,
     "mc": 330,
@@ -97,6 +97,13 @@
         "img": "couple_kiss.webp",
         "video": "couple_kiss.webm"
       },
+      "roach": {
+        "img": "couple_roach.webp",
+        "video": "couple_roach.webm"
+      },
+      "shock": {
+        "video": "couple_shock.webm"
+      },
       "wave": {
         "img": "couple_wave.webp",
         "video": "couple_wave.webm"
@@ -172,6 +179,61 @@
           "img": "bride_wait.webp",
           "video": "bride_wait.webm"
         }
+      }
+    }
+  },
+  "events": {
+    "ex": {
+      "male": {
+        "aspect": 0.5829,
+        "img": "bc_ex_m.webp",
+        "video": "bc_ex_m.webm"
+      },
+      "female": {
+        "aspect": 0.5777,
+        "img": "bc_ex_f.webp",
+        "video": "bc_ex_f.webm"
+      }
+    },
+    "bovo": {
+      "aspect": 0.6271,
+      "states": {
+        "angry": {
+          "img": "bc_bovo_angry.webp",
+          "video": "bc_bovo_angry.webm"
+        },
+        "happy": {
+          "img": "bc_bovo_happy.webp",
+          "video": "bc_bovo_happy.webm"
+        }
+      }
+    },
+    "baby": {
+      "aspect": 0.772,
+      "states": {
+        "boy": {
+          "img": "bc_baby_boy.webp"
+        },
+        "girl": {
+          "img": "bc_baby_girl.webp"
+        }
+      }
+    },
+    "dark": "bc_dark.jpg",
+    "fx": {
+      "goldrain": {
+        "src": "bc_fx_goldrain.webm"
+      },
+      "lightning": {
+        "src": "bc_fx_lightning.webm",
+        "blend": "screen"
+      },
+      "shatter": {
+        "src": "bc_fx_shatter.webm"
+      },
+      "shield": {
+        "src": "bc_fx_shield.webm",
+        "blend": "screen"
       }
     }
   }

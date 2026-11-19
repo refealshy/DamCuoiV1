@@ -245,6 +245,21 @@
               <button class="action-btn" data-twist="roach" style="border-color:#c8ff7a;">
                 <span class="act-icon">🪳</span><b>Biến cố: cô dâu hóa gián</b><small>"Nếu em biến thành con gián" thử lòng chú rể</small>
               </button>
+              <button class="action-btn" data-twist="ring" style="border-color:#ffe08a;">
+                <span class="act-icon">💍</span><b>Sự cố: chú rể quên nhẫn</b><small>Diễn lúc đôi trên sân khấu sắp làm lễ</small>
+              </button>
+              <button class="action-btn" data-twist="kiss" style="border-color:#ffc24a;">
+                <span class="act-icon">💋</span><b>Sự cố: bố vợ chặn hôn</b><small>Diễn trong tiệc mừng, ngay trước lúc hôn</small>
+              </button>
+              <button class="action-btn" data-twist="cake" style="border-color:#ffb3d1;">
+                <span class="act-icon">🎂</span><b>Sự cố: bánh cưới đổ</b><small>Diễn trong tiệc mừng, ngay trước lúc cắt bánh</small>
+              </button>
+              <button class="action-btn" data-twist="cheers" style="border-color:#9fe0ff;">
+                <span class="act-icon">🎤</span><b>Sự cố: ông chú giành mic</b><small>Diễn trong tiệc mừng, ngay trước lúc cụng ly</small>
+              </button>
+              <button class="action-btn" data-twist="room" style="border-color:#ff8a8a;">
+                <span class="act-icon">🚪</span><b>Sự cố: chặn cửa phòng tân hôn</b><small>Diễn cuối tiệc mừng, lúc đôi trẻ sắp vào phòng</small>
+              </button>
             </div>
           </div>
 
@@ -390,6 +405,10 @@
                 <input type="number" id="cfg-treat-quiet" value="60" min="0" max="3600">
               </div>
               <div class="form-group">
+                <label>👶 Sinh con — sau khi đôi trẻ vào động phòng, cửa phòng đóng bao nhiêu giây để khách tặng quà đón em bé (0 = tắt). Cần gán quà cho "Sinh bé trai" và "Sinh bé gái" ở tab Luật quà; có cả hai món thì sinh đôi:</label>
+                <input type="number" id="cfg-baby-seconds" value="15" min="0" max="60">
+              </div>
+              <div class="form-group">
                 <label>🎭 Biến cố lúc sắp làm lễ, để lượt cưới nào cũng khác nhau — trung bình mấy lượt cưới một lần (0 = tắt):</label>
                 <input type="number" id="cfg-twist-every" value="3" min="0" max="50">
               </div>
@@ -416,6 +435,42 @@
                     <option value="true">🪳 Cô dâu hóa gián: bật</option>
                     <option value="false">🪳 Cô dâu hóa gián: tắt</option>
                   </select>
+                  <select id="cfg-twist-ring">
+                    <option value="true">💍 Chú rể quên nhẫn: bật</option>
+                    <option value="false">💍 Chú rể quên nhẫn: tắt</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>🎉 Tiệc mừng tự diễn — cưới xong đôi trẻ tự hôn, cắt bánh, cụng ly rồi vào phòng tân hôn, không cần ai tặng quà. Tắt thì như cũ: chờ khách tặng đúng món mới diễn, hết giờ phòng tân hôn khóa cửa:</label>
+                <select id="cfg-party-free">
+                  <option value="true">Bật: các bước tự diễn miễn phí, thỉnh thoảng có sự cố cần cả rạp gỡ</option>
+                  <option value="false">Tắt: chờ khách tặng quà mới hôn, cắt bánh, động phòng</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🧯 Sự cố trong tiệc mừng (một bước đang miễn phí bị chặn lại, cả rạp gỡ bằng tim, bình luận hoặc quà) — trung bình mấy lượt cưới một lần (0 = tắt). Chỉ chạy khi bật "Tiệc mừng tự diễn":</label>
+                <input type="number" id="cfg-hitch-every" value="2" min="0" max="50">
+              </div>
+              <div class="form-group">
+                <label>🧯 Loại sự cố được diễn. Món quà đã gán cho đúng bước đó (vd quà "hôn" lúc bố vợ chặn hôn) thì gỡ ngay, quà khác góp sức. Không gỡ kịp thì bước đó diễn bản chữa cháy, đôi trẻ không mất gì:</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <select id="cfg-twist-kiss">
+                    <option value="true">💋 Bố vợ chặn hôn: bật</option>
+                    <option value="false">💋 Bố vợ chặn hôn: tắt</option>
+                  </select>
+                  <select id="cfg-twist-cake">
+                    <option value="true">🎂 Bánh cưới đổ: bật</option>
+                    <option value="false">🎂 Bánh cưới đổ: tắt</option>
+                  </select>
+                  <select id="cfg-twist-cheers">
+                    <option value="true">🎤 Ông chú giành mic: bật</option>
+                    <option value="false">🎤 Ông chú giành mic: tắt</option>
+                  </select>
+                  <select id="cfg-twist-room">
+                    <option value="true">🚪 Chặn cửa phòng tân hôn: bật</option>
+                    <option value="false">🚪 Chặn cửa phòng tân hôn: tắt</option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">
@@ -434,7 +489,7 @@
               </div>
               <div class="form-group">
                 <label>⏱️ Chờ khi sân khấu trống (giây) — hết giờ MC mời khách lên:</label>
-                <input type="number" id="cfg-auto-pair-seconds" value="8" min="5" max="600">
+                <input type="number" id="cfg-auto-pair-seconds" value="60" min="5" max="600">
               </div>
               <div class="form-group">
                 <label>💑 Sân khấu trống thì MC chọn:</label>

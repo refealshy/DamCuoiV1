@@ -954,6 +954,231 @@ const MC_GROUPS = [
   },
   {
     section: 'Biến cố & vai phụ',
+    key: 'twistRingStart',
+    label: 'Sự cố: chú rể quên nhẫn cưới',
+    vars: '{groom} {bride}',
+    lines: [
+      'Ủa nhẫn đâu? {groom} móc túi ra chìa khóa xe!',
+      'Chết rồi! {groom} để quên nhẫn cưới ở nhà!',
+      '{groom} lục hết túi rồi, không thấy nhẫn đâu cả!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRingWin',
+    label: 'Quên nhẫn: tìm được nhẫn',
+    vars: '{groom} {bride} {hero}',
+    lines: [
+      'Có nhẫn rồi! Cảm ơn {hero} cứu {groom} một bàn thua!',
+      'Tìm thấy nhẫn rồi! {bride} hết dỗi, làm lễ thôi!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRingLose',
+    label: 'Quên nhẫn: không tìm kịp',
+    vars: '{groom} {bride}',
+    lines: [
+      'Không kịp! {groom} đeo tạm dây thun cho {bride} vậy!',
+      'Hết giờ! Nhẫn cưới hôm nay là sợi dây thun!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftRing',
+    label: 'Có người tặng quà lúc chú rể quên nhẫn',
+    vars: '{name} {gift} {count} {groom}',
+    lines: [
+      '{name} tặng {gift}, cho {groom} mượn nhẫn luôn!',
+      '{name} góp {gift} tìm nhẫn cho đôi trẻ!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistKissStart',
+    label: 'Sự cố: bố vợ chen vào lúc đôi trẻ sắp hôn',
+    vars: '{groom} {bride} {dad}',
+    lines: [
+      'Khoan! Bố vợ {dad} chen vào giữa: chưa cho hôn!',
+      'Bố vợ {dad} đứng chắn rồi! {groom} hôn kiểu gì đây?',
+      'Sắp hôn thì bố vợ {dad} ho một tiếng, đứng ngay giữa!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistKissWin',
+    label: 'Bố vợ chặn hôn: bố vợ chịu quay đi',
+    vars: '{groom} {bride} {dad} {hero}',
+    lines: [
+      'Bố vợ {dad} quay mặt đi rồi! {groom} hôn lẹ đi!',
+      'Nhờ {hero} dụ khéo, bố vợ cho hôn rồi!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistKissLose',
+    label: 'Bố vợ chặn hôn: bố vợ không nhúc nhích',
+    vars: '{groom} {bride} {dad}',
+    lines: [
+      'Bố vợ không nhúc nhích! {groom} đành hôn gió qua vai bố!',
+      'Hết giờ! Hôm nay chỉ được hôn gió thôi nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftKiss',
+    label: 'Có người tặng quà lúc bố vợ chặn hôn',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift} mời bố vợ, bố cười rồi kìa!',
+      '{name} dụ bố vợ bằng {gift}, cao tay thật!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCakeStart',
+    label: 'Sự cố: bánh cưới bị quẹt mất, đổ sập',
+    vars: '{groom} {bride}',
+    lines: [
+      'Ôi không! Bé Tí quẹt mất tầng trên bánh cưới rồi!',
+      'Bánh cưới đổ rồi! Bé Tí chạy mất, kem dính đầy mặt!',
+      'Ai cho Bé Tí lại gần bánh cưới vậy? Sập rồi!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCakeWin',
+    label: 'Bánh đổ: có bánh mới',
+    vars: '{groom} {bride} {hero}',
+    lines: [
+      'Bánh mới tới rồi! Cảm ơn {hero} tài trợ bánh cưới!',
+      'Có bánh rồi! {groom} và {bride} cắt bánh thôi!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCakeLose',
+    label: 'Bánh đổ: không dựng kịp',
+    vars: '{groom} {bride}',
+    lines: [
+      'Không kịp dựng bánh! Đôi trẻ cắt tạm ổ bánh mì!',
+      'Hết giờ! Bánh cưới hôm nay là bánh mì không!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftCake',
+    label: 'Có người tặng quà lúc bánh cưới đổ',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift}, đặt luôn bánh mới cho đôi trẻ!',
+      '{name} góp {gift} dựng lại bánh cưới!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCheersStart',
+    label: 'Sự cố: ông chú giành mic hát, không chịu xuống',
+    vars: '{groom} {bride}',
+    lines: [
+      'Ông chú giành mic rồi! Đang hát tới bài thứ ba!',
+      'Sắp cụng ly thì ông chú lên hát, không chịu xuống!',
+      'Ông chú ôm mic hát say sưa, cả rạp chờ cụng ly!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCheersWin',
+    label: 'Ông chú giành mic: chú chịu xuống',
+    vars: '{groom} {bride} {hero}',
+    lines: [
+      'Ông chú chịu xuống rồi! Cảm ơn chủ xị {hero}!',
+      'Trả mic rồi! Cả rạp nâng ly nào!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistCheersLose',
+    label: 'Ông chú giành mic: chú hát tới cùng',
+    vars: '{groom} {bride}',
+    lines: [
+      'Ông chú hát hết liên khúc luôn! Cụng ly để lượt sau!',
+      'Hết giờ! Cả rạp ngồi nghe ông chú hát tới cuối!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftCheers',
+    label: 'Có người tặng quà lúc ông chú giành mic',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift} mời ông chú một ly, chú cười rồi!',
+      '{name} làm chủ xị, tặng {gift} mời ông chú xuống!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoomStart',
+    label: 'Sự cố: hội bạn thân chặn cửa phòng tân hôn',
+    vars: '{groom} {bride}',
+    lines: [
+      'Hội bạn thân chặn cửa phòng tân hôn đòi lì xì!',
+      'Muốn vào phòng hả? Hội bạn thân đòi lì xì mở cửa!',
+      'Cửa phòng bị chặn rồi! Hội bạn thân chưa cho vào!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoomWin',
+    label: 'Chặn cửa phòng: mở được cửa',
+    vars: '{groom} {bride} {hero}',
+    lines: [
+      'Mở cửa rồi! {hero} làm mai, tiễn đôi trẻ vào phòng!',
+      'Hội bạn thân nhận lì xì rồi! Mời đôi trẻ vào phòng!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistRoomLose',
+    label: 'Chặn cửa phòng: không mở được',
+    vars: '{groom} {bride}',
+    lines: [
+      'Không ai lì xì! {groom} và {bride} ngủ ngoài hành lang!',
+      'Hết giờ! Đêm tân hôn ngủ ngoài hành lang nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
+    key: 'twistGiftRoom',
+    label: 'Có người tặng quà lúc cửa phòng bị chặn',
+    vars: '{name} {gift} {count}',
+    lines: [
+      '{name} tặng {gift} làm lì xì mở cửa cho đôi trẻ!',
+      '{name} lì xì {gift}, hội bạn thân dạt ra rồi!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'partyRoom',
+    label: 'Tiệc mừng tự diễn: tiệc tàn, đôi trẻ tự vào phòng tân hôn',
+    vars: '{groom} {bride}',
+    lines: [
+      'Tiệc tàn rồi! Mời {groom} và {bride} vào phòng tân hôn!',
+      'Khuya rồi! Tiễn {groom} và {bride} vào động phòng nào!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'partyRemind',
+    label: 'Tiệc mừng tự diễn: MC nói lúc rạp im',
+    vars: '{groom} {bride} {seconds}',
+    lines: [
+      'Tiệc mừng của {groom} và {bride} đang vui lắm cả nhà ơi!',
+      'Lát nữa đôi trẻ vào phòng tân hôn nha cả nhà!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
     key: 'twistHero',
     label: 'Vinh danh người tặng quà cứu đám cưới (đọc nối sau câu kết của biến cố)',
     vars: '{hero} {gift}',
@@ -1059,7 +1284,90 @@ const MC_GROUPS = [
     lines: [
       'Còn {seconds} giây nữa đôi trẻ về mất, tặng quà lẹ!',
       'Chưa ai cho đôi trẻ động phòng hả? Còn {seconds} giây!',
-      'Tặng một cái cho {groom} với {bride} hôn nhau coi!'
+      'Tặng một cái cho {groom} với {bride} hôn nhau coi!',
+      'Phòng tân hôn sắp khóa cửa! Còn {seconds} giây thôi!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'roomMissed',
+    label: 'Hết tiệc mừng mà không ai tặng quà động phòng: phòng tân hôn khóa cửa',
+    vars: '{groom} {bride}',
+    lines: [
+      'Phòng tân hôn khóa cửa rồi! {groom} và {bride} lỡ động phòng!',
+      'Không ai tiễn vào phòng! {groom} với {bride} về tay không nha!',
+      'Hết giờ! Đôi trẻ lỡ phòng tân hôn, hẹn lượt sau!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyStart',
+    label: 'Sinh con: cửa phòng tân hôn vừa đóng, mời đón em bé',
+    vars: '{groom} {bride}',
+    lines: [
+      'Chín tháng mười ngày sau... {bride} sinh trai hay gái đây?',
+      'Cửa phòng đóng rồi! Ai đỡ đầu em bé của {groom} và {bride} nào?',
+      'Sắp có tin vui! Bé trai hay bé gái đây cả nhà?'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyGiftBoy',
+    label: 'Sinh con: có người tặng quà bé trai (người đầu tiên làm bố / mẹ đỡ đầu)',
+    vars: '{name} {gift} {groom} {bride}',
+    lines: [
+      '{name} tặng {gift}, đôi trẻ có bé trai rồi!',
+      '{name} nhận đỡ đầu một bé trai kháu khỉnh!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyGiftGirl',
+    label: 'Sinh con: có người tặng quà bé gái (người đầu tiên làm bố / mẹ đỡ đầu)',
+    vars: '{name} {gift} {groom} {bride}',
+    lines: [
+      '{name} tặng {gift}, đôi trẻ có bé gái rồi!',
+      '{name} nhận đỡ đầu một bé gái xinh xắn!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyBoy',
+    label: 'Sinh con: mở cửa phòng, đôi trẻ sinh bé trai',
+    vars: '{groom} {bride} {givers}',
+    lines: [
+      'Mẹ tròn con vuông! {groom} và {bride} đón bé trai kháu khỉnh!',
+      'Bé trai giống bố như đúc! Cảm ơn {givers} đỡ đầu cho bé!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyGirl',
+    label: 'Sinh con: mở cửa phòng, đôi trẻ sinh bé gái',
+    vars: '{groom} {bride} {givers}',
+    lines: [
+      'Mẹ tròn con vuông! {groom} và {bride} đón bé gái xinh như mẹ!',
+      'Công chúa nhỏ chào đời! Cảm ơn {givers} đỡ đầu cho bé!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyTwins',
+    label: 'Sinh con: có cả quà bé trai lẫn quà bé gái, đôi trẻ sinh đôi',
+    vars: '{groom} {bride} {givers}',
+    lines: [
+      'Sinh đôi long phụng! {groom} và {bride} có đủ nếp đủ tẻ!',
+      'Một trai một gái luôn! Cảm ơn {givers} đỡ đầu hai bé!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'babyNone',
+    label: 'Sinh con: không ai tặng quà đón em bé',
+    vars: '{groom} {bride}',
+    lines: [
+      'Chưa có tin vui! Chúc {groom} và {bride} sớm sinh quý tử!',
+      'Cửa mở rồi mà chưa thấy em bé, lượt sau cố lên nha!'
     ]
   },
   {
@@ -1069,7 +1377,8 @@ const MC_GROUPS = [
     vars: '{name} {groom} {bride}',
     lines: [
       'Chơi lớn! {name} cho {groom} và {bride} động phòng luôn!',
-      'Gấp lắm rồi! Nhờ {name}, đôi trẻ vô thẳng động phòng!'
+      'Gấp lắm rồi! Nhờ {name}, đôi trẻ vô thẳng động phòng!',
+      '{name} làm mai, tiễn {groom} và {bride} vào phòng luôn!'
     ]
   },
   {

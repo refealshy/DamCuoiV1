@@ -1623,6 +1623,8 @@ const ACTION_INFO = {
   music: { icon: '🎵', label: 'ĐỔI NHẠC', cls: '' },
   mc: { icon: '🎤', label: 'CƯỚI MC', cls: '' },
   photo: { icon: '📸', label: 'CHỤP ẢNH CHUNG', cls: '' },
+  babyBoy: { icon: '👶', label: 'SINH BÉ TRAI', cls: 'highlight-dp' },
+  babyGirl: { icon: '🎀', label: 'SINH BÉ GÁI', cls: 'highlight-dp' },
   thanks: { icon: '💌', label: 'MỪNG PHONG BÌ', cls: '' }
 };
 const ROLE_RULE_ROLE = { groom: 'groom', bride: 'bride', replaceGroom: 'groom', replaceBride: 'bride' };
@@ -2000,13 +2002,35 @@ function crashItems(s, c) {
   if (items.length > 3) items.splice(2, items.length - 3); // nhiều hơn 3 ô: giữ 2 ô đầu và ô cuối (PHÁ ĐÁM)
   return items;
 }
+// Các ô của bảng "phòng tân hôn sắp khóa cửa": quà động phòng, và (nếu có gán) hai món quà đón em bé
+function roomItems(c) {
+  const rule = actions => (c.giftRules || []).find(r => actions.includes(r.action) && String(r.gifts || '').trim());
+  const giftOf = r => {
+    const g = String(r.gifts).split(',').map(t => t.trim()).find(t => t && !t.startsWith('#'));
+    return g ? `Tặng ${titleCase(g)}` : '';
+  };
+  const dp = rule(['quickwed', 'dongphong']);
+  if (!dp) return [];
+  const items = [{ label: currentState?.ceremony?.party ? 'VÀO PHÒNG NGAY' : 'ĐỘNG PHÒNG', sub: 'làm ông mai, bà mối', gift: giftOf(dp), img: ruleGiftImage(dp), emoji: '🏮' }];
+  if (Number(c.babySeconds ?? 15) > 0) {
+    for (const [action, label, emoji] of [['babyBoy', 'BÉ TRAI', '👶'], ['babyGirl', 'BÉ GÁI', '🎀']]) {
+      const r = rule([action]);
+      if (r) items.push({ label, sub: 'lúc cửa phòng đóng', gift: giftOf(r), img: ruleGiftImage(r), emoji });
+    }
+  }
+  return items;
+}
 function updateCrashPanel() {
   const s = currentState;
   const c = cfg();
   // Đang có bảng thông báo lớn thì nhường chỗ (hai bảng nằm cùng vùng giữa màn hình)
   const bannerOn = $('#ceremony-alert-banner')?.hidden === false;
-  const show = Boolean(s) && tagPhase === 'countdown' && !ceremonyRunning && !dpActive && !kickHold && !bannerOn && !tw && c.enableMarryAuction !== false;
-  const items = show ? crashItems(s, c) : [];
+  const free = Boolean(s) && !ceremonyRunning && !dpActive && !kickHold && !bannerOn && !tw && c.enableMarryAuction !== false;
+  const show = free && tagPhase === 'countdown';
+  // Tiệc mừng: phòng tân hôn chỉ mở tới hết giờ. Ai tặng quà động phòng trước là ông mai / bà mối tiễn đôi trẻ vào phòng;
+  // không ai tặng thì phòng khóa cửa, đôi trẻ lỡ phòng.
+  const room = free && tagPhase === 'reception';
+  const items = show ? crashItems(s, c) : room ? roomItems(c) : [];
   const el = crashPanel();
   const on = items.length > 0;
   el.classList.toggle('on', on);
@@ -2014,6 +2038,10 @@ function updateCrashPanel() {
   const sec = Math.max(0, Math.ceil((ceremonyDeadline - performance.now()) / 1000));
   $('#crash-timer').textContent = mmss(sec);
   el.classList.toggle('urgent', sec <= 10);
+  el.dataset.mode = room ? 'room' : 'crash';
+  // Tiệc mừng tự diễn: hết giờ đôi trẻ tự vào phòng; quà động phòng là tiễn vào ngay (làm ông mai, bà mối)
+  const partyOn = Boolean(s.ceremony?.party);
+  el.querySelector('.crash-title span').textContent = !room ? '⚔️ AI DÁM PHÁ ĐÁM CƯỚI NÀY?' : partyOn ? '🏮 SẮP VÀO PHÒNG TÂN HÔN!' : '🏮 PHÒNG TÂN HÔN SẮP KHÓA CỬA!';
   const key = JSON.stringify([items, giftCatalog.version]);
   if (key === crashKey) return;
   crashKey = key;
@@ -3752,7 +3780,7 @@ async function runDanceFloor(item, actor, token) {
 let dpActive = false;
 let sceneLock = 0; // > 0: đang có cảnh lớn (lễ cưới / động phòng) -> tạm dừng hàng người tặng quà
 
-async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
+async function runDongPhong({ groom, bride, intro = true, lines = {}, baby = null } = {}) {
   if (dpActive) return;
   dpActive = true;
   sceneLock++;
@@ -3816,24 +3844,115 @@ async function runDongPhong({ groom, bride, intro = true, lines = {} } = {}) {
     setTimeout(() => c.remove(), 3200);
   }, 400 + i * 900));
 
-  await sleep(T.closed);
+  // Sinh con: cửa phòng đóng thêm một lúc cho khách tặng quà đón em bé; không bật thì đóng cửa chừng vài giây như cũ
+  const born = baby ? await babyWindow(root, baby, lines) : null;
+  if (!baby) await sleep(T.closed);
   clearInterval(heartTimer);
   root.classList.remove('dp-closed', 'dp-signon');
+  const kid = born && born.result !== 'none';
+  if (kid) babyReveal(root, born, g, b);
   root.classList.add('dp-open', 'dp-baby-on');
   playFanfare();
-  spawnHearts(24, { x: 540, y: 900, spread: 420 });
+  spawnHearts(24, { x: 540, y: 900, spread: 420, emojis: kid ? ['👶', '🍼', '💖', '✨'] : undefined });
   spawnPetalsBurst(30);
-  if (lines.dongphongEnd) speak(lines.dongphongEnd);
-  await sleep(2000);
+  if (born?.line) speak(born.line, { priority: true });
+  else if (lines.dongphongEnd) speak(lines.dongphongEnd);
+  await sleep(kid ? 5000 : 2000);
   root.classList.add('dp-hide');
   await sleep(600);
   root.hidden = true;
   root.className = '';
+  const wish = root.querySelector('.dp-baby');
+  wish.classList.remove('reveal');
+  wish.textContent = '👶 Chúc sớm sinh quý tử!';
   media?.pause();
   heartsBox.replaceChildren();
   dpActive = false;
   sceneLock--;
   processOfferingQueue();
+}
+
+// ----- SINH CON: cửa phòng tân hôn đang đóng, khách tặng quà "bé trai" / "bé gái" để đón em bé -----
+// Mỗi món quà người tặng đầu tiên làm bố / mẹ đỡ đầu; có cả hai món thì sinh đôi. Server tính giờ và báo kết quả.
+let babyWait = null; // cửa sổ đang mở trên màn hình: { resolve, mark }
+async function babyWindow(root, info, lines) {
+  const c = cfg();
+  const ruleOf = a => (c.giftRules || []).find(r => r.action === a && String(r.gifts || '').trim());
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+  const box = mk('div', 'dp-babywin');
+  const head = mk('div', 'dpb-head');
+  const timer = mk('b', 'dpb-timer');
+  head.append(mk('span', '', '👶 CHÍN THÁNG MƯỜI NGÀY SAU...'), timer);
+  const cards = mk('div', 'dpb-cards');
+  const cardEls = {};
+  for (const [sex, action, label, emoji] of [['boy', 'babyBoy', 'BÉ TRAI', '👶'], ['girl', 'babyGirl', 'BÉ GÁI', '🎀']]) {
+    const r = ruleOf(action);
+    if (!r) continue;
+    const gift = String(r.gifts).split(',').map(t => t.trim()).find(t => t && !t.startsWith('#')) || '';
+    const card = mk('div', `dpb-card ${sex}`);
+    const icon = mk('div', 'dpb-icon');
+    setGiftIcon(icon, ruleGiftImage(r), emoji);
+    const who = mk('div', 'dpb-who', gift ? `Tặng ${titleCase(gift)}` : 'Tặng quà');
+    card.append(icon, mk('b', '', label), who);
+    cards.append(card);
+    cardEls[sex] = { card, who };
+  }
+  box.append(head, cards, mk('div', 'dpb-foot', 'Người tặng đầu tiên làm bố mẹ đỡ đầu · đủ hai món thì sinh đôi'));
+  root.append(box);
+  void box.offsetWidth;
+  box.classList.add('on');
+  if (lines.babyStart) speak(lines.babyStart, { priority: true });
+  // Đã có người nhận đỡ đầu: ô đó sáng lên, ghi tên và hình đại diện
+  const mark = (sex, p) => {
+    const e = cardEls[sex];
+    if (!e || !p || e.card.classList.contains('taken')) return;
+    e.card.classList.add('taken');
+    const av = mk('span', 'dpb-av');
+    updateAvatar(av, p.avatar || '', p.name);
+    e.who.replaceChildren(av, mk('span', '', `Đỡ đầu: ${p.name}`));
+    playChime();
+    spawnHearts(10, { x: sex === 'boy' ? 380 : 700, y: 1000, spread: 200, emojis: sex === 'boy' ? ['👶', '💙', '✨'] : ['🎀', '💗', '✨'] });
+  };
+  const early = currentState?.baby; // quà tới trước khi cửa đóng hẳn
+  if (early?.boy) mark('boy', early.boy);
+  if (early?.girl) mark('girl', early.girl);
+  const deadline = Number(info.deadline) || performance.now() + (Number(info.ms) || 15000);
+  const tick = () => { timer.textContent = mmss(Math.max(0, Math.ceil((deadline - performance.now()) / 1000))); };
+  tick();
+  const iv = setInterval(tick, 250);
+  const res = await new Promise(resolve => {
+    babyWait = { resolve, mark };
+    // Lỡ mất tin báo kết quả của server (rớt mạng): tự mở cửa sau hạn vài giây
+    setTimeout(() => resolve({ result: 'none' }), Math.max(1500, deadline - performance.now() + 5000));
+  });
+  babyWait = null;
+  clearInterval(iv);
+  box.classList.remove('on');
+  setTimeout(() => box.remove(), 450);
+  return res;
+}
+// Mở cửa khoe em bé: hình em bé (bộ hình có thì dùng, không thì biểu tượng), tên bố mẹ, tên bố mẹ đỡ đầu
+function babyReveal(root, born, g, b) {
+  const wish = root.querySelector('.dp-baby');
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+  const art = theme.data.events?.baby?.states || {};
+  const kids = mk('div', 'dpb-kids');
+  for (const sex of born.result === 'twins' ? ['boy', 'girl'] : [born.result]) {
+    const kidEl = mk('div', `dpb-kid ${sex}`);
+    if (art[sex]?.img) {
+      const img = new Image();
+      img.alt = '';
+      img.src = themeAsset(art[sex].img);
+      kidEl.append(img);
+    } else {
+      kidEl.append(mk('span', '', '👶'), mk('i', '', sex === 'boy' ? '💙' : '🎀'));
+    }
+    kids.append(kidEl);
+  }
+  const title = { boy: 'BÉ TRAI KHÁU KHỈNH!', girl: 'BÉ GÁI XINH XẮN!', twins: 'SINH ĐÔI LONG PHỤNG!' }[born.result];
+  const givers = [born.boy, born.girl].filter(Boolean).map(x => x.name).filter((n, i, a) => a.indexOf(n) === i);
+  wish.replaceChildren(mk('b', '', title), mk('small', '', `🍼 Đỡ đầu: ${givers.join(' và ')}`), kids);
+  wish.classList.add('reveal');
 }
 
 // ----- LỄ THÀNH HÔN: trao nhẫn -> hôn -> cắt bánh -> rót rượu -> động phòng -----
@@ -3844,6 +3963,7 @@ let turnEndedAt = 0; // lúc đôi vừa cưới rời sân khấu sau tiệc m�
 async function runCeremony(d) {
   if (ceremonyRunning) return;
   ceremonyRunning = true;
+  const t0 = performance.now();
   updateScene(); // vào lễ: về phông làm lễ
   sceneLock++;
   abortCurrentOffering();
@@ -3856,10 +3976,13 @@ async function runCeremony(d) {
   for (let i = 0; i < 60 && (offeringBusy || dpActive); i++) await sleep(200);
   const g = d.groom || roleName('groom');
   const b = d.bride || roleName('bride');
+  // Cửa sổ sinh con do server tính giờ từ lúc bắt đầu động phòng: ghi lại mốc hết giờ theo đồng hồ của màn hình
+  if (d.baby) d.baby = { ...d.baby, deadline: t0 + (Number(d.baby.openMs) || 0) + (Number(d.baby.ms) || 0) };
 
   const L = d.lines || {};
   if (d.quick) {
-    showCeremonyBanner('⚡ ĐỘNG PHÒNG LUÔN!', `${d.initiator ? d.initiator + ' tặng quà · ' : ''}${g} 💕 ${b}`, 'marry', 3200);
+    const mai = d.matchmaker ? `${d.matchmaker.title} ${d.matchmaker.name} tiễn vào phòng · ` : d.initiator ? `${d.initiator} tặng quà · ` : '';
+    showCeremonyBanner('⚡ ĐỘNG PHÒNG LUÔN!', `${mai}${g} 💕 ${b}`, 'marry', 3200);
     playFanfare();
     spawnHearts(16);
     if (L.ceremonyStart) speak(L.ceremonyStart, { priority: true });
@@ -3909,7 +4032,7 @@ async function runCeremony(d) {
   }
 
   sceneLock--;
-  await runDongPhong({ groom: g, bride: b, intro: true, lines: { dongphong: L.dongphong, dongphongEnd: L.dongphongEnd } });
+  await runDongPhong({ groom: g, bride: b, intro: true, baby: d.baby, lines: { dongphong: L.dongphong, dongphongEnd: L.dongphongEnd, babyStart: L.babyStart } });
   sceneLock++;
 
   showCeremonyBanner(`🎉 ${g} & ${b} VỀ CHUNG MỘT NHÀ!`, 'Vai cô dâu – chú rể mở lại cho lượt mới!', 'marry', 6000);
@@ -3959,7 +4082,10 @@ function triggerFarewell(d) {
   const g = d.groom || roleName('groom');
   const b = d.bride || roleName('bride');
   const bye = pickFresh('farewell', FAREWELLS);
-  showCeremonyBanner(bye.title(g, b), 'Vai cô dâu – chú rể sắp mở cho lượt mới!', 'marry', 5500);
+  // Hết tiệc mừng mà không ai tặng quà động phòng: phòng tân hôn khóa cửa
+  if (d.hallway) showCeremonyBanner(`TIỄN ${g.toUpperCase()} & ${b.toUpperCase()}!`, 'Đêm nay ngủ hành lang · lượt sau nhớ lì xì mở cửa nha', 'marry', 5500);
+  else if (d.missed) showCeremonyBanner('PHÒNG TÂN HÔN KHÓA CỬA!', `Không ai tiễn vào phòng · ${g} và ${b} lỡ động phòng`, 'cancel', 5500, '🔒 HẾT GIỜ RỒI');
+  else showCeremonyBanner(bye.title(g, b), 'Vai cô dâu – chú rể sắp mở cho lượt mới!', 'marry', 5500);
   coupleDo(bye.acts, 4800);
   bye.run();
   showToast(`💒 Tiễn ${g} & ${b}! Tặng quà để giành vai lượt mới! 💕`);
@@ -4324,6 +4450,66 @@ const TWIST_UI = {
   roach: {
     slam: 'HÓA GIÁN!', slamSub: 'NẾU EM BIẾN THÀNH CON GIÁN?', tape: '🪳 THỬ LÒNG CHÚ RỂ', unit: '❤',
     free: 'GÕ: YÊU', freeSub: 'cho cô dâu trở lại', gift: 'tiếp sức tình yêu', heroIcon: '💘', heroRole: 'Thần tình yêu'
+  },
+  // ----- SỰ CỐ: một bước vốn miễn phí bị chặn lại. title / stake: chữ trên bảng; actor: nhân vật bước ra (art = tên nhóm
+  // hình trong bộ hình, chưa có thì mượn hình khách và che mặt bằng badge); end: bảng tin kết cục thắng / thua -----
+  ring: {
+    slam: 'ỦA, NHẪN ĐÂU?!', slamSub: 'CHÚ RỂ QUÊN NHẪN Ở NHÀ', tape: '💍 SỰ CỐ TRAO NHẪN', unit: '❤',
+    free: 'THẢ TIM ❤', freeSub: 'đi tìm nhẫn', gift: 'cho mượn nhẫn', heroIcon: '💍', heroRole: 'Người cho mượn nhẫn', heroChip: 'Cho mượn nhẫn',
+    title: ({ groom, up }) => `${up(groom)} QUÊN NHẪN CƯỚI!`, stake: () => 'Không kịp: đeo tạm dây thun!',
+    reply: 'Ủa... nhẫn đâu rồi?!', rain: ['💍', '✨'],
+    end: {
+      winTitle: 'TÌM THẤY NHẪN RỒI!', winSub: 'Làm lễ thôi', winTag: '💍 CÓ NHẪN CƯỚI', winRain: ['💍', '✨', '💖', '🎉'],
+      loseTitle: 'ĐEO TẠM DÂY THUN!', loseSub: (g, b) => `${g} hứa bù nhẫn cho ${b} sau`, loseTag: '🥲 KHÔNG TÌM KỊP NHẪN', loseRain: ['🪢', '😅']
+    }
+  },
+  kiss: {
+    slam: 'KHOAN, CHƯA CHO HÔN!', slamSub: 'BỐ VỢ CHEN VÀO GIỮA', tape: '🧧 BỐ VỢ CHẶN HÔN', unit: '❤',
+    free: 'GÕ: HÔN ĐI', freeSub: 'xin bố cho hôn', gift: 'mời rượu bố vợ', heroIcon: '🍶', heroRole: 'Cao thủ dụ bố vợ', heroChip: 'Dụ bố vợ',
+    title: ({ cast, up }) => (cast.name ? `BỐ VỢ ${up(cast.name)} CHƯA CHO HÔN!` : 'BỐ VỢ CHƯA CHO HÔN!'), stake: () => 'Không đủ: chỉ được hôn gió!',
+    actor: { art: 'bovo', role: '🧧 BỐ VỢ', name: 'Ông Khó Tính', badge: '😠' },
+    shouts: ['Chưa cho hôn!', 'Hôn hít gì tầm này!', 'Đứng xa con gái tôi ra!', 'Có tôi ở đây nhé!'],
+    reply: 'Dạ... con xin phép bố!', react: 'Ờ... rượu này được đấy!', rain: ['🍶', '💋'],
+    end: {
+      winTitle: 'BỐ VỢ QUAY MẶT ĐI!', winSub: 'Hôn lẹ đi chú rể', winTag: '💋 BỐ VỢ CHO HÔN', winRain: ['💋', '💖', '🍶', '✨'],
+      loseTitle: 'CHỈ ĐƯỢC HÔN GIÓ!', loseSub: g => `Bố vợ không nhúc nhích · ${g} hôn gió qua vai bố`, loseTag: '😘 BỐ VỢ CHƯA ƯNG', loseRain: ['😘', '💨']
+    }
+  },
+  cake: {
+    slam: 'BÁNH CƯỚI ĐỔ RỒI!', slamSub: 'AI QUẸT MẤT TẦNG TRÊN?', tape: '🎂 SỰ CỐ BÁNH CƯỚI', unit: '❤',
+    free: 'THẢ TIM ❤', freeSub: 'dựng lại bánh', gift: 'tài trợ bánh mới', heroIcon: '🎂', heroRole: 'Nhà tài trợ bánh cưới', heroChip: 'Tài trợ bánh',
+    title: () => 'BÉ TÍ QUẸT SẬP BÁNH CƯỚI!', stake: () => 'Không kịp: cắt tạm bánh mì!',
+    actor: { art: 'kid', role: '🍰 THỦ PHẠM', name: 'Bé Tí', badge: '😋' },
+    shouts: ['Bánh ngon quá à!', 'Con quẹt có miếng à!', 'Hông phải con đâu!'],
+    react: 'Cho con miếng nữa!', rain: ['🎂', '🍰'],
+    end: {
+      winTitle: 'BÁNH MỚI TỚI RỒI!', winSub: 'Mời đôi trẻ cắt bánh', winTag: '🎂 CÓ BÁNH CƯỚI MỚI', winRain: ['🎂', '🍰', '✨', '🎉'],
+      loseTitle: 'CẮT TẠM BÁNH MÌ!', loseSub: () => 'Bánh cưới không dựng kịp · bánh mì cũng ngọt', loseTag: '🥖 HẾT GIỜ RỒI', loseRain: ['🥖', '😅']
+    }
+  },
+  cheers: {
+    slam: 'ÔNG CHÚ GIÀNH MIC!', slamSub: 'HÁT TỚI BÀI THỨ BA RỒI', tape: '🎤 ÔNG CHÚ KHÔNG CHỊU XUỐNG', unit: '❤',
+    free: 'GÕ: XUỐNG ĐI', freeSub: 'mời chú trả mic', gift: 'mời chú một ly', heroIcon: '🍻', heroRole: 'Chủ xị', heroChip: 'Chủ xị',
+    title: () => 'ÔNG CHÚ GIÀNH MIC HÁT HOÀI!', stake: () => 'Không đủ: cả rạp nghe hết liên khúc!',
+    actor: { art: 'uncle', role: '🎤 ÔNG CHÚ', name: 'Chú Ba', badge: '🎤' },
+    shouts: ['Bài nữa nha bà con!', 'Chưa say! Chú hát tiếp!', 'Một hai ba, dô!', 'Nhạc lên cho chú!'],
+    react: 'Ừa, mời thì chú uống!', rain: ['🍻', '🎶'],
+    end: {
+      winTitle: 'ÔNG CHÚ TRẢ MIC RỒI!', winSub: 'Cả rạp nâng ly', winTag: '🍻 MỜI CHÚ XUỐNG THÀNH CÔNG', winRain: ['🍻', '🥂', '🎉', '✨'],
+      loseTitle: 'NGHE HẾT LIÊN KHÚC!', loseSub: () => 'Ông chú hát tới cùng · cụng ly để lượt sau', loseTag: '🎤 KHÔNG AI CẢN NỔI', loseRain: ['🎶', '🎤', '😵']
+    }
+  },
+  room: {
+    slam: 'CHẶN CỬA PHÒNG!', slamSub: 'LÌ XÌ MỚI CHO VÀO', tape: '🚪 HỘI BẠN THÂN CHẶN CỬA', unit: '❤',
+    free: 'GÕ: MỞ CỬA', freeSub: 'xin cho đôi trẻ vào phòng', gift: 'lì xì mở cửa', heroIcon: '🏮', heroRole: 'Ông mai, bà mối', heroChip: 'Ông mai bà mối',
+    title: () => 'HỘI BẠN THÂN CHẶN CỬA PHÒNG!', stake: () => 'Không đủ: đôi trẻ ngủ hành lang!',
+    actor: { art: 'friends', role: '🚪 HỘI BẠN THÂN', name: 'Hội Bạn Thân', badge: '🧧' },
+    shouts: ['Lì xì đâu?', 'Chưa lì xì chưa cho vào!', 'Trả lời ba câu đã!', 'Muốn vào thì mở hầu bao!'],
+    reply: 'Cho tụi em vào đi mà!', react: 'Lì xì đẹp đó nha!', rain: ['🧧', '🚪'],
+    end: {
+      winTitle: 'MỞ CỬA RỒI!', winSub: 'Tiễn đôi trẻ vào phòng tân hôn', winTag: '🏮 CỬA PHÒNG ĐÃ MỞ', winRain: ['🧧', '🏮', '💖', '🎉'],
+      loseTitle: 'NGỦ NGOÀI HÀNH LANG!', loseSub: (g, b) => `Không ai lì xì mở cửa · ${g} và ${b} trải chiếu ngoài hành lang`, loseTag: '🚪 CỬA KHÔNG MỞ', loseRain: ['🛏️', '🥲']
+    }
   }
 };
 const TWIST_GASPS = {
@@ -4331,7 +4517,12 @@ const TWIST_GASPS = {
   dowry: ['Dạ bố! 🙇', 'Bố vợ khó quá 😰', 'Xin bố cho cưới 🙏', 'Căng nha chú rể 😂', 'Sổ đỏ đâu rồi 📕'],
   blackout: ['Ai tắt đèn vậy?! 😱', 'Á! Ai đụng tui? 😳', 'Tối thui luôn 🙈', 'Cúp điện thiệt hả 😭', 'Bật đèn pin lên 🔦'],
   mass: ['Cưới cưới cưới! 💍', 'Cho em cưới ké 🙋', 'Ế lâu rồi cho cưới với 😭', 'Ngày đẹp quá nè 💒'],
-  roach: ['Gián đáng yêu hông? 🪳', 'Yêu yêu yêu! ❤', 'Hôn đi chú rể 😂', 'Gián mà vẫn xinh 🥹', 'Chạy lẹ chú rể ơi 🏃']
+  roach: ['Gián đáng yêu hông? 🪳', 'Yêu yêu yêu! ❤', 'Hôn đi chú rể 😂', 'Gián mà vẫn xinh 🥹', 'Chạy lẹ chú rể ơi 🏃'],
+  ring: ['Quên nhẫn thiệt hả 😭', 'Chú rể hậu đậu quá 😂', 'Ai có nhẫn cho mượn đi 💍', 'Cô dâu dỗi rồi kìa 😤'],
+  kiss: ['Hôn đi hôn đi! 💋', 'Bố ơi cho hôn đi 🙏', 'Bố vợ canh kỹ quá 😂', 'Căng nha chú rể 😰'],
+  cake: ['Trời ơi cái bánh 😭', 'Bé Tí ơi là Bé Tí 😂', 'Dựng bánh lẹ lên 🎂', 'Thương cái bánh ghê 🥲'],
+  cheers: ['Xuống đi chú ơi 😂', 'Chú hát hay mà dài quá 🎤', 'Đám nào cũng có ông chú này 🤣', 'Cho tụi con cụng ly với 🍻'],
+  room: ['Mở cửa đi mà 🚪', 'Lì xì đâu chú rể 🧧', 'Hội bạn thân lầy quá 😂', 'Cho đôi trẻ vào đi 🙏']
 };
 const TWIST_ACTOR = { x: 786, bottom: 1152, h: 448 }; // nhân vật của biến cố đứng bên phải sân khấu, quay về phía cặp đôi
 
@@ -4494,8 +4685,9 @@ function twistActorShow(d) {
   const ev = theme.data.events || {};
   const cast = d.cast || {};
   const isEx = d.kind === 'ex';
-  const def = isEx ? (ev.ex?.[cast.gender === 'female' ? 'female' : 'male'] || ev.ex?.male || ev.ex?.female) : ev.bovo;
-  const first = isEx ? def : def?.states?.angry || Object.values(def?.states || {})[0];
+  const A = TWIST_UI[d.kind].actor; // nhân vật của một sự cố (bố vợ chặn hôn, ông chú, Bé Tí, hội bạn thân)
+  const def = isEx ? (ev.ex?.[cast.gender === 'female' ? 'female' : 'male'] || ev.ex?.male || ev.ex?.female) : A ? ev[A.art] : ev.bovo;
+  const first = isEx || (A && !def?.states) ? def : def?.states?.angry || Object.values(def?.states || {})[0];
   let aspect = def?.aspect;
   const own = twistActorMedia(first);
   if (!own) {
@@ -4515,13 +4707,14 @@ function twistActorShow(d) {
   ui.actor.dataset.kind = d.kind;
   ui.actor.classList.toggle('fallback', !own);
   // Hình mượn của khách: che mặt bằng một biểu cảm lớn để người xem thấy ngay đây là nhân vật của biến cố
-  ui.badge.textContent = own ? '' : isEx ? '😭' : '😠';
-  ui.tagRole.textContent = isEx ? (cast.real ? '📼 VỢ CHỒNG CŨ THẬT' : cast.queued ? '🛞 LỐP TRƯỞNG' : '💔 NGƯỜI YÊU CŨ') : '🧧 BỐ VỢ';
-  // Lốp trưởng muốn lên thật thì có sẵn cửa: món quà thay vai là cướp ngay (hiện cho cả rạp thấy)
+  ui.badge.textContent = own ? '' : isEx ? '😭' : A ? A.badge : '😠';
+  ui.tagRole.textContent = isEx ? (cast.real ? '📼 VỢ CHỒNG CŨ THẬT' : cast.queued ? '🛞 LỐP TRƯỞNG' : '💔 NGƯỜI YÊU CŨ') : A ? A.role : '🧧 BỐ VỢ';
+  // Lốp trưởng muốn lên thật thì có sẵn cửa: món quà thay vai là cướp ngay (hiện cho cả rạp thấy).
+  // Sự cố: món quà của đúng bước đang bị chặn thì gỡ ngay
   const hint = isEx && d.role && currentState ? roleGiftHint(d.role, currentState, cfg()) : null;
-  ui.tagHint.textContent = hint ? `🎁 ${hint.text.replace(/^Tặng /, '')} = cướp ngay` : '';
-  ui.actor.classList.toggle('has-hint', Boolean(hint));
-  ui.tagName.textContent = cast.name || (isEx ? 'Tình Cũ' : 'Ông Khó Tính');
+  ui.tagHint.textContent = hint ? `🎁 ${hint.text.replace(/^Tặng /, '')} = cướp ngay` : A && d.fix ? `🎁 ${d.fix} = gỡ ngay` : '';
+  ui.actor.classList.toggle('has-hint', Boolean(hint || (A && d.fix)));
+  ui.tagName.textContent = cast.name || (isEx ? 'Tình Cũ' : A ? A.name : 'Ông Khó Tính');
   ui.tagAv.hidden = !cast.name;
   if (cast.name) updateAvatar(ui.tagAv, cast.avatar || '', cast.name);
   // Câu quát chỉ hiện lúc mới bước ra, rồi nhường chỗ cho các thẻ góp sức
@@ -4626,7 +4819,8 @@ function twistRender(d) {
   const title = d.kind === 'ex' ? (cast.queued ? `${up(cast.name)} ĐÒI LÊN LỐP CHÍNH!` : `${up(cast.name)} ĐÒI LẠI ${up(cast.of)}!`)
     : d.kind === 'dowry' ? (cast.name ? `BỐ VỢ ${up(cast.name)} THÁCH CƯỚI!` : 'BỐ VỢ THÁCH CƯỚI!')
     : d.kind === 'blackout' ? 'RẠP MẤT ĐIỆN RỒI!'
-    : d.kind === 'roach' ? `${up(bride)} HÓA GIÁN RỒI!` : 'CƯỚI TẬP THỂ!';
+    : d.kind === 'roach' ? `${up(bride)} HÓA GIÁN RỒI!`
+    : k.title ? k.title({ cast, groom, bride, up }) : 'CƯỚI TẬP THỂ!';
   ui.title.textContent = title;
   ui.title.hidden = d.kind === 'mass'; // cưới tập thể có thêm hàng ô suất cưới ké: bỏ dòng tiêu đề (đã có trên băng chữ) cho bảng khỏi che mặt cặp đôi
   const len = [...title].length;
@@ -4640,6 +4834,7 @@ function twistRender(d) {
     : d.kind === 'dowry' ? (d.canSteal ? `Không đủ: ${groom} bị đuổi!` : `Không đủ: ${groom} phải ở rể!`)
     : d.kind === 'blackout' ? 'Không kịp: cưới bằng ánh nến!'
     : d.kind === 'roach' ? (d.canSteal ? `Không đủ: ${groom} bỏ chạy mất dép!` : `Không đủ: ${groom} ngủ sô pha!`)
+    : k.stake ? k.stake({ cast, groom, bride })
     : 'Ai gõ trước được trước!';
   ui.panel.dataset.kind = d.kind;
   ui.bar.hidden = d.kind === 'mass';
@@ -4747,6 +4942,9 @@ function twistPop(last, kind) {
     spawnHearts(8, { x: 540, y: 900, spread: 420, emojis: ['🕯️', '✨'] });
   } else if (kind === 'roach') {
     spawnHearts(10, { x: 520, y: 820, spread: 240, emojis: ['💋', '💘', '❤'] });
+  } else if (k.rain) {
+    if (k.react) twistShout(k.react, 2400);
+    spawnHearts(8, { x: 540, y: 900, spread: 300, emojis: k.rain });
   }
 }
 
@@ -4839,7 +5037,7 @@ function twistStart(d, intro = true) {
   ui.slots.dataset.key = '';
   twistRender(d);
   if (d.kind === 'blackout') twistDarkOn(intro);
-  const hasActor = d.kind === 'ex' || d.kind === 'dowry';
+  const hasActor = d.kind === 'ex' || d.kind === 'dowry' || Boolean(TWIST_UI[d.kind].actor);
   if (!intro) {
     // Màn hình mở giữa lúc đang có biến cố: vào thẳng bảng thử thách
     if (hasActor) twistActorShow(d);
@@ -4882,7 +5080,7 @@ function twistStart(d, intro = true) {
   if (d.line) later(650, () => speak(d.line, { priority: true }));
   // 2. Nhân vật của biến cố bước ra. Bố vợ hỏi dồn, chú rể né: "Dạ... gỗ xà cừ ạ!"
   if (hasActor) later(1250, () => twistActorShow(d));
-  if (d.kind === 'dowry') later(3400, () => twistReply(k.reply));
+  if (k.reply) later(hasActor ? 3400 : 1500, () => twistReply(k.reply)); // chú rể đáp lại ("dạ gỗ xà cừ", "ủa nhẫn đâu"...)
   // 3. Chữ mở màn thu lại, bảng thử thách bật lên
   later(2500, () => {
     ui.slam.classList.remove('on');
@@ -5058,6 +5256,31 @@ function twistEnd(d) {
       banner('CHÚ RỂ ĐỨNG HÌNH!', `Cưới thì vẫn cưới · phạt ${groom} ngủ sô pha một tháng`, 'auction', 5000, '🛋️ CHƯA NÓI ĐƯỢC LỜI YÊU');
       later(900, () => { playSadTrombone(); guestsReact(16, ['look', 'hop']); });
     }
+  } else if (k.end) {
+    // Sự cố: thắng thì bảng tin vinh danh hiện nhanh rồi nhường chỗ cho chính bước vừa được gỡ (server diễn ngay sau đó);
+    // thua thì diễn bản chữa cháy
+    const e = k.end;
+    const g = d.couple?.groom || roleName('groom');
+    const b = d.couple?.bride || roleName('bride');
+    if (d.win) {
+      if (d.kind === 'kiss') twistActorMood('happy');
+      banner(e.winTitle, `${e.winSub}${hero}`, 'gold', d.kind === 'ring' ? 4600 : 2700, e.winTag);
+      later(900, () => {
+        playFanfare();
+        emojiRain(e.winRain, 30, 3000);
+        guestsReact(22, ['clap', 'hop', 'clap']);
+      });
+      later(2300, () => twistActorOut('walk'));
+    } else {
+      banner(e.loseTitle, e.loseSub(g, b), 'auction', 4400, e.loseTag);
+      later(900, () => {
+        playSadTrombone();
+        emojiRain(e.loseRain, 18, 3000);
+        guestsReact(16, ['look', 'hop']);
+        if (d.kind === 'kiss') spawnHearts(8, { x: 540, y: 820, spread: 200, emojis: ['😘', '💨'] });
+      });
+      later(3800, () => twistActorOut('walk'));
+    }
   } else {
     const pairs = d.pairs || [];
     if (pairs.length) {
@@ -5098,7 +5321,7 @@ function twistCleanup() {
   tw.timers.forEach(clearTimeout);
   tw = null;
   const ui = twistEls();
-  $('#frame').classList.remove('tw-on', 'tw-ex', 'tw-dowry', 'tw-blackout', 'tw-mass', 'tw-roach', 'tw-shake', 'tw-flicker', 'tw-dark-on');
+  $('#frame').classList.remove('tw-on', 'tw-shake', 'tw-flicker', 'tw-dark-on', ...Object.keys(TWIST_UI).map(k => `tw-${k}`));
   for (const el of [ui.panel, ui.slam, ui.count, ui.actor, ui.spot, ui.darkBg, ui.fx, ui.reply, ui.zalo]) el.classList.remove('on', 'out', 'fling', 'jump', 'won', 'lost', 'urgent');
   twistRoachOff(false);
   ui.eyes.replaceChildren();
@@ -5277,6 +5500,20 @@ realtime.addEventListener('action', e => {
   } catch (err) { console.warn('action error', err); }
 });
 
+// Sinh con: có người vừa nhận đỡ đầu (ô sáng lên), hoặc hết giờ (mở cửa khoe em bé)
+realtime.addEventListener('baby', e => {
+  try {
+    const d = JSON.parse(e.data);
+    if (d.phase === 'gift') {
+      babyWait?.mark(d.sex, d[d.sex]);
+      if (d.line) speak(d.line);
+      showToast(`🍼 ${d[d.sex]?.name || ''} đỡ đầu ${d.sex === 'boy' ? 'bé trai' : 'bé gái'}!`, d[d.sex]?.avatar, d[d.sex]?.name);
+    } else if (d.phase === 'end') {
+      babyWait?.resolve(d);
+    }
+  } catch (err) { console.warn('baby error', err); }
+});
+
 realtime.addEventListener('twist', e => {
   try {
     const d = JSON.parse(e.data);
@@ -5312,4 +5549,4 @@ realtime.addEventListener('focus', e => {
 
 // Chỉ để kiểm thử: mở overlay.html?debug rồi gọi window.__fx.<nhóm>[i].run()
 if (new URLSearchParams(location.search).has('debug')) window.__fx = { OPENINGS, RING_FINISHES, WED_DONES, FAREWELLS, showCeremonyBanner, lastVariants, pickFresh, twistStart, twistEnd, twistSync,
-  theme, TWIST_UI, twistEls, twistActorShow, twistCleanup, twistRoachOn, twistRoachOff, twistZalo, twistReply, twistShout, twistPop, coupleSpot, renderPhotoCanvas };
+  theme, TWIST_UI, twistEls, twistActorShow, twistCleanup, twistRoachOn, twistRoachOff, twistZalo, twistReply, twistShout, twistPop, coupleSpot, renderPhotoCanvas, runDongPhong };
