@@ -1,0 +1,832 @@
+<title>Bộ Prompt Biến Cố</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Trang làm việc, cùng kiểu với Bộ Prompt Tiệc Cưới: mỗi file cần tạo là một thẻ có prompt để chép, lọc theo ưu tiên. */
+:root {
+  --bg: #f5f1f2;
+  --surface: #ffffff;
+  --ink: #24181c;
+  --muted: #6d5d63;
+  --line: #e5d9dd;
+  --accent: #a3162e;
+  --on-accent: #ffffff;
+  --accent-soft: #f7e3e7;
+  --gold: #8a5f10;
+  --gold-soft: #f6ecd8;
+  --ok: #1f7a4c;
+  --on-ok: #ffffff;
+  --code-bg: #2a1c21;
+  --code-ink: #f5ebe6;
+  --code-muted: #c9b3ba;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141013;
+    --surface: #1d171a;
+    --ink: #f2e8ea;
+    --muted: #ab9aa0;
+    --line: #34292d;
+    --accent: #ff6b83;
+    --on-accent: #2a0b12;
+    --accent-soft: #3a1820;
+    --gold: #e2b35c;
+    --gold-soft: #33280f;
+    --ok: #5fd39a;
+    --on-ok: #0d2a1b;
+    --code-bg: #0f0b0d;
+    --code-ink: #f5ebe6;
+    --code-muted: #ab9aa0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141013;
+  --surface: #1d171a;
+  --ink: #f2e8ea;
+  --muted: #ab9aa0;
+  --line: #34292d;
+  --accent: #ff6b83;
+  --on-accent: #2a0b12;
+  --accent-soft: #3a1820;
+  --gold: #e2b35c;
+  --gold-soft: #33280f;
+  --ok: #5fd39a;
+  --on-ok: #0d2a1b;
+  --code-bg: #0f0b0d;
+  --code-ink: #f5ebe6;
+  --code-muted: #ab9aa0;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 28px;
+  padding-bottom: 64px;
+}
+h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 700; }
+h2 { font-size: 30px; font-weight: 700; }
+h3 { font-size: 16px; margin: 0; line-height: 1.35; }
+p { margin: 0; }
+code { font-family: var(--font-mono); font-size: 0.86em; overflow-wrap: anywhere; }
+
+/* Đầu trang */
+.masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px 28px;
+  align-items: end;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hy { font-family: 'Noto Serif CJK SC', 'Microsoft YaHei', 'PingFang SC', serif; color: var(--accent); font-size: 22px; letter-spacing: 0; }
+.lede { color: var(--muted); max-width: 64ch; margin-top: 10px; }
+.controls { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.ctl { display: flex; align-items: center; gap: 10px; }
+.ctl-label { font-size: 12px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.progress { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress b { color: var(--ink); }
+.bar { width: 240px; max-width: 100%; height: 6px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--ok); transition: width 0.3s ease; }
+
+/* Hai cột */
+.layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 36px; margin-top: 28px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; display: flex; flex-direction: column; gap: 2px; }
+.toc a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+.toc .n { font-variant-numeric: tabular-nums; font-size: 12px; }
+main { display: flex; flex-direction: column; gap: 44px; min-width: 0; }
+#sections { display: flex; flex-direction: column; gap: 44px; }
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+.sec-head p { color: var(--muted); max-width: 72ch; }
+.empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 18px; }
+
+/* Cách làm */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+.steps li {
+  counter-increment: s;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.steps li::before {
+  content: counter(s);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+.steps li p + p { margin-top: 4px; color: var(--muted); }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px 18px; }
+.rule { border-left: 3px solid var(--gold); padding: 4px 12px; font-size: 14px; }
+.rule b { display: block; }
+.rule span { color: var(--muted); }
+
+/* Thẻ prompt */
+.cards { display: grid; gap: 14px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.card.done { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); }
+.card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.file {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 3px 9px;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.card-top h3 { flex: 1 1 220px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; white-space: nowrap; }
+.chip.p1 { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.chip.p2 { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); }
+.note { font-size: 14px; color: var(--muted); }
+.note b { color: var(--ink); font-weight: 600; }
+.prompt { background: var(--code-bg); border-radius: 10px; overflow: hidden; }
+.prompt-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.prompt-bar .lbl { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--code-muted); font-weight: 600; }
+.copy {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0;
+  border-radius: 7px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.copy.ok { background: var(--ok); color: var(--on-ok); }
+.prompt pre {
+  margin: 0;
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px 14px 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px 14px; flex-wrap: wrap; }
+.done-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; user-select: none; }
+.done-toggle input { width: 17px; height: 17px; accent-color: var(--ok); margin: 0; }
+.from { font-size: 13px; color: var(--muted); }
+.from code { color: var(--ink); }
+
+/* Sửa lỗi */
+.fixes { display: grid; gap: 10px; }
+.fix { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 10px 16px; align-items: start; }
+.fix > b { font-size: 14px; padding-top: 9px; }
+
+/* Bảng và cây thư mục */
+.tree {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+.closing { color: var(--muted); max-width: 72ch; }
+
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .toc { display: none; }
+  .masthead { grid-template-columns: minmax(0, 1fr); }
+  .controls { align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .fix { grid-template-columns: minmax(0, 1fr); }
+  .fix > b { padding-top: 0; }
+  .ctl { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow"><span class="hy" aria-hidden="true">囍</span> Tiệc Cưới LIVE · biến cố lúc sắp làm lễ</div>
+      <h1>Bộ Prompt Biến Cố</h1>
+      <p class="lede">Kịch bản, hình và video cho năm biến cố: có người xông vào đòi thay vai, bố vợ thách cưới, cô dâu hóa gián, cúp điện, cưới tập thể. Thêm tiệc mừng tự diễn sau lễ với năm sự cố (quên nhẫn, bố vợ chặn hôn, bánh đổ, ông chú giành mic, chặn cửa phòng) và màn đón em bé. Mỗi màn có cửa tặng quà nằm ngay trong câu chuyện. Trend TikTok Việt chỉ xuất hiện ở cảnh hợp với nó. Nhân vật cùng bộ Bán thực 3D đang dùng. Tên file, tỷ lệ và hướng nhìn đã khớp với màn hình LIVE.</p>
+    </div>
+    <div class="controls">
+      <div class="ctl">
+        <span class="ctl-label">Hiện</span>
+        <div class="seg" role="group" aria-label="Lọc danh sách">
+          <button type="button" data-filter="all">Tất cả</button>
+          <button type="button" data-filter="p1">Ưu tiên 1</button>
+          <button type="button" data-filter="todo">Chưa xong</button>
+        </div>
+      </div>
+      <div class="progress" id="progress-text">Đã tạo <b>0</b>/0 file</div>
+      <div class="bar" aria-hidden="true"><i id="progress-bar"></i></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc" aria-label="Mục lục"></nav>
+    <main>
+      <section id="dung-o-dau">
+        <div class="sec-head">
+          <h2>Kịch bản từng biến cố</h2>
+          <p>Mỗi biến cố là một màn kịch ngắn lúc đôi trẻ sắp làm lễ, đi đủ bốn nhịp: mở màn, cả rạp ra tay, vinh danh, hẹn lượt sau. Lúc ra tay, màn hình luôn đặt hai cửa cạnh nhau: cửa miễn phí để cả rạp cùng làm, và cửa tặng quà để một người thành người hùng của màn đó. Câu thoại và trend đi theo đúng việc đang diễn ra trên sân khấu.</p>
+        </div>
+        <div class="rules">
+          <div class="rule"><b>Cửa miễn phí</b><span>Thả tim hoặc gõ đúng từ khóa. Cả rạp đẩy chung một thanh, không chia phe.</span></div>
+          <div class="rule"><b>Cửa tặng quà</b><span>Quà nào cũng tính. Người tặng bước lên sân khấu, có tên trên bảng, MC cảm ơn theo đúng câu chuyện, thanh nhảy vọt.</span></div>
+          <div class="rule"><b>Vinh danh</b><span>Thắng thì người tặng nhiều xu nhất được gọi tên trên bảng tin, đứng cạnh đôi trẻ tới hết lượt cưới và có mặt trong ảnh cưới.</span></div>
+          <div class="rule"><b>Hẹn lượt sau</b><span>Người bị đẩy lui hẹn quay lại, người đứng đầu hàng chờ có tên riêng và được lên sóng: người xem có lý do ở lại xem tiếp.</span></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Biến cố</th><th>Mở màn</th><th>Cả rạp làm gì</th><th>Tặng quà thì</th><th>Kết</th><th>File hình</th></tr></thead>
+            <tbody>
+              <tr><td>Có người xông vào đòi thay vai</td><td>"KHOAN ĐÃ!" Nếu có người đang xếp hàng chờ vai thì chính người đứng đầu hàng xông ra, màn hình gọi là "lốp trưởng". Không ai xếp hàng thì là vợ chồng cũ thật trong sổ cưới, hoặc một khách đóng người yêu cũ</td><td>Thả tim che chắn</td><td>Thành vệ sĩ. Chính người xông vào tặng quà thay vai thì cướp ngay</td><td>Thắng: người đó bị hất văng (lốp trưởng thì về lại hàng chờ). Thua: người đó lên thay vai</td><td><code>bc_ex_m</code> <code>bc_ex_f</code> <code>bc_fx_shatter</code> <code>bc_fx_shield</code> <code>couple_shock</code></td></tr>
+              <tr><td>Bố vợ thách cưới</td><td>Bố vợ hỏi lương, nhà, xe. Chú rể né: "dạ gỗ xà cừ ạ"</td><td>Gõ "dạ bố" xin cưới giùm</td><td>Món quà thành sính lễ. Quà nhỏ bố vợ chấm "sáu bảy, tạm được", quà lớn "con rể quý đây rồi"</td><td>Thắng: bố vợ cắn thử vàng, gửi thiệp hoa hồng lấp lánh. Thua: chú rể bị đuổi</td><td><code>bc_bovo_angry</code> <code>bc_bovo_happy</code> <code>bc_fx_goldrain</code></td></tr>
+              <tr><td>Cô dâu hóa gián</td><td>"Nếu em biến thành con gián, anh còn yêu em không?"</td><td>Gõ "yêu". Chính chú rể gõ "yêu" là qua ngay</td><td>Tiếp sức tình yêu, thành thần tình yêu</td><td>Thắng: gián biến lại thành cô dâu. Thua: chú rể bỏ chạy mất dép</td><td><code>couple_roach</code></td></tr>
+              <tr><td>Cúp điện</td><td>Sét đánh, hội trường tối om, chỉ còn những đôi mắt</td><td>Thả tim quay máy phát</td><td>Thắp nến, thành thợ điện của rạp</td><td>Thắng: điện về, một khách bị bắt quả tang. Thua: cưới ánh nến</td><td><code>bc_dark</code> <code>bc_fx_lightning</code></td></tr>
+              <tr><td>Cưới tập thể</td><td>"Chồng con gì chưa người đẹp?"</td><td>Gõ "cưới" để cưới ké</td><td>Suất hạng nhất: luôn có chỗ, đứng đầu</td><td>Các cặp cưới ké thành hôn cùng đôi chính</td><td>Không cần</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sec-head">
+          <p><b>Người dẫn thật nói gì.</b> MC ảo chỉ tường thuật và cảm ơn. Lời mời tặng quà để người dẫn nói, thưa và đúng lúc, như ba gợi ý dưới đây.</p>
+        </div>
+        <div class="rules">
+          <div class="rule"><b>Lúc mở màn</b><span>Gọi tên người trong cuộc: "Minh Anh ơi, có người tới đòi vợ kìa! Ai làm vệ sĩ cho đôi trẻ nào?"</span></div>
+          <div class="rule"><b>Lúc thanh gần đầy</b><span>Nói đúng phần còn thiếu: "Còn 8 tim nữa thôi", "thêm một lễ vật là bố vợ gật đầu".</span></div>
+          <div class="rule"><b>Lúc có người tặng</b><span>Cảm ơn bằng đúng vai của họ: "Cảm ơn vệ sĩ Lan", "nhà tài trợ sính lễ Thu Trang đây rồi".</span></div>
+        </div>
+        <div class="sec-head">
+          <p><b>Sau lễ: tiệc mừng tự diễn và các sự cố.</b> Cưới xong, đôi trẻ tự hôn, cắt bánh, cụng ly rồi vào phòng tân hôn, không cần ai tặng quà, nên buổi LIVE lúc nào cũng có trò để xem. Thỉnh thoảng một sự cố chen vào chặn đúng bước sắp diễn ra. Người xem đã thấy bước đó diễn trọn vẹn ở lượt trước nên muốn cứu. Vẫn là hai cửa: cả rạp gỡ miễn phí, hoặc một món quà gỡ nhanh. Không gỡ kịp thì bước đó diễn bản chữa cháy cho vui, đôi trẻ không mất gì.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Sự cố</th><th>Chặn bước nào</th><th>Cả rạp làm gì</th><th>Tặng quà thì</th><th>Không ai gỡ</th><th>File hình</th></tr></thead>
+            <tbody>
+              <tr><td>Chú rể quên nhẫn</td><td>Trao nhẫn, ngay trước lễ. Chú rể móc túi ra chìa khóa xe</td><td>Thả tim đi tìm nhẫn</td><td>Thành người cho mượn nhẫn</td><td>Đeo tạm dây thun, lễ vẫn diễn ra</td><td>Không cần</td></tr>
+              <tr><td>Bố vợ chặn hôn</td><td>Hôn. Bố vợ chen vào đứng giữa: "Chưa cho hôn!"</td><td>Gõ "hôn đi" xin bố</td><td>Mời rượu bố vợ, thành cao thủ dụ bố vợ</td><td>Chỉ được hôn gió qua vai bố</td><td>Dùng lại <code>bc_bovo_angry</code> <code>bc_bovo_happy</code></td></tr>
+              <tr><td>Bánh cưới đổ</td><td>Cắt bánh. Bé Tí quẹt mất tầng trên, bánh sập</td><td>Thả tim dựng lại bánh</td><td>Thành nhà tài trợ bánh cưới</td><td>Cắt tạm bánh mì</td><td><code>bc_kid</code></td></tr>
+              <tr><td>Ông chú giành mic</td><td>Cụng ly. Ông chú ôm mic hát tới bài thứ ba</td><td>Gõ "xuống đi chú"</td><td>Mời chú một ly, thành chủ xị</td><td>Cả rạp nghe hết liên khúc</td><td><code>bc_uncle</code></td></tr>
+              <tr><td>Chặn cửa phòng tân hôn</td><td>Vào phòng. Hội bạn thân đứng chắn cửa đòi lì xì</td><td>Gõ "mở cửa"</td><td>Lì xì mở cửa, thành ông mai hoặc bà mối</td><td>Đôi trẻ ngủ ngoài hành lang</td><td><code>bc_friends</code></td></tr>
+              <tr><td>Chín tháng mười ngày sau</td><td>Không chặn gì: cửa phòng vừa đóng, bảng hai ô "bé trai", "bé gái" hiện 15 giây</td><td></td><td>Người tặng đầu tiên của mỗi món làm bố mẹ đỡ đầu. Đủ hai món thì sinh đôi</td><td>Cửa mở, MC chúc sớm sinh quý tử</td><td><code>bc_baby_boy</code> <code>bc_baby_girl</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rules">
+          <div class="rule"><b>Đúng món thì gỡ ngay</b><span>Món quà đã gán cho đúng bước đang bị chặn (quà "hôn" lúc bố vợ chặn hôn, quà "động phòng" lúc cửa bị chặn) gỡ sự cố tức thì. Tên món đó hiện ngay trên thẻ nhân vật. Quà khác thì góp điểm lớn.</span></div>
+          <div class="rule"><b>Cửa miễn phí thắng được</b><span>Mục tiêu tính theo nhịp tương tác của rạp. Rạp đông và chịu gõ thì thắng không cần quà, người góp nhiều nhất vẫn được gọi tên.</span></div>
+          <div class="rule"><b>Mỗi lượt một sự cố</b><span>Trung bình hai lượt cưới có một sự cố sau lễ, không lặp cùng loại hai lần liền. Chỉnh trong bảng điều khiển.</span></div>
+          <div class="rule"><b>Động phòng luôn</b><span>Quà "động phòng luôn" vẫn tiễn đôi trẻ vào phòng ngay lập tức, bỏ qua phần tiệc còn lại, người tặng làm ông mai hoặc bà mối.</span></div>
+        </div>
+        <ol class="steps">
+          <li><div><p><b>Bật, tắt:</b> bảng điều khiển, ô "Tiệc mừng tự diễn". Tắt thì về kiểu cũ: chờ khách tặng đúng món mới hôn, cắt bánh, và hết giờ phòng tân hôn khóa cửa. Ô "Sự cố trong tiệc mừng" chỉnh nhịp, đặt 0 là không có sự cố.</p></div></li>
+          <li><div><p><b>Bật màn em bé:</b> tab "Luật quà", gán một món quà cho "Sinh bé trai" và một món cho "Sinh bé gái". Chưa gán món nào thì màn này không chạy.</p></div></li>
+          <li><div><p><b>Thử từng màn:</b> khung nút bấm nhanh có năm nút "Sự cố". Bấm rồi chờ lượt cưới kế tiếp, sự cố sẽ diễn đúng chỗ của nó.</p></div></li>
+          <li><div><p><b>Câu thoại:</b> các màn này dùng chuyện quen ở đám cưới Việt (bố vợ canh con gái, ông chú giành mic, hội bạn thân đòi lì xì). Tôi không đưa trend nào vào vì chưa thấy trend nào hợp cảnh.</p></div></li>
+        </ol>
+        <p class="closing">Chưa có file hình nào thì biến cố vẫn chạy: app mượn hình khách và tự vẽ hiệu ứng. Có file nào thì app dùng file đó, nên bạn làm dần từng file cũng được.</p>
+      </section>
+
+      <section id="cach-lam">
+        <div class="sec-head">
+          <h2>Cách làm</h2>
+          <p>Làm theo thứ tự này thì nhân vật mới cùng phong cách với cô dâu chú rể và khách đang có trên rạp.</p>
+        </div>
+        <ol class="steps">
+          <li><div><p><b>Tải kèm đúng ảnh ghi ở cuối mỗi thẻ.</b> Ảnh mẫu đã có sẵn trong <code>DamCuoiV1/bo-hinh-moi/</code>: <code>guest_m1.png</code> để lấy phong cách, <code>couple_idle.png</code> để giữ đúng cô dâu chú rể, <code>bg_pink_white.jpg</code> để giữ đúng hội trường.</p></div></li>
+          <li><div><p><b>Làm ảnh nhân vật trước</b> (mục Nhân vật). Ảnh 9:16, nền xanh lá <code>#00FF00</code>, thấy đủ từ đầu tới chân, kể cả đạo cụ. Riêng người yêu cũ nam mặc đồ xanh lá nên làm trên nền xanh dương <code>#0000FF</code>. App tự nhận ra màu nền, bạn không phải chỉnh gì.</p><p>Nhân vật đứng bên phải sân khấu nên phải quay người và chỉ tay về bên TRÁI ảnh, tức là về phía cô dâu chú rể.</p></div></li>
+          <li><div><p><b>Tạo vài bản rồi chọn bản buồn cười nhất.</b> Mỗi thẻ ghi rõ miếng hài cần thấy. Bản nào nhìn một giây chưa bật cười thì tạo lại, hoặc thêm câu ở mục Sửa lỗi nhanh.</p></div></li>
+          <li><div><p><b>Làm video từ chính ảnh vừa chọn</b> (Image to Video). Đặt ảnh đó làm khung đầu và khung cuối, 5 giây, để video lặp lại không bị giật.</p></div></li>
+          <li><div><p><b>Hiệu ứng tràn màn hình làm bằng Text to Video</b>, tỷ lệ 9:16. Ánh sáng như sét, tia lửa làm trên nền đen. Vật thể như dép, vàng, phong bì làm trên nền xanh lá. Mỗi thẻ ghi rõ nền nào.</p></div></li>
+          <li><div><p><b>Đặt đúng tên file như trên thẻ</b>, bỏ vào <code>DamCuoiV1/bo-hinh-moi/</code>, rồi chạy lệnh ở mục cuối trang. Tick "Đã tạo xong" để theo dõi.</p></div></li>
+        </ol>
+        <div class="rules">
+          <div class="rule"><b>Phải gây cười ngay</b><span>Mỗi nhân vật có một miếng hài nhìn là hiểu: đạo cụ vô lý, mặt diễn lố hết cỡ. Nhân vật chỉ cao khoảng một phần tư màn hình điện thoại nên miếng hài phải to và rõ.</span></div>
+          <div class="rule"><b>Hài nhưng dễ thương</b><span>Cười vì tình huống, không chê ngoại hình, không tục, không bạo lực. Trang phục kín đáo để không vi phạm quy định TikTok LIVE.</span></div>
+          <div class="rule"><b>Không trùng màu nền</b><span>Màu nào trùng nền thì bị xóa cùng nền. Ảnh nền xanh lá không được có màu xanh lá. Ảnh nền xanh dương không được có màu xanh dương, kể cả quần jean. Đồ trong suốt cũng lộ nền.</span></div>
+          <div class="rule"><b>Không có chữ, không logo</b><span>Công cụ AI viết chữ hay sai. Hóa đơn, sổ đỏ để trơn, app tự hiện chữ khi cần. Áo và nón tài xế cũng để trơn: màu xanh là đủ nhận ra, không cần logo hãng thật.</span></div>
+          <div class="rule"><b>Gương mặt bình thường</b><span>Không dùng mặt người nổi tiếng hay người thật.</span></div>
+        </div>
+      </section>
+
+      <div id="sections"></div>
+
+      <section id="du-trend">
+        <div class="sec-head">
+          <h2>Trend dùng ở đâu</h2>
+          <p>Một trend chỉ được dùng khi việc đang diễn ra trên sân khấu đúng là tình huống người ta nói câu đó ngoài đời. Không có cảnh hợp thì không dùng. Vì vậy nhân vật không phải đeo thêm đạo cụ hay làm thêm động tác nào chỉ để cho đủ trend.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Trend</th><th>Cảnh dùng</th><th>Vì sao hợp</th></tr></thead>
+            <tbody>
+              <tr><td>Lốp trưởng</td><td>Người đứng đầu hàng chờ vai: lúc họ xếp hàng, lúc họ xông ra đòi lên, lúc tới lượt họ</td><td>Lốp trưởng là người chờ được lên thay. Hàng chờ đúng là vậy</td></tr>
+              <tr><td>Nếu em biến thành con gián</td><td>Biến cố thử lòng: cô dâu hỏi, chú rể phải trả lời</td><td>Trend vốn là câu thử lòng người yêu, hợp ngay trước lễ cưới</td></tr>
+              <tr><td>Dạ gỗ xà cừ</td><td>Chú rể đáp khi bố vợ hỏi lương</td><td>Câu dùng để né một câu hỏi khó</td></tr>
+              <tr><td>67 (sáu bảy)</td><td>Bố vợ nhận món quà nhỏ: "Sáu bảy! Tạm được." Đồng hồ đếm ngược chạm 7, 6 giây thì vài vị khách hô</td><td>Nghĩa là tạm tạm. Ngoài đời cứ thấy hai số này là hô</td></tr>
+              <tr><td>Thua Gia Cát Lượng đúng cây quạt</td><td>MC khen người chờ đúng lúc mới tặng quà chen ngang, cướp vai</td><td>Câu khen người tính nước khéo</td></tr>
+              <tr><td>Cơm nước gì chưa người đẹp</td><td>MC chào khách mới vào. "Chồng con gì chưa người đẹp?" lúc tuyển cô dâu, mời cưới ké. Người yêu cũ nữ tới tính sổ: "Nợ nần gì chưa người đẹp?"</td><td>Câu bắt chuyện, hỏi thăm</td></tr>
+              <tr><td>Bốc trúng sít rịt</td><td>MC bốc thăm ghép đôi ngẫu nhiên</td><td>Đúng là một lần bốc, không biết trúng ai</td></tr>
+              <tr><td>Hướng nội hết phần đời còn lại</td><td>Người vừa bị hất văng, bị bố vợ đuổi, bị bắt quả tang lúc điện về</td><td>Câu nói khi vừa bị bẽ mặt trước đám đông</td></tr>
+              <tr><td>Thực dân Zalo</td><td>Một chỗ duy nhất: tấm thiệp hoa hồng lấp lánh bố vợ gửi khi gật đầu</td><td>Đúng kiểu thiệp các bố hay gửi</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol class="steps">
+          <li><div><p><b>Sửa câu MC:</b> bảng điều khiển, tab "Lời thoại MC", mục "Biến cố &amp; vai phụ". Lưu là dùng ngay, không cần tắt bật.</p></div></li>
+          <li><div><p><b>Có trend mới muốn đưa vào:</b> nói cho tôi trend đó. Tôi tìm cảnh hợp trong kịch bản trước rồi mới viết câu, không có cảnh hợp thì tôi sẽ nói rõ.</p></div></li>
+        </ol>
+        <p class="closing">Chữ hiện trên màn hình LIVE (chữ mở màn, câu trong bong bóng, tên vai người hùng) nằm trong code. Cần đổi thì bảo tôi sửa.</p>
+      </section>
+
+      <section id="sua-loi">
+        <div class="sec-head">
+          <h2>Sửa lỗi nhanh</h2>
+          <p>Kết quả bị lỗi thì thêm câu tương ứng vào cuối prompt rồi tạo lại.</p>
+        </div>
+        <div class="fixes" id="fixes"></div>
+      </section>
+
+      <section id="gan-vao-app">
+        <div class="sec-head">
+          <h2>Đặt tên và gắn vào app</h2>
+          <p>Giữ đúng tên như trên thẻ. Ảnh nhân vật để PNG, hội trường tối để JPG, video để MP4.</p>
+        </div>
+        <pre class="tree">DamCuoiV1/
+└── bo-hinh-moi/
+    ├── bc_ex_m.png, bc_ex_m.mp4            người yêu cũ nam, tài xế công nghệ (nền xanh dương)   
+    ├── bc_ex_f.png, bc_ex_f.mp4            người yêu cũ nữ
+    ├── bc_bovo_angry.png, .mp4             bố vợ áo ba lỗ quần đùi, đang khó chịu     
+    ├── bc_bovo_happy.png, .mp4             bố vợ gật đầu, cắn thử vàng
+    ├── bc_dark.jpg                         hội trường lúc cúp điện
+    ├── bc_fx_shatter.mp4, bc_fx_goldrain.mp4      hiệu ứng nền xanh lá
+    ├── bc_fx_lightning.mp4, bc_fx_shield.mp4      hiệu ứng nền đen
+    ├── bc_baby_boy.png, bc_baby_girl.png   em bé trai, em bé gái lúc cửa phòng tân hôn mở lại
+    ├── bc_uncle.png, bc_uncle.mp4          ông chú giành mic lúc cụng ly
+    ├── bc_kid.png, bc_kid.mp4              Bé Tí quẹt sập bánh cưới
+    ├── bc_friends.png, bc_friends.mp4      hội bạn thân chặn cửa phòng tân hôn
+    ├── couple_roach.png, couple_roach.mp4  cô dâu hóa gián
+    └── couple_shock.mp4                    cô dâu chú rể hết hồn</pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Loại</th><th>Tỷ lệ</th><th>Kích thước</th><th>Nền</th></tr></thead>
+            <tbody>
+              <tr><td>Nhân vật biến cố</td><td>9:16 dọc</td><td>Từ 1080 × 1920</td><td>Xanh lá <code>#00FF00</code>. Riêng <code>bc_ex_m</code>: xanh dương <code>#0000FF</code></td></tr>
+              <tr><td>Video nhân vật</td><td>Giống ảnh khung đầu</td><td>720p trở lên, 5 giây, lặp</td><td>Phẳng, cùng màu nền với ảnh khung đầu, máy quay đứng yên</td></tr>
+              <tr><td>Hội trường tối</td><td>9:16 dọc</td><td>Lý tưởng 1080 × 1920</td><td>Đủ cảnh, không người</td></tr>
+              <tr><td>Hiệu ứng tràn màn hình</td><td>9:16 dọc</td><td>720p trở lên, 3 đến 5 giây, chạy 1 lần</td><td>Đen hoặc xanh lá, ghi trên từng thẻ</td></tr>
+              <tr><td>Hội bạn thân (ba người)</td><td>1:1 vuông</td><td>Từ 1024 × 1024</td><td>Xanh lá phẳng, cả ba quay về bên trái</td></tr>
+              <tr><td>Em bé</td><td>1:1 vuông</td><td>Từ 1024 × 1024</td><td>Xanh lá phẳng, em bé nhìn thẳng</td></tr>
+              <tr><td>Cô dâu hóa gián, cô dâu chú rể hết hồn</td><td>1:1 vuông</td><td>Giống <code>couple_idle</code></td><td>Xanh lá phẳng</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="commands" class="cards"></div>
+        <p class="closing">Sau khi chạy lệnh, tắt và bật lại server để màn hình LIVE nạp hình mới. Muốn xem ngay thì vào bảng điều khiển, bấm một trong năm nút "Biến cố" ở khung nút bấm nhanh.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Cùng cách tả phong cách với bộ hình đang dùng (Bán thực 3D), thêm phần diễn hài lố
+  const PEOPLE = 'Semi-realistic 3D render of a Vietnamese person in the same art style as the rest of the set, natural human proportions, with hilariously exaggerated comedic acting like a frame from a viral comedy sketch: a rubbery over-the-top facial expression, a big readable silhouette and oversized props, bright even studio lighting, detailed fabrics, crisp clean edges, high-quality game character art. The image must make people laugh at first glance';
+  const SCENE = 'Semi-realistic 3D render, cinematic lighting, rich detail, high-quality game environment art';
+  // Nền để app xóa: xanh lá cho mọi nhân vật, riêng nhân vật mặc đồ xanh lá thì làm trên nền xanh dương
+  const BG = { green: ['green', '#00FF00'], blue: ['blue', '#0000FF'] };
+  const flat = ([name, hex]) => `Isolated on a flat solid pure ${name} background (${hex}) that fills the whole image evenly, with no gradient, no floor, no shadow and no checkerboard pattern.`;
+  const FRAMING = 'Full body from head to toe with the feet visible and a little empty space above the head and below the feet, centered, standing on an invisible floor, every prop fully inside the image. The body is turned three-quarters toward the LEFT side of the image and the eyes look to the left; the person fills about 85% of the image height.';
+  const clean = ([name]) => `Ordinary non-famous face that does not resemble any real person. Anatomically correct hands. Family-friendly and tasteful. No text, no letters, no logo, no watermark, no other people. No ${name} color anywhere on the clothing or props, and nothing transparent.`;
+  const video = ([name, hex]) => `Static locked-off camera: no zoom, no pan, no camera shake. The background stays one perfectly flat solid ${name} (${hex}) for the whole clip. The character stays centered at the same size and position, full body always in frame. Comedic timing with snappy exaggerated motion. No text, no subtitles, no new people.`;
+  const LOOP = 'Seamless loop: the final frame returns exactly to the starting pose of the first frame.';
+  const FX_BLACK = 'Vertical 9:16 visual effects clip, 3 to 4 seconds, on a pure black background (#000000) with no smoke haze, no floor and nothing other than the effect. Static locked-off camera. The first frame and the last frame are completely black. No text, no people.';
+  const FX_GREEN = 'Vertical 9:16 visual effects clip, 4 to 5 seconds, on a flat solid pure green background (#00FF00) with no gradient and no shadow. Static locked-off camera. The last frame is empty green. No text, no people. Nothing in the clip is green or transparent.';
+  const REF_TEXT = {
+    style: 'Use the attached image only as a reference for art style, lighting and proportions; the person in this image is different. ',
+    same: 'Use the attached image as the character reference and keep exactly the same person: same face, hairstyle, outfit and colors. ',
+    hall: 'Use the attached image as the base and keep exactly the same hall, camera angle, composition, stage, flower arch, red carpet and tables; only change the lighting. ',
+    couple: 'Edit the attached image of the wedding couple. '
+  };
+  // Ảnh sửa từ ảnh cặp đôi: giữ nguyên khung hình, cỡ người và nền để app đổi qua lại không bị nhảy hình
+  const COUPLE_KEEP = 'Keep the same square framing, the same full-body size and position of the two figures, the same art style and the same flat solid pure green background (#00FF00) with no floor and no shadow. No text, no watermark, no other people. Nothing on the mascot is green or transparent.';
+  const REF_NOTE = { style: 'lấy phong cách', same: 'giữ nguyên nhân vật', hall: 'giữ nguyên hội trường', couple: 'sửa từ ảnh cặp đôi' };
+
+  const person = (who, pose, bg = BG.green) => `${who}, ${pose}. ${FRAMING} ${PEOPLE}. ${flat(bg)} ${clean(bg)} Vertical 9:16 image.`;
+  const clip = (text, bg = BG.green) => `${text} ${video(bg)} ${LOOP}`;
+
+  // Em bé: ngồi, nhìn thẳng, khung vuông (hiện phía trước đôi trẻ lúc cửa phòng tân hôn mở lại)
+  const baby = (who, pose) => `${who}, ${pose}. Full body, sitting upright on an invisible floor and facing the viewer straight on, centered, with the whole baby and every prop inside the image and a little empty space on all sides; the baby fills about 80% of the image height. ${PEOPLE}. ${flat(BG.green)} ${clean(BG.green)} Square 1:1 image.`;
+
+  const SECTIONS = [
+    {
+      id: 'nhan-vat', title: 'Nhân vật (làm đầu tiên)',
+      intro: 'Bốn ảnh này thay cho hình khách đang được mượn tạm. Người yêu cũ có hai bản nam và nữ vì app chọn theo nhân vật của người xem được gán vai (người đứng đầu hàng chờ xông ra thì cũng dùng hình này, chỉ khác tên gọi "lốp trưởng"). Bản nam mặc đồ xanh lá nên làm trên nền xanh dương, ba ảnh còn lại vẫn nền xanh lá.',
+      items: [
+        { file: 'bc_ex_m.png', title: 'Người yêu cũ nam: tài xế công nghệ áo xanh nón xanh, nhận đơn trà sữa giao tới đúng đám cưới người yêu cũ, vừa giao vừa khóc', ratio: '9:16 · nền xanh dương', pri: 1, from: 'guest_m1.png', ref: 'style',
+          note: 'Chuyện của nhân vật: nhận đơn trà sữa, tới nơi mới biết là đám cưới người yêu cũ, khóc như mưa mà vẫn phải giao. Cần thấy rõ áo khoác và nón bảo hiểm xanh lá, thùng giao hàng sau lưng, ly trà sữa khổng lồ, một chân mất dép (chiếc dép bay vào màn hình lúc mở màn là của anh này). Áo, nón, thùng để trơn, không logo. Ảnh này làm trên nền XANH DƯƠNG, vì đồ xanh lá đặt trên nền xanh lá sẽ bị xóa mất. Hiện lúc "KHOAN ĐÃ!!!", thua thì bị hất văng khỏi màn hình.',
+          prompt: person('A scrawny Vietnamese man in his late 20s, the heartbroken ex-boyfriend, a ride-hailing motorbike delivery driver who just found out his order is for his ex\'s wedding: a bright emerald-green long-sleeved driver windbreaker with white reflective stripes, a matching emerald-green open-face motorbike helmet with no visor and the chin strap dangling, black trousers, one foot in a yellow plastic honeycomb sandal and the other foot bare, and a big square emerald-green insulated delivery box on his back like a backpack; the jacket, helmet and box are completely plain with no logo and no writing',
+            'ugly-crying with huge watery puppy eyes, thick streams of glossy white cartoon tears, a runny nose and a huge wobbly wailing mouth, one arm stretched toward the left side of the image offering a comically oversized cup of bubble tea filled to the brim with opaque beige milk tea and black tapioca pearls, sealed flat with a white film lid and a fat pink straw, the other hand clutching his jacket over his heart', BG.blue) },
+        { file: 'bc_ex_f.png', title: 'Người yêu cũ nữ: váy đỏ lộng lẫy nhưng còn nguyên lô cuốn tóc, dép bông thỏ, cầm máy tính và hóa đơn dài chấm đất tới tính sổ', ratio: '9:16', pri: 1, from: 'guest_m1.png', ref: 'style',
+          note: 'Chuyện của nhân vật: tới không phải để khóc mà để tính sổ, vội tới mức sang chảnh nửa trên, ở nhà nửa dưới. Cần thấy rõ lô cuốn tóc hồng, dép bông thỏ, máy tính to, cuộn hóa đơn dài chồng dưới sàn. Trên màn hình cô sẽ nói "Nợ nần gì chưa người đẹp?".',
+          prompt: person('A glamorous Vietnamese woman in her mid 20s, the ex-girlfriend who storms into the wedding to collect everything she is owed: an elegant long-sleeved floor-length red satin gown, but her hair is still rolled up in big pink plastic curlers and she wears fluffy white bunny house slippers, as if she ran out of the house halfway through getting ready',
+            'glaring with one eyebrow raised sky-high and lips pursed in a smug pay-up-now pout, one hand holding up an oversized pink calculator, the other arm thrust toward the left side of the image gripping the end of a ridiculously long white paper receipt that unrolls all the way down and piles up on the floor; the receipt shows only plain grey lines with no readable writing') },
+        { file: 'bc_bovo_angry.png', title: 'Bố vợ khó tính: áo ba lỗ trắng, quần đùi kẻ sọc, dép tổ ong, khăn vắt vai, ngậm tăm, chĩa chổi lông gà dọa rể', ratio: '9:16', pri: 1, from: 'guest_m1.png', ref: 'style',
+          note: 'Chuyện của nhân vật: ông bố quốc dân đang ngủ trưa thì nghe có đứa tới hỏi cưới con gái, để nguyên bộ đồ ở nhà ra chặn cửa. Cần thấy rõ áo ba lỗ trắng căng bụng, quần đùi kẻ sọc kéo cao, dép tổ ong vàng, khăn mặt vắt vai, tăm xỉa răng, chổi lông gà, mặt cau có hết cỡ. Hiện lúc "THÁCH CƯỚI!".',
+          prompt: person('A grumpy Vietnamese father in his late 50s with a round pot belly, the bride\'s impossible-to-please dad who walked straight out of his afternoon nap in the everyday at-home clothes of a typical Vietnamese dad: a slightly stretched plain white sleeveless tank-top undershirt pulled tight over his belly, baggy blue-and-white striped knee-length shorts hitched up high, yellow plastic honeycomb sandals on bare feet, a small faded red-and-white checkered hand towel draped over one shoulder, thick caterpillar eyebrows, short messy salt-and-pepper hair, tiny reading glasses on the tip of his nose and a toothpick in the corner of his mouth',
+            'standing with his feet planted wide, one hand on his hip and the other hand thrusting a brown rooster-feather duster toward the left side of the image like a sword, squinting with one eye almost closed, nostrils flared and a comically huge frown') },
+        { file: 'bc_bovo_happy.png', title: 'Bố vợ gật đầu: vẫn áo ba lỗ quần đùi, nhảy lò cò, cắn thử thỏi vàng, ôm sổ đỏ vào lòng', ratio: '9:16', pri: 1, from: 'bc_bovo_angry.png', ref: 'same',
+          note: 'Chuyện của nhân vật: vừa nãy còn làm khó, thấy sính lễ đủ là đổi mặt ngay, phải cắn thử xem vàng thật không. Thay cho bản khó chịu lúc sính lễ đã đủ. Sổ đỏ để trơn, không có chữ.',
+          prompt: person('The same grumpy father from the reference image in the same white tank top, striped shorts, shoulder towel and honeycomb sandals, now overjoyed',
+            'hopping on one leg in pure joy, biting a shiny gold bar with his teeth to test whether it is real, his eyes wide and sparkling with greed, hugging a plain red booklet tightly against his chest with the other arm, the feather duster stuck in the waistband of his shorts') }
+      ]
+    },
+    {
+      id: 'hoi-truong-toi', title: 'Hội trường lúc cúp điện',
+      intro: 'Một ảnh thay cho lớp bóng tối app đang tự phủ. Dùng chế độ sửa ảnh (Image to Image) từ phông Hồng trắng để bố cục khớp tuyệt đối, vì phông này đang hiện lúc đủ đôi. Phần gây cười ở cảnh này do app lo: những đôi mắt chớp chớp trong bóng tối và một vị khách bị bắt quả tang lúc điện về.',
+      items: [
+        { file: 'bc_dark.jpg', title: 'Hội trường Hồng trắng mất điện: tối om, chỉ còn nến và dây đèn', ratio: '9:16', pri: 1, from: 'bg_pink_white.jpg', ref: 'hall',
+          note: 'Sân khấu, vòm hoa, thảm đỏ phải nằm đúng chỗ cũ. Lệch chỗ thì cô dâu chú rể sẽ đứng sai vị trí khi đèn tắt.',
+          prompt: `The same wedding hall during a sudden power outage at night: every chandelier and ceiling light is off, the hall sits in deep blue-black darkness with cold moonlight falling from above, only a few candles on the stage and some tiny warm fairy lights still glow, long soft shadows, a spooky but playful mood. Completely empty hall: no people. No text, no letters, no signs. ${SCENE}. Vertical 9:16 image.` }
+      ]
+    },
+    {
+      id: 'video-nhan-vat', title: 'Video nhân vật',
+      intro: 'Image to Video từ đúng ảnh nhân vật ở trên, đặt ảnh đó làm cả khung đầu lẫn khung cuối. Có video thì nhân vật diễn trò suốt lúc thử thách, không có thì app dùng ảnh tĩnh. Nền video giữ đúng màu nền của ảnh: người yêu cũ nam nền xanh dương, còn lại nền xanh lá. Động tác trong video là việc nhân vật đó đang làm trong câu chuyện, không chèn điệu nhảy hay cử chỉ ngoài lề.',
+      items: [
+        { file: 'bc_ex_m.mp4', title: 'Người yêu cũ nam khóc nấc, chìa ly trà sữa ra, tiếc quá hút luôn một ngụm rồi khóc to hơn', ratio: '5 giây · nền xanh dương', pri: 2, from: 'bc_ex_m.png', loop: true,
+          note: 'Diễn đúng lúc cả rạp đang che chắn: anh vẫn cố giao cho xong đơn, buồn tới mức uống luôn ly trà sữa của khách. Nền phải giữ xanh dương suốt video.',
+          prompt: clip('The driver sobs with his whole body shaking so the helmet wobbles and the delivery box bounces on his back, thrusts the giant bubble tea toward the left, then pulls it back and takes a long comforting slurp through the straw himself, throws his head back and wails even louder, then returns to the starting pose.', BG.blue) },
+        { file: 'bc_ex_f.mp4', title: 'Người yêu cũ nữ bấm máy tính như điên, giũ cuộn hóa đơn, dậm dép sốt ruột, lô tóc nảy tưng tưng', ratio: '5 giây', pri: 2, from: 'bc_ex_f.png', loop: true,
+          note: 'Diễn đúng lúc cả rạp đang che chắn: cô vẫn đứng đó cộng sổ, đòi cho bằng được.',
+          prompt: clip('The woman punches the calculator buttons at lightning speed with her thumb, shakes the long receipt toward the left so it ripples all the way down to the floor, taps one bunny slipper impatiently and flicks her head so the hair curlers bounce, then returns to the starting pose.') },
+        { file: 'bc_bovo_angry.mp4', title: 'Bố vợ chọc chổi lông gà dọa rể, xốc quần, bụng nảy, dậm dép', ratio: '5 giây', pri: 2, from: 'bc_bovo_angry.png', loop: true,
+          note: 'Diễn đúng lúc cả rạp đang "dạ bố" xin cưới: ông vẫn chưa nguôi, cứ lăm lăm cây chổi.',
+          prompt: clip('The father jabs the feather duster toward the left twice like a fencing sword, huffs so his belly bounces under the tank top, hitches up his shorts with his free hand, rolls the toothpick from one corner of his mouth to the other and stamps one sandal, then returns to the starting pose.') },
+        { file: 'bc_bovo_happy.mp4', title: 'Bố vợ cắn vàng, cười tít mắt, nhảy lò cò ăn mừng, hôn sổ đỏ', ratio: '5 giây', pri: 2, from: 'bc_bovo_happy.png', loop: true,
+          note: 'Diễn lúc sính lễ đã đủ. Ngay sau đó app bật tấm thiệp hoa hồng lấp lánh "bố vợ gửi".',
+          prompt: clip('The father bites the gold bar, pulls it away and grins at it with sparkling eyes, does a happy little hop-dance from one foot to the other, kisses the red booklet, then returns to the starting pose.') }
+      ]
+    },
+    {
+      id: 'hieu-ung', title: 'Hiệu ứng tràn màn hình',
+      intro: 'Text to Video, 9:16, phát một lượt đè lên cả màn hình. Nền xanh lá dành cho vật thể đặc: app xóa nền như với nhân vật. Nền đen dành cho ánh sáng: app hòa sáng vào khung hình nên phần đen tự biến mất.',
+      items: [
+        { file: 'bc_fx_shatter.mp4', title: 'Chiếc dép tổ ong bay thẳng vào màn hình, dính bẹp làm nứt kính: lúc "KHOAN ĐÃ!!!"', ratio: 'nền xanh lá', pri: 2, loop: false,
+          note: 'Miếng hài: dép bay huyền thoại. Mở màn lúc có người xông vào phản đối, cú đập nên rơi vào giây đầu tiên.',
+          prompt: `A yellow plastic honeycomb sandal spins in from far away straight toward the camera, smacks flat against the lens within the first second and sticks there for a beat while bright white glass cracks spread out from the impact across the whole frame, then the sandal slowly slides down out of the bottom of the frame and the cracks fade away. ${FX_GREEN}` },
+        { file: 'bc_fx_goldrain.mp4', title: 'Mưa sính lễ: vàng thỏi, đồng vàng, phong bì đỏ, sổ đỏ, và một con heo quay thắt nơ rơi ngang: lúc bố vợ gật đầu', ratio: 'nền xanh lá', pri: 2, loop: false,
+          note: 'Miếng hài: giữa cơn mưa vàng có nguyên con heo quay lễ vật rơi xuống. Phong bì và sổ đỏ để trơn, không có chữ. Mọi thứ rơi hết khỏi khung trước khi video kết thúc.',
+          prompt: `A heavy shower of shiny gold bars, gold coins, red lucky-money envelopes with gold trim and plain red booklets falls from the top of the frame to the bottom, spinning and sparkling; in the middle of the clip a whole glazed golden-brown roast piglet with a big red ribbon bow tumbles down through the shower and bounces out of the bottom of the frame; then the shower thins out until nothing is left. ${FX_GREEN}` },
+        { file: 'bc_fx_lightning.mp4', title: 'Hai tia sét dữ dội rồi một tia lửa bé tí xịt khói: lúc cúp điện', ratio: 'nền đen', pri: 3, loop: false,
+          note: 'Miếng hài: hai cú sét hoành tráng, cú thứ ba xịt.',
+          prompt: `Two violent forked lightning bolts in white and electric blue strike from the top edge down to the bottom edge one after the other, each with a blinding full-frame flash and crackling sparks; then a third tiny pathetic spark sputters in the middle of the frame and fizzles out with a small puff, followed by darkness. ${FX_BLACK}` },
+        { file: 'bc_fx_shield.mp4', title: 'Găng đấm bốc trái tim gắn lò xo bật ra, rồi nổ thành mưa tim: lúc che chắn thành công', ratio: 'nền đen', pri: 3, loop: false,
+          note: 'Miếng hài: cả rạp che chắn đủ thì tình yêu đấm bay kẻ phá đám.',
+          prompt: `A giant glowing pink heart-shaped boxing glove on a coiled spring shoots out from the center toward the camera with a bright impact flash, wobbles back and forth on its spring, then bursts into a ring of light and hundreds of small sparkling hearts that fly past the camera and fade. ${FX_BLACK}` }
+      ]
+    },
+    {
+      id: 'su-co', title: 'Nhân vật sự cố (tiệc mừng)',
+      intro: 'Ba nhân vật cho các sự cố trong tiệc mừng. Bố vợ chặn hôn dùng lại hình bố vợ đã có, chú rể quên nhẫn không cần hình. Cả ba đứng bên phải sân khấu nên quay về bên TRÁI ảnh, nền xanh lá. Chưa có hình thì app mượn hình một vị khách và che mặt bằng một biểu tượng.',
+      items: [
+        { file: 'bc_uncle.png', title: 'Ông chú giành mic: sơ mi bung cúc lòi áo ba lỗ, cà vạt buộc ngang trán, ôm micro có dây hát nhắm tịt mắt', ratio: '9:16', pri: 1, from: 'bc_bovo_angry.png', ref: 'style',
+          note: 'Đám cưới nào cũng có ông chú này: lên hát một bài rồi không chịu xuống. Cần thấy rõ: cà vạt đỏ buộc ngang trán như băng đô, sơ mi trắng bung cúc lòi áo ba lỗ, micro có dây quấn mấy vòng quanh tay, má đỏ hây hây, miệng há to ngân nốt cao, một tay giơ lên trời. Không cầm ly rượu, bia. Hiện lúc sắp cụng ly.',
+          prompt: person('A stocky Vietnamese uncle in his 50s who has taken over the wedding karaoke and refuses to stop singing: thinning hair, a round face with rosy cheeks, a white dress shirt half unbuttoned over a white tank top with the sleeves rolled up, a red necktie tied around his forehead like a headband, grey trousers with the belt too high, and brown plastic sandals',
+            'singing his heart out with his eyes squeezed shut and his mouth wide open on a high note, clutching an old wired karaoke microphone in one hand with its cable wrapped several times around his forearm, the other arm thrown up toward the sky with the fingers spread, leaning back dramatically') },
+        { file: 'bc_kid.png', title: 'Bé Tí: nhóc năm tuổi mặt dính đầy kem, giấu nguyên tầng bánh cưới bị khoét sau lưng, liếc ngang giả vờ ngây thơ', ratio: '9:16', pri: 1, from: 'bc_bovo_angry.png', ref: 'style',
+          note: 'Thủ phạm làm sập bánh cưới. Cần thấy rõ: kem trắng dính quanh miệng, trên má và mười đầu ngón tay; má phồng vì đang nhai; một tay giấu sau lưng tầng bánh nhỏ bị khoét một lỗ to (vẫn lòi ra hai bên); mắt liếc ngang, huýt sáo giả vờ. Hiện lúc sắp cắt bánh.',
+          prompt: person('A chubby five-year-old Vietnamese boy, a little wedding guest caught red-handed: a bowl haircut, big round cheeks puffed out because his mouth is full, thick white whipped cream smeared around his mouth, on his nose, on both cheeks and all over his fingers, wearing a white short-sleeved shirt with red suspenders, navy shorts and one white sock half pulled down',
+            'pretending to be innocent, eyes glancing sideways and lips pursed as if whistling, one creamy hand raised in a tiny wave while the other hand hides a small round tier of white wedding cake behind his back; the cake is too big to hide, sticks out on both sides and has a huge finger-scooped hole in it') },
+        { file: 'bc_friends.png', title: 'Hội bạn thân chặn cửa: ba người đứng dàn hàng, một anh chìa tay đòi lì xì, một chị cầm loa tay, một anh đeo kính râm khoanh tay làm bảo vệ', ratio: '1:1', pri: 1, from: 'guest_m1.png', ref: 'style',
+          note: 'Tục vui ở đám cưới: bạn thân chặn cửa phòng tân hôn đòi lì xì mới cho vào. Ba người phải đứng sát nhau thành một khối, cùng quay về bên TRÁI. Cần thấy rõ: bàn tay chìa ra ngửa lên đòi lì xì, chiếc loa tay màu đỏ, kính râm và tư thế khoanh tay của "bảo vệ". Ảnh vuông 1:1. Hiện cuối tiệc mừng, lúc đôi trẻ sắp vào phòng.',
+          prompt: `Three cheeky Vietnamese friends in their 20s standing shoulder to shoulder in a tight row like nightclub bouncers, blocking the way: on the left a grinning young man in a white shirt and a maroon vest stretching one hand forward with the palm up, rubbing his fingers together to ask for lucky money; in the middle a laughing young woman in a pink ao dai shouting into a small red handheld megaphone; on the right a big guy in a black suit and dark sunglasses with his arms crossed and a stone-serious face. All three bodies are turned three-quarters toward the LEFT side of the image and they look to the left. Full bodies from head to toe with the feet visible, standing on an invisible floor, the group centered and filling about 85% of the image height, with a little empty space on all sides. ${PEOPLE}. ${flat(BG.green)} Ordinary non-famous faces that do not resemble any real person. Anatomically correct hands. Family-friendly and tasteful. No text, no letters, no logo, no watermark, nobody else in the image. No green color anywhere on the clothing or props, and nothing transparent. Square 1:1 image.` },
+        { file: 'bc_uncle.mp4', title: 'Ông chú hát say sưa: lắc lư, ngân nốt cao, vuốt nước mắt vì bài hát buồn quá, rồi hát tiếp', ratio: '5 giây', pri: 2, from: 'bc_uncle.png', loop: true,
+          note: 'Chạy suốt lúc cả rạp gõ "xuống đi chú". Chú không được bước ra khỏi chỗ đứng.',
+          prompt: clip('The uncle sways from side to side while singing passionately into the wired microphone, throws his free arm up and holds a long high note with his eyes shut, wipes a tear from his cheek with the back of his hand because the song is so sad, then takes a deep breath and returns to the starting pose to keep singing. Keep exactly the same man as the first frame.') },
+        { file: 'bc_kid.mp4', title: 'Bé Tí lén liếm kem trên ngón tay, giật mình vì bị nhìn, giấu vội ra sau lưng rồi huýt sáo', ratio: '5 giây', pri: 2, from: 'bc_kid.png', loop: true,
+          note: 'Chạy suốt lúc cả rạp dựng lại bánh. Miếng hài: càng giấu càng lộ.',
+          prompt: clip('The little boy sneaks a lick of cream off one finger, freezes with wide eyes as if someone caught him, quickly hides the hand and the cake behind his back again, puffs his cheeks, looks up at the sky and whistles innocently while rocking on his heels, then returns to the starting pose. Keep exactly the same boy as the first frame.') },
+        { file: 'bc_friends.mp4', title: 'Hội bạn thân: anh áo ghi lê ngoắc tay đòi lì xì, chị cầm loa lắc đầu, anh kính râm khoanh tay gật gù', ratio: '5 giây', pri: 2, from: 'bc_friends.png', loop: true,
+          note: 'Chạy suốt lúc cả rạp gõ "mở cửa". Cả ba đứng nguyên chỗ, không ai bước ra khỏi hàng.',
+          prompt: clip('The man in the vest beckons with his open palm and rubs his fingers together asking for lucky money; the woman shakes her head with a teasing laugh and shouts into the megaphone; the big guy in sunglasses keeps his arms crossed, slowly shakes his head and then nods; all three return to the starting pose. Nobody leaves the row. Keep exactly the same three people as the first frame.') }
+      ]
+    },
+    {
+      id: 'em-be', title: 'Em bé (sau động phòng)',
+      intro: 'Hai ảnh cho màn "chín tháng mười ngày sau". Cửa phòng tân hôn mở lại, em bé hiện to phía trước đôi trẻ; sinh đôi thì hiện cả hai. Miếng hài chung: em bé là bản thu nhỏ của bố mẹ, mới đẻ mà đã ra dáng. Chưa có ảnh thì app tạm dùng biểu tượng em bé.',
+      items: [
+        { file: 'bc_baby_boy.png', title: 'Bé trai: bản sao tí hon của bố, đóng bỉm thắt nơ, xỏ đôi giày tây quá khổ, khoanh tay mặt nghiêm như tổng tài mà miệng ngậm ti giả', ratio: '1:1', pri: 1, from: 'couple_idle.png', ref: 'style',
+          note: 'Hiện khi có người tặng món quà "bé trai", MC đọc "bé trai giống bố như đúc". Cần thấy rõ: bỉm trắng, nơ đen trên cổ trần, đôi giày tây đen to gấp mấy lần bàn chân, tóc rẽ ngôi như người lớn, mặt nghiêm, ti giả đỏ. Ảnh hiện khá nhỏ trên màn hình nên em bé phải mập, hình khối to, rõ.',
+          prompt: baby('A very chubby Vietnamese baby boy about eight months old, a tiny copy of his groom father: neat side-parted dark hair combed like a grown-up businessman, big round cheeks, wearing only a puffy white diaper and a black bow tie around his bare neck, with his tiny feet stuck inside a pair of shiny black men\'s dress shoes that are far too big for him',
+            'arms crossed over his round belly with a dead-serious bossy frown and one raised eyebrow like a little company chairman, while sucking on a bright red pacifier') },
+        { file: 'bc_baby_girl.png', title: 'Bé gái: bản sao tí hon của mẹ, đóng bỉm đội khăn voan, đeo chuỗi ngọc trai dài tới bụng, ôm bình sữa như ôm hoa cưới, nháy mắt hôn gió', ratio: '1:1', pri: 1, from: 'couple_idle.png', ref: 'style',
+          note: 'Hiện khi có người tặng món quà "bé gái", MC đọc "bé gái xinh như mẹ". Cần thấy rõ: bỉm trắng, khăn voan ngắn màu trắng đục (không trong suốt), kẹp hoa trắng, chuỗi ngọc trai quá khổ, bình sữa đầy sữa trắng, một mắt nháy, miệng cười chưa có răng.',
+          prompt: baby('A very chubby Vietnamese baby girl about eight months old, a tiny copy of her bride mother: a little tuft of dark hair tied up with a big white flower hair clip and a short opaque white bridal veil, big round rosy cheeks, wearing a puffy white diaper and a white pearl necklace that is far too big and hangs down to her belly',
+            'hugging a baby bottle completely filled with opaque white milk in both hands like a wedding bouquet, winking one eye and puckering her lips to blow a kiss, posing like a tiny beauty queen') }
+      ]
+    },
+    {
+      id: 'cap-doi', title: 'Cô dâu chú rể',
+      intro: 'Ba file cho cặp đôi, đều làm từ ảnh cặp đôi đứng nắm tay đang dùng để lúc chuyển qua lại không bị nhảy hình. Xong file nào thì chạy lệnh xử lý nhóm cô dâu chú rể ở cuối trang.',
+      items: [
+        { file: 'couple_roach.png', title: 'Cô dâu hóa gián: "nếu em biến thành con gián, anh còn yêu em không?"', ratio: '1:1', pri: 1, from: 'couple_idle.png', ref: 'couple',
+          note: 'Trend: "nếu em biến thành con gián". Sửa ảnh (Image to Image) từ couple_idle: chú rể giữ nguyên, cô dâu thành một bạn gián mascot vẫn đội khăn voan, ôm hoa cưới. Gián phải tròn trịa, mắt to long lanh, đáng yêu chứ không ghê. Chưa có ảnh này thì app tạm phủ một con gián lên chỗ cô dâu đứng.',
+          prompt: `Replace only the bride with a human-sized cute cartoon cockroach mascot standing in exactly the same spot and at the same height: a round glossy caramel-brown body, big sparkling puppy eyes with long eyelashes, rosy cheeks, two long curly antennae and tiny arms, wearing the bride's white veil and holding the same wedding bouquet, looking up at the groom with a hopeful pleading smile. The groom stays exactly the same person in the same suit and position, but leans slightly away and stares at her with wide startled eyes and an awkward frozen smile. Adorable, friendly and funny, not realistic and not scary. ${COUPLE_KEEP}` },
+        { file: 'couple_roach.mp4', title: 'Bạn gián chớp mắt xin yêu, chú rể giật mình rồi rụt rè vỗ đầu gián', ratio: '5 giây', pri: 2, from: 'couple_roach.png', loop: true,
+          note: 'Chạy suốt lúc cả rạp gõ "yêu". Kết cục (gián biến lại thành cô dâu, hoặc chú rể bỏ chạy) do app diễn.',
+          prompt: `The cute cockroach mascot blinks her big sparkling eyes, wiggles her antennae and clasps her tiny hands together pleadingly toward the groom; the groom flinches and leans back, glances left and right for help, then gingerly pats her on the head with one finger and forces a nervous smile; they return to the starting pose. Keep exactly the same groom and the same cockroach mascot as the first frame. ${video(BG.green)} ${LOOP}` },
+        { file: 'couple_shock.mp4', title: 'Chú rể hét lên, nhảy phắt vào tay cô dâu, cô dâu bế chú rể tỉnh bơ', ratio: '5 giây', pri: 3, from: 'couple_idle.png', loop: true,
+          note: 'Miếng hài: đảo vai, cô dâu bế chú rể kiểu công chúa. Nhân vật của biến cố đứng bên phải sân khấu nên cả hai trợn mắt nhìn về bên PHẢI ảnh.',
+          prompt: `The groom yelps in fright and leaps up into the bride's arms; she catches him and holds him bridal-style without any effort while both of them stare toward the RIGHT side of the frame with bulging eyes and wide open mouths; after a beat she sets him back down and they return to the starting pose. Keep exactly the same groom and bride as the first frame. ${video(BG.green)} ${LOOP}` }
+      ]
+    }
+  ];
+
+  const FIXES = [
+    ['Chưa buồn cười, mặt còn nghiêm', 'Make it much funnier: push the facial expression into full caricature with bulging eyes, a huge open mouth and exaggerated eyebrows, and make the silly props bigger and impossible to miss.'],
+    ['Thiếu đạo cụ của miếng hài', 'The image must clearly show every prop and clothing detail listed in the description; none of them may be missing or hidden.'],
+    ['Nhân vật quay sang phải', 'Mirror the pose: the body, the face and the pointing arm must all be directed toward the LEFT side of the image.'],
+    ['Bị cắt mất chân, đỉnh đầu hoặc đạo cụ', 'Zoom out so the whole body and every prop fit inside the image, with empty space above the head and below the feet.'],
+    ['Áo, nón, thùng hàng của tài xế có logo hoặc chữ', 'The jacket, the helmet and the delivery box are completely plain solid green: remove every logo, letter, number and symbol.'],
+    ['Người yêu cũ nam: ly trà sữa trong suốt, lộ nền', 'The cup is completely filled with opaque beige milk tea and sealed with a flat white lid, so nothing shows through it.'],
+    ['Người yêu cũ nam: nền chưa phải xanh dương phẳng', 'The background must be one flat solid pure blue color (#0000FF) everywhere, with no floor, no shadow, no gradient and no vignette.'],
+    ['Người yêu cũ nam: có màu xanh dương trên người (quần jean, nước mắt xanh)', 'Nothing on the character or the props is blue: the trousers are black and the tears are glossy white.'],
+    ['Bố vợ xuề xòa quá, muốn kín đáo hơn', 'He also wears a faded short-sleeved checkered shirt, unbuttoned and hanging open, over the white tank top.'],
+    ['Con gián trông ghê, giống gián thật', 'The cockroach is a cute, round, friendly cartoon mascot with big sparkling eyes and rosy cheeks. It is not realistic, not hairy and not scary.'],
+    ['Cô dâu hóa gián: chú rể bị đổi thành người khác', 'Keep the groom exactly identical to the attached image: same face, hair, suit, size and position.'],
+    ['Ông chú cầm ly bia, ly rượu', 'He holds nothing except the microphone: remove any glass, bottle or drink.'],
+    ['Hội bạn thân: ba người đứng rời nhau hoặc quay ba hướng', 'The three friends stand tightly shoulder to shoulder as one compact group, and all three are turned toward the LEFT side of the image.'],
+    ['Em bé trông già, giống người lớn thu nhỏ', 'Baby proportions: a big round head, chubby cheeks, short chubby arms and legs and a round belly, clearly an eight-month-old baby.'],
+    ['Em bé: khăn voan hoặc bình sữa trong suốt, lộ nền', 'The veil is thick opaque white fabric and the bottle is completely filled with opaque white milk, so the background never shows through.'],
+    ['Không cùng phong cách với bộ hình', 'Match the attached reference exactly in rendering style, level of detail, lighting and body proportions.'],
+    ['Bố vợ bản cười ra người khác', 'Keep the face, glasses, hair, belly and outfit exactly identical to the attached reference image; only change the expression and the pose.'],
+    ['Ảnh nền xanh lá: nền có sàn, bóng hoặc chuyển màu', 'The background must be one flat solid pure green color (#00FF00) everywhere, with no floor, no shadow, no gradient and no vignette.'],
+    ['Ảnh nền xanh lá: quần áo hoặc đạo cụ có màu xanh lá', 'Recolor every green part of the outfit and props to red, yellow, navy or brown.'],
+    ['Có chữ trên hóa đơn, sổ đỏ, phong bì', 'Remove all writing: the receipt, the booklet and the envelopes are plain with no text, no letters and no symbols.'],
+    ['Hội trường tối bị đổi bố cục', 'Do not move, add or remove anything: same camera, same stage, same arch, same carpet and tables as the attached image. Only the lighting changes.'],
+    ['Hiệu ứng nền đen bị xám, có khói', 'The background is pure black (#000000) in every frame, with no fog, no smoke, no glow haze and no gradient.'],
+    ['Hiệu ứng còn sót lại ở cuối video', 'The effect is completely gone before the clip ends: the last frame shows only the empty background.'],
+    ['Video: máy quay tự di chuyển', 'Locked-off tripod shot. The camera never moves; the framing stays identical from the first frame to the last.']
+  ];
+
+  const COMMANDS = [
+    ['Xử lý mọi file biến cố (tên bắt đầu bằng bc_)', 'cd ~/Code/tiktok/DamCuoiV1 && node tools/xu-ly-bo-hinh.mjs --chi=bc'],
+    ['Khi có file couple_roach hoặc couple_shock: xử lý lại nhóm cô dâu chú rể', 'cd ~/Code/tiktok/DamCuoiV1 && node tools/xu-ly-bo-hinh.mjs --chi=couple'],
+    ['Bật lại server để màn hình LIVE nạp hình mới (link tunnel giữ nguyên)', '~/Code/tiktok/DamCuoiV1/BAT_DAU.sh tat server && ~/Code/tiktok/DamCuoiV1/BAT_DAU.sh']
+  ];
+
+  const PRI = { 1: 'Ưu tiên 1', 2: 'Ưu tiên 2', 3: 'Làm sau' };
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  let filter = store.get('bc-filter', 'all');
+  if (!['all', 'p1', 'todo'].includes(filter)) filter = 'all';
+  const savedDone = store.get('bc-done', []);
+  const done = new Set(Array.isArray(savedDone) ? savedDone : []);
+  const all = SECTIONS.flatMap(s => s.items);
+
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  };
+  const fullPrompt = item => (item.ref ? REF_TEXT[item.ref] : '') + item.prompt;
+  const visible = item => filter === 'p1' ? item.pri === 1 : filter === 'todo' ? !done.has(item.file) : true;
+
+  function copyText(btn, text, pre) {
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    const flash = (msg, ok) => {
+      btn.textContent = msg;
+      btn.classList.toggle('ok', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('ok'); }, 1800);
+    };
+    const fallback = () => {
+      const r = document.createRange();
+      r.selectNodeContents(pre);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      flash('Đã chọn, nhấn Ctrl+C', false);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(() => flash('Đã chép', true), fallback);
+    } catch {
+      fallback();
+    }
+  }
+
+  function codeBlock(label, text) {
+    const wrap = el('div', 'prompt');
+    const bar = el('div', 'prompt-bar');
+    const pre = el('pre', '', text);
+    const main = el('button', 'copy', 'Sao chép');
+    main.type = 'button';
+    main.addEventListener('click', () => copyText(main, text, pre));
+    bar.append(el('span', 'lbl', label), main);
+    wrap.append(bar, pre);
+    return wrap;
+  }
+
+  function updateProgress() {
+    const n = all.filter(i => done.has(i.file)).length;
+    document.getElementById('progress-text').replaceChildren('Đã tạo ', el('b', '', String(n)), `/${all.length} file`);
+    document.getElementById('progress-bar').style.width = `${Math.round((n / all.length) * 100)}%`;
+  }
+
+  function card(item) {
+    const c = el('article', 'card' + (done.has(item.file) ? ' done' : ''));
+    const top = el('div', 'card-top');
+    const chips = el('div', 'chips');
+    chips.append(el('span', 'chip', item.ratio), el('span', 'chip p' + item.pri, PRI[item.pri]));
+    if (item.loop !== undefined) chips.append(el('span', 'chip', item.loop ? 'lặp' : 'chạy 1 lần'));
+    top.append(el('span', 'file', item.file), el('h3', '', item.title), chips);
+    c.append(top);
+    if (item.note) c.append(el('p', 'note', item.note));
+    const isVideo = item.file.endsWith('.mp4');
+    c.append(codeBlock(isVideo ? 'Prompt video' : 'Prompt ảnh', fullPrompt(item)));
+
+    const foot = el('div', 'card-foot');
+    const label = el('label', 'done-toggle');
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.id = 'done-' + item.file.replace(/\W+/g, '-');
+    box.checked = done.has(item.file);
+    box.addEventListener('change', () => {
+      if (box.checked) done.add(item.file); else done.delete(item.file);
+      c.classList.toggle('done', box.checked);
+      store.set('bc-done', [...done]);
+      updateProgress();
+      if (filter === 'todo') setTimeout(renderAll, 450);
+    });
+    label.append(box, document.createTextNode('Đã tạo xong'));
+    foot.append(label);
+    if (item.from) {
+      const f = el('span', 'from');
+      if (isVideo) f.append('Khung đầu và khung cuối: ', el('code', '', item.from));
+      else f.append('Tải kèm: ', el('code', '', item.from), ` (${REF_NOTE[item.ref]})`);
+      foot.append(f);
+    } else if (isVideo) {
+      foot.append(el('span', 'from', 'Text to Video, không cần ảnh kèm'));
+    }
+    c.append(foot);
+    return c;
+  }
+
+  function renderSections() {
+    const host = document.getElementById('sections');
+    host.replaceChildren();
+    let shown = 0;
+    for (const sec of SECTIONS) {
+      const items = sec.items.filter(visible);
+      if (!items.length) continue;
+      shown += items.length;
+      const section = el('section');
+      section.id = sec.id;
+      const head = el('div', 'sec-head');
+      head.append(el('h2', '', sec.title), el('p', '', sec.intro));
+      section.append(head);
+      const cards = el('div', 'cards');
+      items.forEach(i => cards.append(card(i)));
+      section.append(cards);
+      host.append(section);
+    }
+    if (!shown) host.append(el('p', 'empty', filter === 'todo' ? 'Đã tạo xong tất cả file. Bỏ hết vào thư mục bo-hinh-moi rồi chạy lệnh ở cuối trang.' : 'Không có file nào khớp bộ lọc.'));
+  }
+
+  function renderToc() {
+    const links = [['dung-o-dau', 'Kịch bản từng biến cố', ''], ['cach-lam', 'Cách làm', '']];
+    for (const s of SECTIONS) {
+      const n = s.items.filter(visible).length;
+      if (n) links.push([s.id, s.title.replace(/ \(.*\)$/, ''), String(n)]);
+    }
+    links.push(['du-trend', 'Trend dùng ở đâu', ''], ['sua-loi', 'Sửa lỗi nhanh', ''], ['gan-vao-app', 'Đặt tên và gắn vào app', '']);
+    document.getElementById('toc').replaceChildren(...links.map(([id, title, n]) => {
+      const a = el('a');
+      a.href = '#' + id;
+      a.append(el('span', '', title));
+      if (n) a.append(el('span', 'n', n));
+      return a;
+    }));
+  }
+
+  function renderStatic() {
+    const rows = list => list.map(([problem, fix]) => {
+      const row = el('div', 'fix');
+      row.append(el('b', '', problem), codeBlock('Thêm vào prompt', fix));
+      return row;
+    });
+    document.getElementById('fixes').replaceChildren(...rows(FIXES));
+    document.getElementById('commands').replaceChildren(...COMMANDS.map(([label, code]) => codeBlock(label, code)));
+  }
+
+  function renderAll() {
+    document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+    renderToc();
+    renderSections();
+    updateProgress();
+  }
+
+  document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
+    filter = b.dataset.filter;
+    store.set('bc-filter', filter);
+    renderAll();
+  }));
+
+  renderStatic();
+  renderAll();
+})();
+</script>

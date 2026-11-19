@@ -1,0 +1,936 @@
+<title>Bộ Prompt Tiệc Cưới</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Trang làm việc: chọn phong cách, lọc theo ưu tiên, mỗi file cần tạo là một thẻ có prompt để chép. */
+:root {
+  --bg: #f5f1f2;
+  --surface: #ffffff;
+  --ink: #24181c;
+  --muted: #6d5d63;
+  --line: #e5d9dd;
+  --accent: #a3162e;
+  --on-accent: #ffffff;
+  --accent-soft: #f7e3e7;
+  --gold: #8a5f10;
+  --gold-soft: #f6ecd8;
+  --ok: #1f7a4c;
+  --on-ok: #ffffff;
+  --code-bg: #2a1c21;
+  --code-ink: #f5ebe6;
+  --code-muted: #c9b3ba;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141013;
+    --surface: #1d171a;
+    --ink: #f2e8ea;
+    --muted: #ab9aa0;
+    --line: #34292d;
+    --accent: #ff6b83;
+    --on-accent: #2a0b12;
+    --accent-soft: #3a1820;
+    --gold: #e2b35c;
+    --gold-soft: #33280f;
+    --ok: #5fd39a;
+    --on-ok: #0d2a1b;
+    --code-bg: #0f0b0d;
+    --code-ink: #f5ebe6;
+    --code-muted: #ab9aa0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141013;
+  --surface: #1d171a;
+  --ink: #f2e8ea;
+  --muted: #ab9aa0;
+  --line: #34292d;
+  --accent: #ff6b83;
+  --on-accent: #2a0b12;
+  --accent-soft: #3a1820;
+  --gold: #e2b35c;
+  --gold-soft: #33280f;
+  --ok: #5fd39a;
+  --on-ok: #0d2a1b;
+  --code-bg: #0f0b0d;
+  --code-ink: #f5ebe6;
+  --code-muted: #ab9aa0;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 28px;
+  padding-bottom: 64px;
+}
+h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 700; }
+h2 { font-size: 30px; font-weight: 700; }
+h3 { font-size: 16px; margin: 0; line-height: 1.35; }
+p { margin: 0; }
+code { font-family: var(--font-mono); font-size: 0.86em; overflow-wrap: anywhere; }
+
+/* Đầu trang */
+.masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px 28px;
+  align-items: end;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hy { font-family: 'Noto Serif CJK SC', 'Microsoft YaHei', 'PingFang SC', serif; color: var(--accent); font-size: 22px; letter-spacing: 0; }
+.lede { color: var(--muted); max-width: 64ch; margin-top: 10px; }
+.controls { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.ctl { display: flex; align-items: center; gap: 10px; }
+.ctl-label { font-size: 12px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.progress { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress b { color: var(--ink); }
+.bar { width: 240px; max-width: 100%; height: 6px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--ok); transition: width 0.3s ease; }
+
+/* Hai cột */
+.layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 36px; margin-top: 28px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; display: flex; flex-direction: column; gap: 2px; }
+.toc a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+.toc .n { font-variant-numeric: tabular-nums; font-size: 12px; }
+main { display: flex; flex-direction: column; gap: 44px; min-width: 0; }
+#sections { display: flex; flex-direction: column; gap: 44px; }
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+.sec-head p { color: var(--muted); max-width: 72ch; }
+.empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 18px; }
+
+/* Cách làm */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+.steps li {
+  counter-increment: s;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.steps li::before {
+  content: counter(s);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+.steps li p + p { margin-top: 4px; color: var(--muted); }
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.tool { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.tool h3 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 11px; font-weight: 600; color: var(--gold); background: var(--gold-soft); border-radius: 6px; padding: 1px 7px; }
+.tool p { color: var(--muted); font-size: 14px; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px 18px; }
+.rule { border-left: 3px solid var(--gold); padding: 4px 12px; font-size: 14px; }
+.rule b { display: block; }
+.rule span { color: var(--muted); }
+
+/* Thẻ prompt */
+.cards { display: grid; gap: 14px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.card.done { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); }
+.card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.file {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 3px 9px;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.card-top h3 { flex: 1 1 220px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; white-space: nowrap; }
+.chip.p1 { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.chip.p2 { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); }
+.note { font-size: 14px; color: var(--muted); }
+.prompt { background: var(--code-bg); border-radius: 10px; overflow: hidden; }
+.prompt-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.prompt-bar .lbl { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--code-muted); font-weight: 600; }
+.btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.copy {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0;
+  border-radius: 7px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.copy.ghost { background: transparent; color: var(--code-ink); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28); }
+.copy.ok { background: var(--ok); color: var(--on-ok); box-shadow: none; }
+.prompt pre {
+  margin: 0;
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px 14px 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px 14px; flex-wrap: wrap; }
+.done-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; user-select: none; }
+.done-toggle input { width: 17px; height: 17px; accent-color: var(--ok); margin: 0; }
+.from { font-size: 13px; color: var(--muted); }
+.from code { color: var(--ink); }
+
+/* Sửa lỗi */
+.fixes { display: grid; gap: 10px; }
+.fix { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 10px 16px; align-items: start; }
+.fix > b { font-size: 14px; padding-top: 9px; }
+
+/* Đặt tên */
+.tree {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+.closing { color: var(--muted); max-width: 72ch; }
+
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .toc { display: none; }
+  .masthead { grid-template-columns: minmax(0, 1fr); }
+  .controls { align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .fix { grid-template-columns: minmax(0, 1fr); }
+  .fix > b { padding-top: 0; }
+  .ctl { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow"><span class="hy" aria-hidden="true">囍</span> Tiệc Cưới LIVE · bộ hình mới</div>
+      <h1>Bộ Prompt Tiệc Cưới</h1>
+      <p class="lede">Prompt để dán vào các công cụ AI: Dreamina, ChatGPT, Gemini, Midjourney cho ảnh; Dreamina, Kling, Hailuo, Runway, Veo cho video; Suno cho nhạc. Tên file, tỷ lệ và bố cục đã khớp với overlay hiện tại.</p>
+    </div>
+    <div class="controls">
+      <div class="ctl">
+        <span class="ctl-label">Phong cách</span>
+        <div class="seg" role="group" aria-label="Phong cách hình">
+          <button type="button" data-style="semi">Bán thực 3D</button>
+          <button type="button" data-style="photo">Ảnh thật</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <span class="ctl-label">Nền</span>
+        <div class="seg" role="group" aria-label="Kiểu nền của ảnh nhân vật">
+          <button type="button" data-bgmode="green">Xanh lá</button>
+          <button type="button" data-bgmode="alpha">Trong suốt</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <span class="ctl-label">Hiện</span>
+        <div class="seg" role="group" aria-label="Lọc danh sách">
+          <button type="button" data-filter="all">Tất cả</button>
+          <button type="button" data-filter="p1">Ưu tiên 1</button>
+          <button type="button" data-filter="todo">Chưa xong</button>
+        </div>
+      </div>
+      <div class="progress" id="progress-text">Đã tạo <b>0</b>/0 file</div>
+      <div class="bar" aria-hidden="true"><i id="progress-bar"></i></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc" aria-label="Mục lục"></nav>
+    <main>
+      <section id="cach-lam">
+        <div class="sec-head">
+          <h2>Cách làm</h2>
+          <p>Làm đúng thứ tự này thì cả bộ sẽ cùng phong cách, cùng gương mặt và cùng tỷ lệ.</p>
+        </div>
+        <ol class="steps">
+          <li><div><p><b>Chọn phong cách ở góc trên.</b> "Bán thực 3D" giống các rạp cưới đang hot, "Ảnh thật" giống người thật hơn. Mọi prompt tự đổi theo. Dùng một phong cách cho cả bộ.</p></div></li>
+          <li><div><p><b>Làm 2 ảnh mẫu trước:</b> <code>guest_m1.png</code> rồi <code>couple_ref.png</code>. Tạo vài lần, chọn bản đẹp nhất.</p><p>Mọi ảnh sau đều tải kèm một trong hai ảnh này, nhờ vậy các nhân vật không bị lệch phong cách.</p></div></li>
+          <li><div><p><b>Tải kèm đúng ảnh ghi ở cuối mỗi thẻ.</b> Dreamina: bấm dấu + để thêm ảnh tham chiếu. ChatGPT và Gemini: tải ảnh lên cùng lúc với prompt. Midjourney: kéo ảnh vào ô tham chiếu.</p></div></li>
+          <li><div><p><b>Chọn kiểu nền ở góc trên.</b> "Xanh lá" (<code>#00FF00</code>) dùng được cho mọi công cụ, kể cả Dreamina, và dùng thẳng làm khung đầu video. "Trong suốt" chỉ dành cho ChatGPT.</p><p>Công cụ không xuất được nền trong suốt mà prompt vẫn đòi thì hay vẽ ra ô caro xám trắng giả, ảnh đó không dùng được.</p></div></li>
+          <li><div><p><b>Làm video từ ảnh</b> (Image to Video), khung đầu là bản nền xanh của ảnh. Lệnh tạo bản nền xanh nằm ở mục Video.</p></div></li>
+          <li><div><p><b>Đặt đúng tên file như trên thẻ</b>, bỏ hết vào <code>DamCuoiV1/bo-hinh-moi/</code> và tick "Đã tạo xong" để theo dõi.</p><p>Xóa nền xanh, chuyển video sang dạng trong suốt cho OBS và gắn vào tool là bước làm sau, khi đã có file.</p></div></li>
+        </ol>
+
+        <div class="tools">
+          <div class="tool"><h3>Dreamina <span class="tag">ảnh</span> <span class="tag">video</span></h3><p>Làm cả hai ở một chỗ, dùng kiểu nền Xanh lá. Ảnh: model Seedream, tỷ lệ 9:16 cho một người và 1:1 cho cặp đôi, bấm dấu + thêm ảnh mẫu, chọn tham chiếu Character hoặc Human face khi cần giữ nguyên người. Video: model Seedance, chế độ khung hình đầu cuối, đặt cùng một ảnh cho cả hai. Gói miễn phí thường dính watermark và không cho dùng thương mại.</p></div>
+          <div class="tool"><h3>ChatGPT <span class="tag">ảnh</span></h3><p>Xuất được nền trong suốt thật (kiểu nền Trong suốt). Tải ảnh mẫu lên rồi dán prompt. Có thể sửa tiếp bằng lời, ví dụ "giữ nguyên, chỉ đổi tư thế tay".</p></div>
+          <div class="tool"><h3>Gemini <span class="tag">ảnh</span></h3><p>Giữ gương mặt nhân vật rất tốt khi đổi tư thế. Không xuất được nền trong suốt, dùng kiểu nền Xanh lá.</p></div>
+          <div class="tool"><h3>Midjourney <span class="tag">ảnh</span></h3><p>Bấm "Bản Midjourney" để chép prompt có sẵn tham số. Kéo ảnh mẫu vào ô tham chiếu nhân vật (Omni/Character Reference) để giữ người, hoặc Style Reference để chỉ lấy phong cách. Dùng kiểu nền Xanh lá.</p></div>
+          <div class="tool"><h3>Kling <span class="tag">video</span></h3><p>Cũng có ô khung đầu và khung cuối như Dreamina: đặt cùng một ảnh vào cả hai để video lặp mượt. Chọn 5 giây, chế độ chất lượng cao.</p></div>
+          <div class="tool"><h3>Hailuo · Runway · Veo <span class="tag">video</span></h3><p>Chỉ có khung đầu vẫn dùng được: lúc chuyển đổi có thể ghép chạy xuôi rồi chạy ngược cho liền mạch. Tắt âm thanh nếu công cụ tự thêm.</p></div>
+        </div>
+
+        <div class="rules">
+          <div class="rule"><b>Không có màu xanh lá</b><span>Màu xanh lá bị xóa cùng nền, kể cả lá trong bó hoa. Prompt đã dặn sẵn.</span></div>
+          <div class="rule"><b>Gương mặt bình thường</b><span>Không dùng mặt người nổi tiếng, người thật hay hình của rạp khác.</span></div>
+          <div class="rule"><b>Lịch sự</b><span>Hôn nhẹ nhàng, không gợi cảm, để không vi phạm quy định TikTok LIVE.</span></div>
+          <div class="rule"><b>Thấy đủ từ đầu tới chân</b><span>Ảnh mất chân thì nhân vật sẽ lơ lửng khi đặt vào hội trường.</span></div>
+          <div class="rule"><b>Không watermark</b><span>Bản miễn phí của nhiều công cụ video có watermark ở góc. Đọc thêm điều khoản dùng thương mại của từng công cụ.</span></div>
+        </div>
+      </section>
+
+      <div id="sections"></div>
+
+      <section id="sua-loi">
+        <div class="sec-head">
+          <h2>Sửa lỗi nhanh</h2>
+          <p>Kết quả bị lỗi thì thêm câu tương ứng vào cuối prompt rồi tạo lại.</p>
+        </div>
+        <div class="fixes" id="fixes"></div>
+      </section>
+
+      <section id="dat-ten">
+        <div class="sec-head">
+          <h2>Đặt tên và gửi file</h2>
+          <p>Giữ đúng tên như trên thẻ. Ảnh để PNG (phông nền để JPG), video để MP4. Ảnh một người để 9:16 vì công cụ video nào cũng có tỷ lệ này, video ra sẽ không bị cắt mất đầu hay chân.</p>
+        </div>
+        <pre class="tree">DamCuoiV1/
+└── bo-hinh-moi/
+    ├── guest_m1.png, couple_ref.png    ảnh mẫu
+    ├── bg_red_gold.jpg …               phông hội trường (9:16)
+    ├── couple_idle.png …               cô dâu chú rể (1:1)
+    ├── mc_idle.png, mc_talk.png        MC (9:16)
+    ├── guest_m2.png … guest_f8.png     khách mời (9:16)
+    ├── walker_m.png, walker_f.png      người đi lên thảm đỏ (9:16)
+    ├── couple_idle.mp4 …               video nền xanh lá
+    └── nen-xanh/                       bản nền xanh (lệnh ở mục Video)</pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Loại</th><th>Tỷ lệ</th><th>Kích thước</th><th>Nền</th></tr></thead>
+            <tbody>
+              <tr><td>Phông hội trường</td><td>9:16 dọc</td><td>Lý tưởng 1080 × 1920</td><td>Đầy đủ cảnh, không người</td></tr>
+              <tr><td>Cô dâu chú rể</td><td>1:1 vuông</td><td>Từ 1024 × 1024</td><td>Trong suốt hoặc xanh lá <code>#00FF00</code></td></tr>
+              <tr><td>MC, khách mời, người đi lên</td><td>9:16 dọc</td><td>Từ 1080 × 1920</td><td>Trong suốt hoặc xanh lá <code>#00FF00</code></td></tr>
+              <tr><td>Video</td><td>Giống ảnh khung đầu</td><td>720p trở lên, 5 giây</td><td>Xanh lá phẳng, máy quay đứng yên</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="closing">Có đủ các file "Ưu tiên 1" là đã thay được toàn bộ hình tĩnh trên rạp. Video có thể bổ sung dần.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const STYLE = {
+    semi: {
+      people: 'Semi-realistic 3D render of Vietnamese people, natural human proportions, warm friendly expressions, soft cinematic studio lighting, detailed fabrics, crisp clean edges, high-quality game character art',
+      scene: 'Semi-realistic 3D render, cinematic warm lighting, rich detail, high-quality game environment art'
+    },
+    photo: {
+      people: 'Photorealistic studio photograph of Vietnamese people, natural skin texture, soft professional lighting, sharp focus, high detail',
+      scene: 'Photorealistic architectural interior photography, wide-angle lens, balanced natural light, high detail'
+    }
+  };
+
+  const BG_CUTOUT = {
+    green: 'Isolated on a flat solid pure green background (#00FF00) that fills the whole image evenly, with no gradient, no floor, no shadow and no checkerboard pattern.',
+    alpha: 'Isolated on a real transparent background: export as a PNG with an alpha channel, with no floor and no shadow.'
+  };
+  const FRAMING = {
+    front: 'Full body from head to toe with the shoes visible and a little empty space above the head and below the feet, centered, standing on an invisible floor, slight three-quarter turn toward the camera; the person fills about 88% of the image height.',
+    back: 'Full body from head to toe with the shoes visible and a little empty space above the head and below the feet, centered, seen from directly behind (back view, face not visible); the person fills about 88% of the image height.'
+  };
+  const CLEAN = 'Ordinary non-famous faces that do not resemble any real person. Anatomically correct hands. No text, no logo, no watermark, no other people. No green color anywhere on the clothing, flowers or props.';
+  const VIDEO = 'Static locked-off camera: no zoom, no pan, no camera shake. The background stays one perfectly flat solid green (#00FF00) for the whole clip. The character stays centered at the same size and position, full body always in frame. Smooth natural motion. No text, no subtitles, no new people.';
+  const LOOP = 'Seamless loop: the final frame returns exactly to the starting pose of the first frame.';
+  const REF_TEXT = {
+    style: 'Use the attached image only as a reference for art style, lighting and proportions; the people in this image are different. ',
+    same: 'Use the attached image as the character reference and keep exactly the same person: same face, hairstyle, outfit and colors. ',
+    couple: 'Use the attached image as the character reference and keep exactly the same groom and bride: same faces, hairstyles, outfits and colors. '
+  };
+
+  const person = (who, pose, s, view = 'front') => `${who}, ${pose}. ${FRAMING[view]} ${STYLE[s].people}. ${BG_CUTOUT[bgMode]} ${CLEAN} Vertical 9:16 image.`;
+  const couple = (pose, s) => `${pose}. Both people fully visible from head to toe with the shoes visible, centered, standing on an invisible floor; together they fill about 85% of the image height. ${STYLE[s].people}. ${BG_CUTOUT[bgMode]} ${CLEAN.replace('no other people', 'no other people besides the couple')} Square 1:1 image.`;
+  const hall = (t, s) => `Vertical 9:16 interior of ${t.hall}, seen from the back of the hall at standing eye level, perfectly symmetrical. A long straight red carpet with a few scattered rose petals runs from the bottom center of the image up to the stage. The stage is in the middle of the image: ${t.arch} rises from about 33% to 53% of the image height, and the stage floor with a few low steps sits at about 55% of the height, with ${t.decor}. Round banquet tables with ${t.tables} line both sides of the carpet in the lower half of the image, chairs empty. The top of the image shows ${t.ceiling}. Completely empty hall: no people. No text, no letters, no signs, no screens with writing. ${STYLE[s].scene}.`;
+
+  const HALLS = {
+    red: { hall: 'a luxurious red and gold Vietnamese wedding banquet hall', arch: 'a large heart-shaped arch of red and white roses framing a softly glowing gold backdrop', decor: 'a tall white wedding cake on each side of the stage', tables: 'white tablecloths, gold chair covers and red rose centerpieces', ceiling: 'draped ivory and gold fabric, large crystal chandeliers and curtains of tiny warm fairy lights' },
+    pink: { hall: 'a romantic white and pastel pink garden-style wedding hall', arch: 'a round arch of cherry blossoms, white roses and pink peonies framing a pale pink backdrop', decor: 'tall vases of white flowers on each side of the stage', tables: 'white tablecloths, white chairs and pink flower centerpieces', ceiling: 'a glass roof with soft daylight and hanging flower garlands' },
+    blue: { hall: 'an elegant royal blue and silver wedding banquet hall', arch: 'a tall arch of white flowers with silver accents framing a deep blue starry backdrop', decor: 'silver candelabras on each side of the stage', tables: 'white tablecloths, silver chairs and white flower centerpieces', ceiling: 'crystal chandeliers with cool white light and a sky of tiny star lights' }
+  };
+
+  const MC = 'A Vietnamese male wedding MC (master of ceremonies) in his early 30s, ivory white dinner jacket with black satin lapels, black bow tie, white shirt, black trousers, neat short black hair, black handheld microphone';
+  const MJ_TALL = '--ar 9:16 --style raw';
+  const MJ_SQUARE = '--ar 1:1 --style raw';
+  const MJ_HALL = '--ar 9:16 --style raw';
+
+  const guests = list => list.map(([file, title, who, pose, pri]) => ({
+    file, title, pri, ratio: '9:16', from: 'guest_m1.png', ref: 'style', mj: MJ_TALL,
+    prompt: s => person(who, pose, s)
+  }));
+
+  const clip = (file, title, pri, from, loop, text, green = true) => ({
+    file, title, pri, ratio: '5 giây', from, loop, green,
+    prompt: () => green ? `${text} ${VIDEO}${loop ? ' ' + LOOP : ''}` : text
+  });
+
+  const SECTIONS = [
+    {
+      id: 'anh-mau', title: 'Ảnh mẫu (làm đầu tiên)',
+      intro: 'Hai ảnh này quyết định phong cách cho cả bộ. Tạo vài lần, chọn bản đẹp nhất rồi mới làm tiếp.',
+      items: [
+        { file: 'guest_m1.png', title: 'Khách nam đầu tiên, cũng là khuôn phong cách', ratio: '9:16', pri: 1, mj: MJ_TALL,
+          note: 'Ảnh này vừa là một khách mời, vừa là ảnh tham chiếu phong cách cho mọi nhân vật khác.',
+          prompt: s => person('A young Vietnamese man in a black slim-fit suit and white shirt without a tie', 'holding a glass of champagne, relaxed friendly smile', s) },
+        { file: 'couple_ref.png', title: 'Ảnh mẫu cô dâu chú rể (ba góc nhìn)', ratio: '16:9', pri: 1, from: 'guest_m1.png', ref: 'style', mj: '--ar 16:9 --style raw',
+          note: 'Chỉ dùng làm tham chiếu để giữ gương mặt và trang phục, không đưa lên LIVE nên không cần nền trong suốt.',
+          prompt: s => `Character reference sheet of one Vietnamese wedding couple in their mid-20s, the same couple shown three times side by side: front view, three-quarter view and back view, full body from head to toe. Groom: classic black tuxedo, white shirt, black bow tie, a red rose boutonniere, short neat black hair. Bride: white lace wedding gown with a long tulle veil, hair in a soft updo, holding a round bouquet of red and white roses wrapped in white ribbon with no green leaves. Ordinary non-famous faces that do not resemble any real person. ${STYLE[s].people}. Plain light grey background. No text, no labels. Wide 16:9 image.` }
+      ]
+    },
+    {
+      id: 'phong-nen', title: 'Phông hội trường',
+      intro: 'Bố cục giống phông hiện tại để khớp vị trí cô dâu chú rể, MC và người đi lên: vòm hoa ở khoảng giữa ảnh, thảm đỏ chạy từ giữa mép dưới lên sân khấu, bàn tiệc hai bên. Không cần tải kèm ảnh mẫu.',
+      items: [
+        { file: 'bg_red_gold.jpg', title: 'Đỏ – vàng sang trọng (giống bản hiện tại)', ratio: '9:16', pri: 1, mj: MJ_HALL, prompt: s => hall(HALLS.red, s) },
+        { file: 'bg_pink_garden.jpg', title: 'Trắng – hồng kiểu vườn hoa', ratio: '9:16', pri: 3, mj: MJ_HALL, prompt: s => hall(HALLS.pink, s) },
+        { file: 'bg_blue_silver.jpg', title: 'Xanh dương – bạc', ratio: '9:16', pri: 3, mj: MJ_HALL, prompt: s => hall(HALLS.blue, s) },
+        { file: 'dongphong_room.jpg', title: 'Phòng tân hôn cho cảnh động phòng (tùy chọn)', ratio: '9:16', pri: 3, mj: MJ_HALL,
+          prompt: s => `Vertical 9:16 view of a traditional Vietnamese bridal chamber decorated for the wedding night: a bed with red silk bedding and red curtains, red and gold wedding ornaments, red paper lanterns, tall red candles, rose petals on the floor, warm romantic candlelight; elegant and tasteful. No people. No text, no letters, no symbols. ${STYLE[s].scene}.` }
+      ]
+    },
+    {
+      id: 'co-dau-chu-re', title: 'Cô dâu chú rể',
+      intro: 'Mọi tư thế đều tải kèm couple_ref.png để giữ đúng gương mặt và trang phục. Tên và avatar của người xem giành vai được tool gắn lên cặp đôi này.',
+      items: [
+        ['couple_idle.png', 'Đứng nắm tay (tư thế chính)', 1, 'The groom and bride stand side by side holding hands and smiling at the camera; the bride holds her bouquet in her other hand'],
+        ['couple_kiss.png', 'Hôn nhau', 1, 'The groom and bride face each other and share a gentle, tasteful wedding kiss; his hand rests lightly on her waist, her veil flows behind her'],
+        ['couple_carry.png', 'Chú rể bế cô dâu', 2, 'The groom carries the bride in his arms in a classic bridal carry; both laugh and look at the camera; her dress and veil hang naturally'],
+        ['couple_dance.png', 'Khiêu vũ', 3, 'First-dance waltz pose: the groom leads with one hand on her back, her hand on his shoulder, their other hands joined, the dress swirling slightly'],
+        ['couple_cake.png', 'Cắt bánh cưới', 3, 'The groom and bride hold one cake knife together and cut a three-tier white wedding cake decorated with red roses, standing next to it on a small round white table'],
+        ['couple_cheers.png', 'Cụng ly sâm panh', 3, 'The groom and bride raise glasses of golden champagne toward each other in a toast, smiling']
+      ].map(([file, title, pri, pose]) => ({ file, title, pri, ratio: '1:1', from: 'couple_ref.png', ref: 'couple', mj: MJ_SQUARE, prompt: s => couple(pose, s) }))
+    },
+    {
+      id: 'mc', title: 'MC',
+      intro: 'MC đứng bên trái sân khấu và nhìn về phía cô dâu chú rể, nên quay người hơi sang bên phải ảnh.',
+      items: [
+        { file: 'mc_idle.png', title: 'MC cầm micro (tư thế chính)', ratio: '9:16', pri: 1, from: 'guest_m1.png', ref: 'style', mj: MJ_TALL,
+          prompt: s => person(MC, 'holding the microphone at chest height, confident warm smile, body and face turned slightly toward the right side of the image', s) },
+        { file: 'mc_talk.png', title: 'MC đang nói', ratio: '9:16', pri: 2, from: 'mc_idle.png', ref: 'same', mj: MJ_TALL,
+          prompt: s => person(MC, 'speaking into the microphone held near his mouth, free hand raised in an open welcoming gesture toward the right side of the image, lively expression', s) }
+      ]
+    },
+    {
+      id: 'khach-nam', title: 'Khách mời nam',
+      intro: 'Người xem comment "nam" sẽ ngồi bàn với một trong các hình này. Tất cả tải kèm guest_m1.png để cùng phong cách.',
+      items: guests([
+        ['guest_m2.png', 'Vest xám, vỗ tay', 'A young Vietnamese man in a light grey suit with a light pink tie', 'clapping his hands, cheerful', 1],
+        ['guest_m3.png', 'Sơ mi trắng xắn tay, vẫy tay', 'A young Vietnamese man in a white shirt with rolled-up sleeves, beige chinos and brown shoes', 'waving one hand, friendly smile', 1],
+        ['guest_m4.png', 'Áo dài nam đỏ, khăn đóng', 'A Vietnamese man in a traditional men\'s ao dai (long tunic) in deep red with a subtle gold pattern, white trousers and a red round traditional headwrap (khan dong)', 'hands clasped politely in front, gentle smile', 1],
+        ['guest_m5.png', 'Blazer xanh navy', 'A young Vietnamese man in a navy blazer, light blue shirt and dark grey trousers', 'one hand in his pocket, relaxed smile', 2],
+        ['guest_m6.png', 'Vest đỏ đô, cầm phong bì', 'A young Vietnamese man in a burgundy suit and black shirt', 'holding a red wedding envelope with both hands', 2],
+        ['guest_m7.png', 'Sơ mi xanh nhạt, giơ ngón cái', 'A young Vietnamese man in a light blue short-sleeve shirt and beige trousers', 'giving a thumbs up, big grin', 2],
+        ['guest_m8.png', 'Chú trung niên, gi-lê nâu', 'A Vietnamese uncle around 50 years old in a brown vest over a white shirt and dark trousers', 'hands behind his back, warm laughing face', 2]
+      ])
+    },
+    {
+      id: 'khach-nu', title: 'Khách mời nữ',
+      intro: 'Dùng khi người xem comment "nữ". Áo dài là điểm nhấn của đám cưới Việt, chỉ cần tránh màu xanh lá.',
+      items: guests([
+        ['guest_f1.png', 'Áo dài đỏ thêu vàng, cầm hoa', 'A young Vietnamese woman in a red ao dai with gold floral embroidery and white silk trousers', 'holding a small bouquet of pink roses with no green leaves, sweet smile', 1],
+        ['guest_f2.png', 'Áo dài hồng phấn, vỗ tay', 'A young Vietnamese woman in a pastel pink ao dai, hair in a low bun', 'clapping happily', 1],
+        ['guest_f3.png', 'Áo dài trắng hoa xanh dương', 'A young Vietnamese woman in a white ao dai with a light blue flower print and long straight black hair', 'hands together near her chest, gentle smile', 1],
+        ['guest_f4.png', 'Đầm hồng dự tiệc, vẫy tay', 'A young Vietnamese woman in a blush pink knee-length party dress with a small handbag', 'waving one hand', 1],
+        ['guest_f5.png', 'Đầm satin vàng champagne', 'A young Vietnamese woman in a champagne gold satin evening dress', 'holding a glass of champagne, elegant smile', 2],
+        ['guest_f6.png', 'Đầm voan tím, reo hò', 'A young Vietnamese woman in a lavender chiffon midi dress', 'cheering with both arms raised', 2],
+        ['guest_f7.png', 'Áo dài xanh navy hoa bạc', 'A young Vietnamese woman in a navy blue ao dai with a silver pattern and pearl earrings', 'hands lightly folded, gentle smile', 2],
+        ['guest_f8.png', 'Cô trung niên, áo dài nhung tím', 'A Vietnamese auntie around 50 years old in a purple velvet ao dai with a pearl necklace and short permed hair', 'holding a red wedding envelope, warm smile', 2]
+      ])
+    },
+    {
+      id: 'nguoi-di-len', title: 'Người đi lên thảm đỏ',
+      intro: 'Người tặng quà đi từ mép dưới màn hình lên sân khấu, tức là quay lưng về phía người xem. Hai ảnh nhìn từ phía sau này dùng cho đoạn đi bộ và làm khung đầu cho video đi bộ.',
+      items: [
+        { file: 'walker_m.png', title: 'Khách nam nhìn từ phía sau', ratio: '9:16', pri: 2, from: 'guest_m6.png', ref: 'same', mj: MJ_TALL,
+          prompt: s => person('The same young Vietnamese man in a burgundy suit and black shirt', 'walking away from the camera toward a wedding stage, mid-stride, holding a red wedding envelope in his right hand slightly out to the side so it stays visible', s, 'back') },
+        { file: 'walker_f.png', title: 'Khách nữ nhìn từ phía sau', ratio: '9:16', pri: 2, from: 'guest_f1.png', ref: 'same', mj: MJ_TALL,
+          prompt: s => person('The same young Vietnamese woman in a red ao dai with gold floral embroidery and white silk trousers', 'walking away from the camera toward a wedding stage, mid-stride, holding a small bouquet of pink roses slightly out to the side so it stays visible', s, 'back') }
+      ]
+    },
+    {
+      id: 'video', title: 'Video chuyển động',
+      intro: 'Phần này làm nhân vật cử động mượt. Dùng Image to Video, khung đầu là bản nền xanh của ảnh ghi trên thẻ. Thẻ ghi "lặp" thì đặt cùng ảnh đó làm khung cuối.',
+      command: {
+        label: 'Tạo bản nền xanh cho mọi ảnh PNG',
+        text: 'Ảnh làm theo kiểu nền Xanh lá thì dùng thẳng làm khung đầu, bỏ qua lệnh này. Ảnh nền trong suốt (ChatGPT) thì cần thêm một bản nền xanh: mở Terminal và chạy lệnh dưới (máy đã có sẵn ffmpeg), bản nền xanh nằm trong bo-hinh-moi/nen-xanh với cùng tên file.',
+        code: 'cd ~/Downloads/DamCuoiV1/bo-hinh-moi && mkdir -p nen-xanh && for f in *.png; do ffmpeg -y -loglevel error -i "$f" -filter_complex "[0:v]format=rgba,split[a][b];[a]geq=r=0:g=255:b=0:a=255[n];[n][b]overlay=format=auto,format=rgb24" -frames:v 1 "nen-xanh/$f"; done && echo "Xong, xem thu muc nen-xanh"'
+      },
+      items: [
+        clip('couple_idle.mp4', 'Cô dâu chú rể đứng', 2, 'couple_idle.png', true, 'The groom and bride sway gently, glance at each other and smile, the bride lifts her bouquet slightly, natural breathing and blinking.'),
+        clip('couple_kiss.mp4', 'Hôn nhau rồi quay lại nhìn khán giả', 2, 'couple_idle.png', true, 'The groom and bride turn toward each other and share a gentle, tasteful kiss, then turn back and smile at the camera, ending in the starting pose.'),
+        clip('mc_talk.mp4', 'MC đang nói', 2, 'mc_idle.png', true, 'The MC talks enthusiastically into the microphone, mouth moving as if speaking, nodding, his free hand gesturing toward the right side of the frame, friendly expression.'),
+        clip('mc_idle.mp4', 'MC đứng chờ', 2, 'mc_idle.png', true, 'The MC stands holding the microphone, breathing calmly with a slight sway, smiles and blinks naturally, glances toward the right side of the frame.'),
+        clip('walk_m.mp4', 'Khách nam đi lên (nhìn từ phía sau)', 2, 'walker_m.png', true, 'Seen from behind, the man walks away from the camera in place, as if on a treadmill: natural stride and arm swing, the red envelope in his hand. He stays exactly the same size and in the same spot, the camera does not follow.'),
+        clip('walk_f.mp4', 'Khách nữ đi lên (nhìn từ phía sau)', 2, 'walker_f.png', true, 'Seen from behind, the woman walks away from the camera in place, as if on a treadmill: graceful natural steps, the bouquet in her hand, the ao dai panels swaying softly. She stays exactly the same size and in the same spot, the camera does not follow.'),
+        { ...clip('bg_red_gold_party.mp4', 'Phông chế độ tiệc (làm cho từng phông)', 2, 'bg_red_gold.jpg', true, 'The empty wedding hall switches into party mode: colorful stage lights and moving spotlights sweep across the room, cold sparkler fountains shoot up along both sides of the red carpet, rose petals rain down and a disco ball sparkles under the chandeliers, then everything calms down and the hall returns to its exact starting look. Static locked-off camera: no zoom, no pan. No people appear. No text.', false), note: 'Khung đầu và khung cuối là ảnh phông đó. Đặt tên bg_<mã phông>_party.mp4 (vd bg_champagne_party.mp4); bg_party.mp4 thì tool tự gắn vào phông giống nhất. Phát khi cả rạp quẩy, bắn pháo hoa, có người lên sàn nhảy, kết thúc lễ.' }
+      ]
+    },
+    {
+      id: 'dong-tac', title: 'Video động tác trendy',
+      intro: 'Động tác trend TikTok cho cô dâu chú rể và khách: tinh nghịch, táo bạo vừa đủ để giữ chân người xem trẻ, nhưng vẫn trong luật TikTok LIVE (hôn nhanh, không hôn sâu, không sờ soạng, không hở hang; quá đà là LIVE bị tắt, Dreamina cũng chặn prompt). Trong Dreamina chọn AI Video → Seedance → First and last frames, đặt cùng một ảnh cho cả hai ô, tỷ lệ Auto, 720P, 5 giây (nhảy có thể chọn 10 giây). Video cặp đôi dùng couple_idle.png cho cả hai ô để chuyển động tác liền mạch; riêng cắt bánh và cụng ly cần ảnh có bánh, có ly. Muốn nhiều kiểu cho cùng một lúc thì đánh số: couple_kiss2, couple_kiss3, couple_dance2… tool chọn ngẫu nhiên mỗi lần. Bỏ file vào bo-hinh-moi, chạy node tools/xu-ly-bo-hinh.mjs rồi làm mới OBS.',
+      items: [
+        { ...clip('couple_kiss2.mp4', 'Hôn ngả người kiểu phim (dip kiss)', 1, 'couple_idle.png', true, 'Movie-style dip kiss: the groom pulls the bride close by the waist and dips her backward dramatically, they share a quick romantic kiss, he swings her back up, she laughs and playfully taps his chest, then they return to the exact starting pose smiling at the camera. Tasteful and romantic.'), note: 'Dùng khi: quà hôn, lúc hôn trong lễ. Tool chọn ngẫu nhiên giữa bản này và bản hôn đang có.' },
+        { ...clip('couple_kiss3.mp4', 'Cô dâu thơm má, chú rể đỏ mặt', 2, 'couple_idle.png', true, 'The bride stands on her tiptoes and gives the groom a quick peck on the cheek; he freezes, blushes and covers his face with one hand, shy and thrilled, she laughs and winks at the camera, then they return to the exact starting pose.'), note: 'Dùng khi: quà hôn, lúc hôn trong lễ (thêm một kiểu cho đỡ nhàm).' },
+        { ...clip('couple_ring.mp4', 'Quỳ gối trao nhẫn', 1, 'couple_idle.png', true, 'The groom drops to one knee in front of the bride and slides a sparkling ring onto her finger, she gasps with joy and covers her mouth, then pulls him up by his bow tie into a tight happy hug, and they return to the exact starting pose holding hands.'), note: 'Dùng khi: trao nhẫn trong lễ thành hôn, quà Trao nhẫn.' },
+        { ...clip('couple_thanks.mp4', 'Cúi chào kiểu idol, thả tim, hôn gió', 1, 'couple_idle.png', true, 'Idol-style thank you: the couple bows quickly to the camera, then both blow flying kisses and make finger hearts at the audience, the bride winks and the groom gives a charming smile, then they return to the exact starting pose.'), note: 'Dùng khi: khách tặng quà thường (cách nhau ít nhất 10 giây).' },
+        { ...clip('couple_shock.mp4', 'Ngất kiểu phim Hàn khi bị phá đám', 1, 'couple_idle.png', true, 'K-drama reaction: the bride gasps and dramatically fake-faints backward, the groom catches her in his arms just in time, both snap their heads toward the camera with exaggerated shocked faces, then burst out laughing, she stands back up and they return to the exact starting pose. Comedic, over-the-top acting.'), note: 'Dùng khi: có quà phá đám (hủy hôn), có người cưới luôn MC. Đặt tên couple_cancel.mp4 cũng được (vd cảnh giận dỗi bỏ đi).' },
+        { ...clip('couple_dance.mp4', 'Nhảy trend TikTok đôi', 2, 'couple_idle.png', true, 'The couple does a short viral TikTok couple dance in place: synchronized shoulder shimmies, a playful hip bump, the groom spins the bride once under his arm, both strike a cool pose toward the camera, then they return to the exact starting pose. Energetic, fun, perfectly in sync.'), note: 'Dùng khi: cả rạp quẩy, đổi nhạc. Có thể chọn 10 giây cho đủ điệu.' },
+        { ...clip('couple_heart2.mp4', 'Tim to bằng tay + tim ngón tay', 2, 'couple_idle.png', true, 'Both raise their arms together to form one big heart shape above their heads, then switch to cute finger hearts pointed at the camera, the bride winks and the groom gives a confident smirk, then they return to the exact starting pose.'), note: 'Dùng khi: vừa đủ đôi, đủ mục tiêu tim, mưa hoa. Chọn ngẫu nhiên với bản bắn tim đang có.' },
+        { ...clip('couple_wave2.mp4', 'Chào kiểu idol', 3, 'couple_idle.png', true, 'The bride does a cute idol-style wave with a V sign next to her eye, the groom does a cool two-finger salute and a wink at the camera, they bump shoulders playfully and laugh, then return to the exact starting pose.'), note: 'Dùng khi: có người mới nhận vai cô dâu, chú rể; cụng ly, pháo hoa khi chưa có video riêng.' },
+        { ...clip('couple_carry.mp4', 'Bế công chúa xoay vòng', 2, 'couple_idle.png', true, 'The groom sweeps the bride into a princess carry and spins once in place, she kicks her feet happily and wraps her arms around his neck, he winks at the camera, then gently sets her down and they return to the exact starting pose.'), note: 'Dùng khi: vào động phòng.' },
+        { ...clip('couple_bouquet.mp4', 'Tung hoa giả, lừa khán giả', 3, 'couple_idle.png', true, 'The bride winks at the camera and winds up as if to throw her bouquet to the guests, then fakes it out and pulls it back, laughing; the groom points at the audience playfully as if asking who wants it next. She keeps the bouquet the whole time and they return to the exact starting pose.'), note: 'Dùng khi: tung hoa cưới.' },
+        { ...clip('couple_petal.mp4', 'Thả hôn gió, chú rể bắt lấy', 3, 'couple_idle.png', true, 'The bride blows a flying kiss to the groom, he pretends to catch it in the air and presses it to his heart, then both look up with delight as if rose petals are falling and the bride twirls once in place, then they return to the exact starting pose. No petals or other objects appear in the frame.'), note: 'Dùng khi: mưa hoa hồng.' },
+        { ...clip('couple_fireworks.mp4', 'Nhảy cẫng ăn mừng', 3, 'couple_idle.png', true, 'Both look up and cheer as if watching fireworks, the groom lifts the bride slightly off the ground in excitement and they high-five, then return to the exact starting pose. Nothing new appears in the frame.'), note: 'Dùng khi: bắn pháo hoa.' },
+        { ...clip('couple_cake.mp4', 'Đút bánh, giả quẹt kem', 3, 'couple_cake.png', true, 'After cutting the cake together, the groom playfully reaches toward the bride\'s nose with a fingertip as if to dab cream, she dodges and laughs, then feeds him a tiny bite of cake and he pretends it is the best thing ever, then they return to the exact starting pose.'), note: 'Cần ảnh couple_cake.png (mục Cô dâu chú rể) làm cả khung đầu và khung cuối. Dùng khi: cắt bánh.' },
+        { ...clip('couple_cheers.mp4', 'Uống rượu giao bôi', 2, 'couple_cheers.png', true, 'Love-shot toast: the groom and bride link arms and drink from their champagne glasses with arms intertwined, eyes locked and smiling, then unlink, clink glasses and cheer toward the camera, then return to the exact starting pose.'), note: 'Cần ảnh couple_cheers.png (mục Cô dâu chú rể). Dùng khi: cụng ly 1 2 3 dzô, rót rượu sâm panh.' },
+        { ...clip('guest_m1_idle.mp4', 'Khách đứng nhún theo nhạc (làm cho từng khách)', 2, 'guest_m1.png', true, 'The person stands vibing to the music in place: a subtle head nod and shoulder groove on the beat, natural breathing, a playful smile and a quick wink at the camera, then returns to the exact starting pose.'), note: 'Làm cho từng khách: đổi cả hai ô thành ảnh của khách đó, đặt tên guest_m2_idle.mp4, guest_f3_idle.mp4… Khách có video này cử động liên tục khi ngồi bàn.' },
+        { ...clip('guest_m1_dance.mp4', 'Khách nhảy trend (làm cho từng khách)', 3, 'guest_m1.png', true, 'The person dances in place to a viral TikTok trend: hip sways, shoulder shimmies, a quick spin and a cool finishing pose with a finger heart at the camera, big smile, staying on the same spot, then returns to the exact starting pose.'), note: 'Đặt tên guest_<mã>_dance.mp4. Khi khách mặc bộ đồ đó tặng quà lên sàn nhảy, tool phát video này.' }
+      ]
+    },
+    {
+      id: 'nhac-cuoi', title: 'Nhạc cưới tự tạo (Suno)',
+      intro: 'Bài gốc do AI làm theo prompt, không chép giai điệu hay lời của bài có sẵn. Tạo bằng gói trả phí thì mới có quyền dùng thương mại. Trong Suno chọn Custom, dán từng ô bên dưới vào ô cùng tên; bài không lời thì bật Instrumental và bỏ trống Lyrics. Mỗi lần Suno ra 2 bản, nghe rồi giữ bản hay nhất, tải MP3 và đưa vào tool ở tab Nhạc Nền.',
+      items: [
+        { file: 'tu-nay-minh-la-cua-nhau.mp3', title: 'Bài hát cưới song ca nam nữ', ratio: 'có lời', pri: 1,
+          note: 'Ballad V-pop ngọt ngào giống không khí các bài hay mở trong đám cưới, nhưng giai điệu và lời đều mới. Không ghi tên bài hay tên ca sĩ có sẵn vào ô Styles.',
+          blocks: [
+            { label: 'Title', text: 'Từ Nay Mình Là Của Nhau' },
+            { label: 'Styles', text: 'Vietnamese V-pop wedding ballad, male and female duet sung in Vietnamese, warm piano, acoustic guitar, soft strings, gentle drums, heartfelt and romantic, builds to a big final chorus with a key change, 76 BPM' },
+            { label: 'Lyrics', text: `[Intro]
+
+[Verse 1 - Male vocal]
+Ngày anh gặp em giữa phố đông người
+Chỉ một nụ cười mà lòng anh chơi vơi
+Bao nhiêu mùa mưa nắng qua rồi
+Hôm nay anh đến rước em về thôi
+
+[Verse 1 - Female vocal]
+Ngày em gặp anh, em nào có hay
+Người con trai ấy sẽ cùng em đến hôm nay
+Áo cưới trắng tinh, hoa cầm trên tay
+Em nghe tim mình khẽ nói: chính là đây
+
+[Pre-Chorus - Duet]
+Pháo hồng rộn ràng ngoài ngõ
+Mẹ cười rưng rưng trong gió
+Họ hàng hai bên đứng đó
+Chờ đôi ta trao lời thề
+
+[Chorus - Duet]
+Từ nay mình là của nhau
+Dù mai sau nắng mưa dãi dầu
+Anh là mái nhà, em là ngọn đèn
+Thắp sáng những tháng năm dài phía sau
+Từ nay mình là của nhau
+Cùng nắm tay đi tới bạc đầu
+Trăm năm vẫn một lời hẹn ước
+Mình mãi mãi bên nhau
+
+[Verse 2 - Male vocal]
+Cảm ơn ba mẹ đã sinh ra em
+Cho anh được thương một người con gái hiền
+Anh hứa sẽ luôn che chở em
+Những lúc em buồn có anh kề bên
+
+[Verse 2 - Female vocal]
+Cảm ơn cuộc đời cho em gặp anh
+Chẳng mong cao sang, chỉ cần chân thành
+Sớm mai thức dậy có anh bên cạnh
+Vậy là đủ cho em trọn kiếp an lành
+
+[Pre-Chorus - Duet]
+Pháo hồng rộn ràng ngoài ngõ
+Mẹ cười rưng rưng trong gió
+Họ hàng hai bên đứng đó
+Chờ đôi ta trao lời thề
+
+[Chorus - Duet]
+Từ nay mình là của nhau
+Dù mai sau nắng mưa dãi dầu
+Anh là mái nhà, em là ngọn đèn
+Thắp sáng những tháng năm dài phía sau
+Từ nay mình là của nhau
+Cùng nắm tay đi tới bạc đầu
+Trăm năm vẫn một lời hẹn ước
+Mình mãi mãi bên nhau
+
+[Bridge]
+[Male vocal] Mai sau dù ra sao
+[Female vocal] Em vẫn tin vào nhau
+[Male vocal] Bao gian nan phía trước
+[Duet] Có anh có em, chẳng sợ chi đâu
+
+[Final Chorus - Duet, key change]
+Từ nay mình là của nhau
+Dù mai sau nắng mưa dãi dầu
+Anh là mái nhà, em là ngọn đèn
+Thắp sáng những tháng năm dài phía sau
+Từ nay mình là của nhau
+Cùng nắm tay đi tới bạc đầu
+Trăm năm vẫn một lời hẹn ước
+Mình mãi mãi bên nhau
+
+[Outro - Duet]
+Từ nay... mình là của nhau
+
+[End]` }
+          ] },
+        { file: 'don-khach.mp3', title: 'Nhạc nền đón khách', ratio: 'không lời', pri: 1,
+          blocks: [
+            { label: 'Title', text: 'Đón Khách Vào Rạp' },
+            { label: 'Styles', text: 'Instrumental, elegant wedding reception background music, warm romantic piano, soft strings, light acoustic guitar, bright and gentle, steady calm mood that loops well, 80 BPM, no vocals' }
+          ] },
+        { file: 'le-thanh-hon.mp3', title: 'Nhạc làm lễ thành hôn', ratio: 'không lời', pri: 2,
+          blocks: [
+            { label: 'Title', text: 'Lễ Thành Hôn' },
+            { label: 'Styles', text: 'Instrumental, grand wedding ceremony processional, majestic orchestral strings, warm pipe organ, harp glissandos, soft timpani, slow and uplifting, 64 BPM, no vocals' }
+          ] },
+        { file: 'quay-len-rap-cuoi.mp3', title: 'Nhạc quẩy cho sàn nhảy', ratio: 'có lời', pri: 2,
+          blocks: [
+            { label: 'Title', text: 'Quẩy Lên Rạp Cưới' },
+            { label: 'Styles', text: 'Vietnamese wedding party remix, vinahouse EDM, punchy four-on-the-floor kick, bouncy bass, bright synth lead, festive brass stabs, crowd chants in Vietnamese, 132 BPM, high energy' },
+            { label: 'Lyrics', text: `[Intro]
+Rạp cưới lên đèn rồi, cả nhà ơi!
+
+[Build]
+Một, hai, ba, dô!
+
+[Drop]
+
+[Verse]
+Cô dâu thì xinh, chú rể thì bảnh
+Họ hàng hai bên đứng vây quanh
+Ai ở phương xa thả tim thật nhanh
+Chúc đôi uyên ương mãi an lành
+
+[Chorus - Crowd chant]
+Quẩy lên! Quẩy lên! Rạp cưới hôm nay!
+Nâng ly chúc mừng, vỗ tay, vỗ tay!
+Quẩy lên! Quẩy lên! Vui hết đêm nay!
+Một, hai, ba, dô!
+
+[Drop]
+
+[Chorus - Crowd chant]
+Quẩy lên! Quẩy lên! Rạp cưới hôm nay!
+Nâng ly chúc mừng, vỗ tay, vỗ tay!
+Quẩy lên! Quẩy lên! Vui hết đêm nay!
+Một, hai, ba, dô!
+
+[Outro]
+Một, hai, ba, dô!
+
+[End]` }
+          ] },
+        { file: 'dem-tan-hon.mp3', title: 'Nhạc động phòng', ratio: 'không lời', pri: 3,
+          blocks: [
+            { label: 'Title', text: 'Đêm Tân Hôn' },
+            { label: 'Styles', text: 'Instrumental, romantic slow R&B lofi, soft electric piano, warm bass, gentle brushed drums, candlelight mood, 70 BPM, no vocals' }
+          ] }
+      ]
+    }
+  ];
+
+  const FIXES = [
+    ['Bị cắt mất chân hoặc đỉnh đầu', 'Zoom out so the whole body fits inside the image, with empty space above the head and below the shoes.'],
+    ['Nhân vật không giống ảnh mẫu', 'Keep the face, hairstyle, outfit and colors exactly identical to the attached reference image; only change the pose.'],
+    ['Nền ra ô caro xám trắng (trong suốt giả)', 'Do not draw a checkerboard pattern. Use a flat solid pure green background (#00FF00) instead.'],
+    ['Nền có sàn, bóng hoặc chuyển màu', 'The background must be one flat solid pure green color (#00FF00) everywhere, with no floor, no shadow, no gradient and no vignette.'],
+    ['Quần áo, hoa hoặc đạo cụ có màu xanh lá', 'Recolor every green part of the outfit, flowers and props to white, gold or pink.'],
+    ['Bàn tay, ngón tay bị lỗi', 'Anatomically correct hands with five fingers each, natural relaxed hand pose.'],
+    ['Video: máy quay tự di chuyển', 'Locked-off tripod shot. The camera never moves; the framing stays identical from the first frame to the last.'],
+    ['Video: nhân vật trôi, to ra hoặc nhỏ lại', 'The character stays centered at exactly the same size and position for the whole clip; only the body moves.'],
+    ['Video: tự thêm người, chữ hoặc nhạc', 'Only the people from the first frame appear. No new people, no text, no subtitles, no music.']
+  ];
+
+  const PRI = { 1: 'Ưu tiên 1', 2: 'Ưu tiên 2', 3: 'Làm sau' };
+  const REF_NOTE = { style: 'lấy phong cách', same: 'giữ nguyên nhân vật', couple: 'giữ nguyên cặp đôi' };
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  let style = store.get('bp-style', 'semi');
+  if (!STYLE[style]) style = 'semi';
+  let filter = store.get('bp-filter', 'all');
+  if (!['all', 'p1', 'todo'].includes(filter)) filter = 'all';
+  let bgMode = store.get('bp-bg', 'green');
+  if (!BG_CUTOUT[bgMode]) bgMode = 'green';
+  const savedDone = store.get('bp-done', []);
+  const done = new Set(Array.isArray(savedDone) ? savedDone : []);
+  const all = SECTIONS.flatMap(s => s.items);
+
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  };
+
+  const fullPrompt = item => (item.ref ? REF_TEXT[item.ref] : '') + item.prompt(style);
+  const mjPrompt = item => `${item.prompt(style).replace(/\s+/g, ' ').trim()} ${item.mj}`;
+  const visible = item => filter === 'p1' ? item.pri === 1 : filter === 'todo' ? !done.has(item.file) : true;
+
+  function copyText(btn, text, pre) {
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    const flash = (msg, ok) => {
+      btn.textContent = msg;
+      btn.classList.toggle('ok', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('ok'); }, 1800);
+    };
+    const fallback = () => {
+      const r = document.createRange();
+      r.selectNodeContents(pre);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      flash('Đã chọn, nhấn Ctrl+C', false);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(() => flash('Đã chép', true), fallback);
+    } catch {
+      fallback();
+    }
+  }
+
+  function codeBlock(label, text, extra) {
+    const wrap = el('div', 'prompt');
+    const bar = el('div', 'prompt-bar');
+    const btns = el('div', 'btns');
+    const pre = el('pre', '', text);
+    const main = el('button', 'copy', 'Sao chép');
+    main.type = 'button';
+    main.addEventListener('click', () => copyText(main, text, pre));
+    btns.append(main);
+    if (extra) {
+      const b = el('button', 'copy ghost', extra.label);
+      b.type = 'button';
+      b.addEventListener('click', () => copyText(b, extra.text, pre));
+      btns.append(b);
+    }
+    bar.append(el('span', 'lbl', label), btns);
+    wrap.append(bar, pre);
+    return wrap;
+  }
+
+  function updateProgress() {
+    const n = all.filter(i => done.has(i.file)).length;
+    document.getElementById('progress-text').replaceChildren('Đã tạo ', el('b', '', String(n)), `/${all.length} file`);
+    document.getElementById('progress-bar').style.width = `${Math.round((n / all.length) * 100)}%`;
+  }
+
+  function card(item) {
+    const c = el('article', 'card' + (done.has(item.file) ? ' done' : ''));
+    const top = el('div', 'card-top');
+    const chips = el('div', 'chips');
+    chips.append(el('span', 'chip', item.ratio), el('span', 'chip p' + item.pri, PRI[item.pri]));
+    if (item.loop !== undefined) chips.append(el('span', 'chip', item.loop ? 'lặp' : 'chạy 1 lần'));
+    top.append(el('span', 'file', item.file), el('h3', '', item.title), chips);
+    c.append(top);
+    if (item.note) c.append(el('p', 'note', item.note));
+    const isVideo = item.file.endsWith('.mp4');
+    if (item.blocks) item.blocks.forEach(b => c.append(codeBlock(b.label, b.text)));
+    else c.append(codeBlock(isVideo ? 'Prompt video' : 'Prompt ảnh', fullPrompt(item), item.mj ? { label: 'Bản Midjourney', text: mjPrompt(item) } : null));
+
+    const foot = el('div', 'card-foot');
+    const label = el('label', 'done-toggle');
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = done.has(item.file);
+    box.addEventListener('change', () => {
+      if (box.checked) done.add(item.file); else done.delete(item.file);
+      c.classList.toggle('done', box.checked);
+      store.set('bp-done', [...done]);
+      updateProgress();
+      if (filter === 'todo') setTimeout(renderAll, 450);
+    });
+    label.append(box, document.createTextNode('Đã tạo xong'));
+    foot.append(label);
+    if (item.from) {
+      const f = el('span', 'from');
+      if (isVideo) {
+        f.append('Khung đầu: ', el('code', '', item.green && bgMode === 'alpha' ? `nen-xanh/${item.from}` : item.from));
+        if (item.loop) f.append(' · khung cuối: cùng ảnh');
+      } else {
+        f.append('Tải kèm: ', el('code', '', item.from), ` (${REF_NOTE[item.ref]})`);
+      }
+      foot.append(f);
+    }
+    c.append(foot);
+    return c;
+  }
+
+  function renderSections() {
+    const host = document.getElementById('sections');
+    host.replaceChildren();
+    let shown = 0;
+    for (const sec of SECTIONS) {
+      const items = sec.items.filter(visible);
+      if (!items.length) continue;
+      shown += items.length;
+      const section = el('section');
+      section.id = sec.id;
+      const head = el('div', 'sec-head');
+      head.append(el('h2', '', sec.title), el('p', '', sec.intro));
+      section.append(head);
+      if (sec.command) section.append(el('p', 'note', sec.command.text), codeBlock(sec.command.label, sec.command.code));
+      const cards = el('div', 'cards');
+      items.forEach(i => cards.append(card(i)));
+      section.append(cards);
+      host.append(section);
+    }
+    if (!shown) host.append(el('p', 'empty', filter === 'todo' ? 'Đã tạo xong tất cả file. Bỏ hết vào thư mục bo-hinh-moi là xong phần này.' : 'Không có file nào khớp bộ lọc.'));
+  }
+
+  function renderToc() {
+    const links = [['cach-lam', 'Cách làm', '']];
+    for (const s of SECTIONS) {
+      const n = s.items.filter(visible).length;
+      if (n) links.push([s.id, s.title.replace(/ \(.*\)$/, ''), String(n)]);
+    }
+    links.push(['sua-loi', 'Sửa lỗi nhanh', ''], ['dat-ten', 'Đặt tên và gửi file', '']);
+    document.getElementById('toc').replaceChildren(...links.map(([id, title, n]) => {
+      const a = el('a');
+      a.href = '#' + id;
+      a.append(el('span', '', title));
+      if (n) a.append(el('span', 'n', n));
+      return a;
+    }));
+  }
+
+  function renderFixes() {
+    document.getElementById('fixes').replaceChildren(...FIXES.map(([problem, fix]) => {
+      const row = el('div', 'fix');
+      row.append(el('b', '', problem), codeBlock('Thêm vào prompt', fix));
+      return row;
+    }));
+  }
+
+  function renderAll() {
+    document.querySelectorAll('[data-style]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.style === style)));
+    document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+    document.querySelectorAll('[data-bgmode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.bgmode === bgMode)));
+    renderToc();
+    renderSections();
+    updateProgress();
+  }
+
+  document.querySelectorAll('[data-style]').forEach(b => b.addEventListener('click', () => {
+    style = b.dataset.style;
+    store.set('bp-style', style);
+    renderAll();
+  }));
+  document.querySelectorAll('[data-bgmode]').forEach(b => b.addEventListener('click', () => {
+    bgMode = b.dataset.bgmode;
+    store.set('bp-bg', bgMode);
+    renderAll();
+  }));
+  document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
+    filter = b.dataset.filter;
+    store.set('bp-filter', filter);
+    renderAll();
+  }));
+
+  renderFixes();
+  renderAll();
+})();
+</script>

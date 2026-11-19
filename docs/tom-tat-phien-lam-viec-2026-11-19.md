@@ -43,7 +43,7 @@ Người tặng nhiều xu nhất được ghi công cạnh đôi trẻ tới h�
 
 ### 2.3 Hình và video cho biến cố
 
-Chủ dự án tự tạo hình bằng công cụ AI theo bộ prompt do trợ lý soạn (một trang riêng, không nằm trong repo), bỏ vào `bo-hinh-moi/` rồi chạy công cụ xử lý. Đã có: người yêu cũ nam (tài xế công nghệ giao trà sữa tới đúng đám cưới người yêu cũ) và nữ (cầm hóa đơn tới tính sổ), bố vợ áo ba lỗ quần đùi cầm chổi lông gà (bản khó chịu và bản cười), hội trường lúc cúp điện, bốn hiệu ứng tràn màn hình, cô dâu hóa gián, cặp đôi hết hồn, em bé trai và gái.
+Chủ dự án tự tạo hình bằng công cụ AI theo bộ prompt do trợ lý soạn (xem [kich-ban-va-prompt-bien-co.md](kich-ban-va-prompt-bien-co.md)), bỏ vào `bo-hinh-moi/` rồi chạy công cụ xử lý. Đã có: người yêu cũ nam (tài xế công nghệ giao trà sữa tới đúng đám cưới người yêu cũ) và nữ (cầm hóa đơn tới tính sổ), bố vợ áo ba lỗ quần đùi cầm chổi lông gà (bản khó chịu và bản cười), hội trường lúc cúp điện, bốn hiệu ứng tràn màn hình, cô dâu hóa gián, cặp đôi hết hồn, em bé trai và gái.
 
 Sửa công cụ `tools/xu-ly-bo-hinh.mjs`:
 
@@ -128,7 +128,7 @@ Lưu ý khi phát triển: server thật phục vụ thẳng thư mục `app/` v
 
 ## 7. Còn lại
 
-- **Hình còn thiếu:** `bc_uncle` (ông chú giành mic), `bc_kid` (Bé Tí quẹt bánh), `bc_friends` (hội bạn thân chặn cửa), mỗi cái một ảnh và một video. Chưa có thì app mượn hình một vị khách và che mặt bằng biểu tượng. Có rồi thì chạy `node tools/xu-ly-bo-hinh.mjs --chi=bc`.
+- **Hình còn thiếu:** `bc_uncle` (ông chú giành mic), `bc_kid` (Bé Tí quẹt bánh), `bc_friends` (hội bạn thân chặn cửa), mỗi cái một ảnh và một video. Prompt nằm ở mục "Nhân vật sự cố" của [kich-ban-va-prompt-bien-co.md](kich-ban-va-prompt-bien-co.md). Chưa có thì app mượn hình một vị khách và che mặt bằng biểu tượng. Có rồi thì chạy `node tools/xu-ly-bo-hinh.mjs --chi=bc`.
 - **Gán quà em bé** trong tab "Luật quà" để bật màn sinh con.
 - **Ảnh nguồn hơi nhỏ** (rộng 498 px, đề nghị từ 1080 px); hội trường lúc cúp điện sẽ hơi mờ. Tải lại bản gốc rồi xử lý lại nếu có.
 - **Theo dõi trên LIVE thật:** khi các bước tự diễn miễn phí, quà hôn, cắt bánh, rót rượu mất vai trò "tặng mới được xem" và chỉ còn tác dụng gỡ sự cố. Giả định là tiền chủ yếu đến từ quà nhận vai và thay vai (suy từ một mẫu nhỏ). Nếu thu giảm, tắt "Tiệc mừng tự diễn" để so sánh.
