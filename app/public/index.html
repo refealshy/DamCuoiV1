@@ -449,6 +449,18 @@
                 </select>
               </div>
               <div class="form-group">
+                <label>💐 Tung hoa cưới — trong tiệc mừng cô dâu tung hoa, khán giả gõ "chụp" để bắt (miễn phí, hết giờ bốc một người đã giơ tay) hoặc tặng quà để chụp chắc. Người bắt được lên làm cô dâu / chú rể lượt sau. Thời gian chụp bao nhiêu giây (0 = tắt):</label>
+                <input type="number" id="cfg-toss-seconds" value="9" min="0" max="30">
+              </div>
+              <div class="form-group">
+                <label>✈️ Tuần trăng mật — cuối tiệc mừng, màn hình bày ra danh sách điểm đến (ảnh làm mờ), cả rạp tặng quà để chọn: tổng xu quà trong chuyến tới mức của nơi nào thì đôi trẻ đi nơi đó, rồi hiện tấm ảnh check-in. Không ai tặng thì trăng mật ở chỗ gần nhà. Thời gian chọn bao nhiêu giây (0 = tắt). Chỉ chạy khi bật "Tiệc mừng tự diễn":</label>
+                <input type="number" id="cfg-moon-seconds" value="12" min="0" max="60">
+              </div>
+              <div class="form-group">
+                <label>✈️ Tuần trăng mật — mức xu của từng nơi (viết <b>mã=số xu</b>, cách nhau bằng dấu phẩy). Nơi rẻ nhất cũng là nơi cả rạp được đi khi thả tim, bình luận đủ:</label>
+                <input type="text" id="cfg-moon-prices" value="dalat=1, phuquoc=5, halong=10, seoul=30, tokyo=50, paris=99, maldives=199">
+              </div>
+              <div class="form-group">
                 <label>🧯 Sự cố trong tiệc mừng (một bước đang miễn phí bị chặn lại, cả rạp gỡ bằng tim, bình luận hoặc quà) — trung bình mấy lượt cưới một lần (0 = tắt). Chỉ chạy khi bật "Tiệc mừng tự diễn":</label>
                 <input type="number" id="cfg-hitch-every" value="2" min="0" max="50">
               </div>

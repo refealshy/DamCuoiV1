@@ -73,7 +73,33 @@ Luật chung của sự cố:
 
 Các màn này dùng chuyện quen ở đám cưới Việt, không đưa trend nào vào vì chưa thấy trend nào hợp cảnh.
 
-### 2.5 Việc nhỏ khác
+### 2.5 Tuần trăng mật (thêm ngày 20/11/2026)
+
+Bước cuối của tiệc mừng tự diễn, trước khi vào phòng tân hôn. Màn hình bày ra danh sách mười điểm đến, mỗi ô là ảnh cảnh làm mờ kèm mức xu, và cả rạp tặng quà để chọn:
+
+| Điểm đến | Mức xu mặc định |
+|---|---|
+| Quán trà đá đầu ngõ, sân thượng nhà chú rể, hồ câu cá cuối xóm | Miễn phí (mặc định, bốc một trong ba) |
+| Đà Lạt | 1, hoặc cả rạp thả tim, bình luận đủ mục tiêu |
+| Phú Quốc, vịnh Hạ Long | 5, 10 |
+| Seoul, Tokyo, Paris, Maldives | 30, 50, 99, 199 |
+
+Tổng xu quà của cả rạp trong chuyến tới mức của nơi nào thì đôi trẻ đi nơi đó (lấy nơi đắt nhất đã đạt). Cả rạp góp chung nên không có phe nào thua, và kết quả chắc chắn theo số xu, không may rủi. Người tặng nhiều xu nhất là nhà tài trợ. Hết giờ, danh sách thu lại và hiện tấm ảnh check-in có đôi trẻ ở nơi được chọn, kèm thẻ ghi nơi đến và nhà tài trợ. Không ai tặng thì đôi trẻ trăng mật ở chỗ gần nhà (miếng hài), rồi vào phòng như thường. Quà "động phòng luôn" giữa lúc chọn thì bỏ chuyến, vào phòng ngay.
+
+Mỗi điểm đến có hai ảnh trong bộ hình: `moon_<mã>.jpg` là cảnh không người (dùng cho ô chọn và nền mờ), `checkin_<mã>.jpg` là tấm trọn cảnh có đôi trẻ nằm hẳn trong cảnh và mặc đồ của nơi đó (ngồi ghế nhựa uống trà đá, kimono dưới hoa anh đào ở Tokyo, hanbok móc ổ khóa ở Seoul...). Tấm check-in được tạo bằng hai ảnh tham chiếu: `moon_<mã>.jpg` và `couple_idle.png`. Cả 20 ảnh đã có từ ngày 20/11/2026.
+
+### 2.6 Chụp hoa cưới (thêm ngày 20/11/2026)
+
+Mục đích: cho khán giả tương tác nhiều hơn, và có một cửa miễn phí để lên sân khấu. Sau khi cụng ly, cô dâu tung hoa, bó hoa lơ lửng trên đầu cả rạp 9 giây:
+
+- **Cửa miễn phí:** bình luận "chụp" (hoặc "bắt") để giơ tay. Hết giờ, một người trong số đã giơ tay bắt được hoa.
+- **Cửa quà:** tặng một món quà bất kỳ là "chụp chắc": người tặng chắc chắn bắt được (nhiều người tặng thì lấy người nhiều xu nhất, ai trước thì hơn).
+- **Phần thưởng là thật:** người bắt được được xếp lên làm cô dâu (khách nữ) hoặc chú rể (khách nam) lượt sau. Có hàng chờ thì người chụp bằng quà đứng đầu hàng, người chụp bằng bình luận xếp cuối hàng (sau những người đã tặng quà xếp hàng). Không có hàng chờ thì lượt sau MC mời người đó lên trước.
+- Bốc ngẫu nhiên chỉ dùng cho cửa miễn phí; đã tặng quà thì kết quả chắc chắn. Cô dâu, chú rể đang trên sân khấu không chụp hoa của chính mình. Không ai chụp thì hoa rơi, tiệc vẫn đi tiếp.
+
+Món quà "tung hoa cưới" cũng mở màn này khi tắt tiệc mừng tự diễn; còn khi bật thì lượt nào cũng đã có bước tung hoa.
+
+### 2.7 Việc nhỏ khác
 
 - Thời gian chờ khi sân khấu trống trước khi MC ghép đôi ngẫu nhiên: 8 giây lên 60 giây.
 - Câu MC giữ trong khoảng 14 từ trở xuống (trừ các bài thơ).
@@ -84,7 +110,7 @@ Các màn này dùng chuyện quen ở đám cưới Việt, không đưa trend 
 2. Đủ đôi: đếm ngược tới lễ. Bảng "ai dám phá đám" mời quà thay vai, hủy hôn.
 3. Hết đếm ngược: thỉnh thoảng có biến cố trước lễ (mục 2.1, và "quên nhẫn").
 4. Lễ thành hôn, chụp ảnh cưới.
-5. Tiệc mừng tự diễn: hôn, cắt bánh, cụng ly; thỉnh thoảng một sự cố chặn một bước.
+5. Tiệc mừng tự diễn: hôn, cắt bánh, cụng ly; thỉnh thoảng một sự cố chặn một bước. Sau đó cô dâu tung hoa cho khán giả chụp, rồi tới tuần trăng mật.
 6. Vào phòng tân hôn (hoặc bị chặn cửa). Cửa đóng: cửa sổ sinh con nếu đã gán quà em bé.
 7. Đôi trẻ rời sân khấu, mở vai cho lượt mới.
 
@@ -95,6 +121,9 @@ Các màn này dùng chuyện quen ở đám cưới Việt, không đưa trend 
 | Tiệc mừng tự diễn | `partyFree` | bật | Tắt thì về kiểu cũ: chờ quà mới hôn, cắt bánh; hết giờ phòng khóa cửa |
 | Sự cố trong tiệc mừng | `hitchEvery` | 2 | Trung bình mấy lượt cưới một sự cố; 0 là tắt |
 | Loại sự cố | `twists.ring/kiss/cake/cheers/room` | bật | Bật tắt từng loại |
+| Tung hoa cưới | `tossSeconds` | 9 | Thời gian khán giả chụp hoa; 0 là tắt |
+| Tuần trăng mật | `moonSeconds` | 12 | Thời gian chọn điểm đến; 0 là tắt |
+| Mức xu từng nơi | `moonPrices` | Đà Lạt 1 … Maldives 199 | Tổng xu quà trong chuyến trăng mật tới mức nào thì đi nơi đó |
 | Sinh con | `babySeconds` | 15 | Cửa phòng đóng bao nhiêu giây; 0 là tắt |
 | Chờ khi sân khấu trống | `autoPairSeconds` | 60 | Giây chờ trước khi MC ghép đôi ngẫu nhiên |
 
@@ -104,7 +133,7 @@ Luật quà có thêm hai hành động "Sinh bé trai" và "Sinh bé gái". Ch�
 
 | File | Phần liên quan |
 |---|---|
-| `app/server.cjs` | Mục "BIẾN CỐ" (bảng `HITCH`, `startTwist`, `twistAdd`, `resolveTwist`), mục "TIỆC MỪNG TỰ DIỄN" (`startParty`, `partyNext`, `startHitch`, `partyAfterHitch`, `partyRoom`), mục "SINH CON" (`startBaby`, `babyGift`, `resolveBaby`) |
+| `app/server.cjs` | Mục "TUNG HOA CƯỚI" (`startToss`, `tossGrab`, `tossGift`, `resolveToss`), mục "TUẦN TRĂNG MẬT" (`startMoon`, `moonAdd`, `resolveMoon`), mục "BIẾN CỐ" (bảng `HITCH`, `startTwist`, `twistAdd`, `resolveTwist`), mục "TIỆC MỪNG TỰ DIỄN" (`startParty`, `partyNext`, `startHitch`, `partyAfterHitch`, `partyRoom`), mục "SINH CON" (`startBaby`, `babyGift`, `resolveBaby`) |
 | `app/mc_lines.cjs` | 150 nhóm câu MC; mỗi sự cố có `twist<Tên>Start`, `Win`, `Lose` và `twistGift<Tên>` |
 | `app/public/overlay.js` | Bảng `TWIST_UI` (mọi chữ trên màn hình của biến cố và sự cố), `twistActorShow`, `twistEnd`, `babyWindow`, `babyReveal`, bảng mời quà lúc tiệc mừng |
 | `app/public/overlay.css` | Kiểu của bảng hai cửa, bảng sinh con, màn khoe em bé |
@@ -128,8 +157,8 @@ Lưu ý khi phát triển: server thật phục vụ thẳng thư mục `app/` v
 
 ## 7. Còn lại
 
-- **Hình còn thiếu:** `bc_uncle` (ông chú giành mic), `bc_kid` (Bé Tí quẹt bánh), `bc_friends` (hội bạn thân chặn cửa), mỗi cái một ảnh và một video. Prompt nằm ở mục "Nhân vật sự cố" của [kich-ban-va-prompt-bien-co.md](kich-ban-va-prompt-bien-co.md). Chưa có thì app mượn hình một vị khách và che mặt bằng biểu tượng. Có rồi thì chạy `node tools/xu-ly-bo-hinh.mjs --chi=bc`.
+- **Hình:** đã đủ cho mọi màn (nhân vật sự cố, em bé, 10 ảnh điểm đến và 10 tấm check-in trăng mật). Thêm hoặc đổi hình thì bỏ vào `bo-hinh-moi/` rồi chạy `node tools/xu-ly-bo-hinh.mjs --chi=bc`.
 - **Gán quà em bé** trong tab "Luật quà" để bật màn sinh con.
 - **Ảnh nguồn hơi nhỏ** (rộng 498 px, đề nghị từ 1080 px); hội trường lúc cúp điện sẽ hơi mờ. Tải lại bản gốc rồi xử lý lại nếu có.
 - **Theo dõi trên LIVE thật:** khi các bước tự diễn miễn phí, quà hôn, cắt bánh, rót rượu mất vai trò "tặng mới được xem" và chỉ còn tác dụng gỡ sự cố. Giả định là tiền chủ yếu đến từ quà nhận vai và thay vai (suy từ một mẫu nhỏ). Nếu thu giảm, tắt "Tiệc mừng tự diễn" để so sánh.
-- **Lượt cưới dài hơn:** phần sau lễ khoảng 25 giây tiệc cộng 12 giây vào phòng; lượt có sự cố thêm khoảng 25 giây, có cửa sổ sinh con thêm khoảng 21 giây.
+- **Lượt cưới dài hơn:** phần sau lễ khoảng 25 giây tiệc cộng 12 giây vào phòng; lượt có sự cố thêm khoảng 25 giây, có cửa sổ sinh con thêm khoảng 21 giây, tuần trăng mật thêm khoảng 20 giây.

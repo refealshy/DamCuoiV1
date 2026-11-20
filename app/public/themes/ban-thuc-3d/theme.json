@@ -1,7 +1,7 @@
 {
   "id": "ban-thuc-3d",
   "name": "Bán thực 3D",
-  "version": 1795014539942,
+  "version": 1795164821405,
   "display": {
     "couple": 460,
     "mc": 330,
@@ -219,7 +219,46 @@
         }
       }
     },
+    "uncle": {
+      "aspect": 0.5625,
+      "img": "bc_uncle.webp",
+      "video": "bc_uncle.webm"
+    },
+    "kid": {
+      "aspect": 0.6544,
+      "img": "bc_kid.webp",
+      "video": "bc_kid.webm"
+    },
+    "friends": {
+      "aspect": 1,
+      "img": "bc_friends.webp",
+      "video": "bc_friends.webm"
+    },
     "dark": "bc_dark.jpg",
+    "checkin": {
+      "dalat": "checkin_dalat.jpg",
+      "halong": "checkin_halong.jpg",
+      "hocau": "checkin_hocau.jpg",
+      "maldives": "checkin_maldives.jpg",
+      "paris": "checkin_paris.jpg",
+      "phuquoc": "checkin_phuquoc.jpg",
+      "santhuong": "checkin_santhuong.jpg",
+      "seoul": "checkin_seoul.jpg",
+      "tokyo": "checkin_tokyo.jpg",
+      "trada": "checkin_trada.jpg"
+    },
+    "moon": {
+      "dalat": "moon_dalat.jpg",
+      "halong": "moon_halong.jpg",
+      "hocau": "moon_hocau.jpg",
+      "maldives": "moon_maldives.jpg",
+      "paris": "moon_paris.jpg",
+      "phuquoc": "moon_phuquoc.jpg",
+      "santhuong": "moon_santhuong.jpg",
+      "seoul": "moon_seoul.jpg",
+      "tokyo": "moon_tokyo.jpg",
+      "trada": "moon_trada.jpg"
+    },
     "fx": {
       "goldrain": {
         "src": "bc_fx_goldrain.webm"

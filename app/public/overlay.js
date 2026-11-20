@@ -2025,7 +2025,7 @@ function updateCrashPanel() {
   const c = cfg();
   // Đang có bảng thông báo lớn thì nhường chỗ (hai bảng nằm cùng vùng giữa màn hình)
   const bannerOn = $('#ceremony-alert-banner')?.hidden === false;
-  const free = Boolean(s) && !ceremonyRunning && !dpActive && !kickHold && !bannerOn && !tw && c.enableMarryAuction !== false;
+  const free = Boolean(s) && !ceremonyRunning && !dpActive && !kickHold && !bannerOn && !tw && !ts && c.enableMarryAuction !== false;
   const show = free && tagPhase === 'countdown';
   // Tiệc mừng: phòng tân hôn chỉ mở tới hết giờ. Ai tặng quà động phòng trước là ông mai / bà mối tiễn đôi trẻ vào phòng;
   // không ai tặng thì phòng khóa cửa, đôi trẻ lỡ phòng.
@@ -2180,6 +2180,8 @@ function renderState(s) {
   renderHowTo(c);
   applyBgm();
   twistSync(s.twist);
+  moonSync(s.moon);
+  tossSync(s.toss);
   renderAttendants(s);
   const onStage = s.rawRoles || s.roles || {};
   if (!tw && (s.ceremony?.phase || 'idle') === 'idle' && !onStage.groom && !onStage.bride) twistTurnOver();
@@ -2197,6 +2199,7 @@ function showCeremonyBanner(title, subtitle, type = 'gold', durationMs = 5500, k
   // Biến cố đang diễn: bảng thử thách đang nằm đúng chỗ này. Bảng tin của các món quà tặng lúc đó (mưa hoa, hôn, pháo hoa...)
   // nhường chỗ, hiệu ứng của quà vẫn chạy. Bảng tin kết cục của chính biến cố thì hiện sau khi biến cố đã khép (tw.ended).
   if (tw && !tw.ended) return;
+  if (ts?.open) return; // đang tung hoa: bảng "gõ chụp" nằm đúng chỗ này
   durationMs = Math.round(durationMs * bannerHoldScale);
   // Đưa bảng ra lớp ngoài cùng của khung hình (không nằm trong sân khấu) để to được và không bị các bảng khác che
   if (banner.parentElement !== $('#frame')) $('#frame').append(banner);
@@ -4701,7 +4704,11 @@ function twistActorShow(d) {
   }
   // Bảng thử thách cao thấp tùy độ dài tên: nhân vật thấp bớt lại nếu cần, để đầu và thẻ tên không chui dưới bảng
   const panelBottom = ui.panel.offsetTop + ui.panel.offsetHeight;
-  const h = Math.max(340, Math.min(TWIST_ACTOR.h, TWIST_ACTOR.bottom - panelBottom - 20));
+  // Nhóm nhiều người (hội bạn thân, ảnh rộng): thấp bớt lại, thẻ tên và bong bóng đưa lên phía trên đầu để không che mặt ai
+  const wide = (aspect || 0.5) >= 0.9;
+  const h = wide ? Math.max(300, Math.min(340, TWIST_ACTOR.bottom - panelBottom - 130))
+    : Math.max(340, Math.min(TWIST_ACTOR.h, TWIST_ACTOR.bottom - panelBottom - 20));
+  ui.actor.classList.toggle('wide', wide);
   const w = Math.round(h * (aspect || 0.5));
   Object.assign(ui.actor.style, { width: `${w}px`, height: `${h}px`, left: `${TWIST_ACTOR.x - w / 2}px`, top: `${TWIST_ACTOR.bottom - h}px` });
   ui.actor.dataset.kind = d.kind;
@@ -5498,6 +5505,340 @@ realtime.addEventListener('action', e => {
     // Lời MC đi kèm nút bấm / mục tiêu / người nhận vai lượt mới (ghép đôi ngẫu nhiên: đọc sau khi quay xong)
     if (d.line && !['roles_open', 'random_pair'].includes(d.action)) speak(d.line);
   } catch (err) { console.warn('action error', err); }
+});
+
+// ========================================================
+// TUẦN TRĂNG MẬT: cảnh tràn màn hình ở cuối tiệc mừng. Bày ra danh sách điểm đến, mỗi nơi một ô có ảnh nền làm mờ và mức xu;
+// cả rạp tặng quà để chọn (tổng xu tới mức nào thì đi nơi đó, đủ tim thì được nơi rẻ nhất). Hết giờ: hiện tấm ảnh check-in
+// có đôi trẻ ở nơi được chọn. Ảnh lấy từ bộ hình: events.moon.<mã> (cảnh không người, dùng cho ô chọn và nền mờ),
+// events.checkin.<mã> (đôi trẻ đã nằm trong cảnh, dùng lúc khoe). Chưa có ảnh thì vẽ tạm bằng màu nền và biểu tượng.
+// ========================================================
+const MOON_UI = {
+  stamps: ['TRĂNG MẬT TẠI GIA', 'CHECK-IN SANG CHẢNH', 'CHECK-IN HẠNG THƯƠNG GIA'],
+  places: {
+    trada: { emoji: '🍵', bg: 'linear-gradient(180deg, #6b7f55, #3a4630 55%, #2a2118)', cap: 'Hai ly trà đá, một gói hướng dương' },
+    santhuong: { emoji: '🏠', bg: 'linear-gradient(180deg, #7fb0d8, #c9d6dd 50%, #8a8f95)', cap: 'View triệu đô: dây phơi đồ và bồn nước inox' },
+    hocau: { emoji: '🎣', bg: 'linear-gradient(180deg, #86b8a0, #3f7f6b 55%, #24443c)', cap: 'Lãng mạn bên hồ, muỗi đốt là chính' },
+    dalat: { emoji: '🌲', bg: 'linear-gradient(180deg, #ffd9b8, #9fc2a8 48%, #2f5a45)', cap: 'Săn mây đồi thông, sáng lạnh ôm nhau' },
+    phuquoc: { emoji: '🏝️', bg: 'linear-gradient(180deg, #ff9a5c, #ffcf8a 38%, #2aa7c4 62%, #f2dfb8)', cap: 'Hoàng hôn trên biển, nước trong thấy đáy' },
+    halong: { emoji: '⛵', bg: 'linear-gradient(180deg, #9fd4e8, #5fa7b8 50%, #1f5f72)', cap: 'Du thuyền ngủ đêm giữa vịnh' },
+    maldives: { emoji: '🌊', bg: 'linear-gradient(180deg, #5fd0ff, #b8f0ff 40%, #19c4c9 62%, #f7efd8)', cap: 'Biệt thự trên mặt nước, bước ra là biển' },
+    paris: { emoji: '🗼', bg: 'linear-gradient(180deg, #2a2f5a, #b86a8f 50%, #ffc98a)', cap: 'Cà phê dưới chân tháp Eiffel' },
+    tokyo: { emoji: '🌸', bg: 'linear-gradient(180deg, #3a2a6a, #ff8fb8 46%, #ffd9e6 62%, #5a3a7a)', cap: 'Hoa anh đào nở, tháp Tokyo lên đèn' },
+    seoul: { emoji: '🔐', bg: 'linear-gradient(180deg, #1f2f6a, #6a7fd0 44%, #ffb38a 62%, #2a2a4a)', cap: 'Lên tháp Namsan móc khóa tình yêu' }
+  }
+};
+// Trang phục rời của đôi trẻ theo điểm đến (hình trip_<mã>), chỉ dùng cho nơi chưa có tấm check-in trọn cảnh
+const MOON_OUTFIT = { trada: 'home', santhuong: 'home', hocau: 'home', dalat: 'dalat', phuquoc: 'beach', halong: 'beach', maldives: 'beach', paris: 'paris', tokyo: 'tokyo', seoul: 'seoul' };
+function moonCoupleImg(key) {
+  const st = theme.data.events?.trip?.states || {};
+  const f = st[key]?.img || st[MOON_OUTFIT[key]]?.img;
+  return `url('${f ? themeAsset(f) : coupleStill('trip', 'wave', 'heart', 'idle')}')`;
+}
+const moonName = n => { const t = String(n || ''); return t.charAt(0).toUpperCase() + t.slice(1); };
+// Ảnh cảnh không người của một nơi (ô chọn, nền mờ); tấm check-in có đôi trẻ (lúc khoe)
+const moonScene = key => {
+  const f = theme.data.events?.moon?.[key] || theme.data.events?.checkin?.[key];
+  return f ? `url('${themeAsset(f)}') center / cover no-repeat` : (MOON_UI.places[key] || MOON_UI.places.trada).bg;
+};
+const moonBaked = key => Boolean(theme.data.events?.checkin?.[key]);
+const moonFull = key => {
+  const f = theme.data.events?.checkin?.[key] || theme.data.events?.moon?.[key];
+  return f ? `url('${themeAsset(f)}') center / cover no-repeat` : (MOON_UI.places[key] || MOON_UI.places.trada).bg;
+};
+let moonUi = null;
+let mn = null; // chuyến đang hiện: { deadline, key, groom, bride, timers, d }
+function moonEls() {
+  if (moonUi) return moonUi;
+  const mk = (tag, cls, parent, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; parent.append(e); return e; };
+  const root = mk('div', '', $('#frame'));
+  root.id = 'moon';
+  const ui = { root, opts: new Map() };
+  ui.bg = mk('div', 'mn-bg', root);           // nền mờ: cảnh của nơi đang được chọn
+  ui.full = mk('div', 'mn-full', root);       // lúc khoe: tấm ảnh check-in, rõ nét
+  ui.emoji = mk('div', 'mn-emoji', root);
+  ui.couple = mk('div', 'mn-couple', root);   // chỉ dùng khi nơi đó chưa có tấm check-in trọn cảnh
+  ui.shade = mk('div', 'mn-shade', root);
+  const head = mk('div', 'mn-head', root);
+  mk('b', '', head, '✈️ TUẦN TRĂNG MẬT');
+  ui.timer = mk('i', 'mn-timer', head);
+  ui.sub = mk('div', 'mn-sub', root, '🎁 Tặng quà để chọn nơi trăng mật · tổng quà tới mức nào, đi nơi đó');
+  ui.grid = mk('div', 'mn-grid', root);
+  const meters = mk('div', 'mn-meters', root);
+  ui.hearts = mk('span', 'mn-meter', meters);
+  ui.coins = mk('span', 'mn-meter gift', meters);
+  ui.card = mk('div', 'mn-card', root);
+  ui.stamp = mk('i', 'mn-stamp', ui.card);
+  ui.who = mk('span', 'mn-who', ui.card);
+  ui.place = mk('b', 'mn-place', ui.card);
+  ui.cap = mk('span', 'mn-cap', ui.card);
+  ui.by = mk('span', 'mn-by', ui.card);
+  return (moonUi = ui);
+}
+// Dựng các ô chọn: nơi đắt nhất nằm trên cùng, ba chỗ miễn phí nằm dưới cùng
+function moonGrid(d) {
+  const ui = moonEls();
+  const list = (d.options || []).slice().sort((a, b) => b.price - a.price);
+  const cheapest = Math.min(...list.filter(o => o.price > 0).map(o => o.price));
+  ui.opts.clear();
+  ui.grid.replaceChildren(...list.map(o => {
+    const el = document.createElement('div');
+    el.className = [...o.name].length > 16 ? 'mn-opt long' : 'mn-opt';
+    const pic = document.createElement('div');
+    pic.className = 'mn-opt-pic';
+    pic.style.background = moonScene(o.key);
+    const name = document.createElement('b');
+    name.textContent = moonName(o.name);
+    const price = document.createElement('i');
+    price.textContent = !o.price ? 'MIỄN PHÍ' : o.price === cheapest ? `${fmt(o.price)} xu · hoặc đủ tim ❤` : `${fmt(o.price)} xu`;
+    el.append(pic, name, price);
+    ui.opts.set(o.key, { el, o });
+    return el;
+  }));
+}
+// Ô đang được chọn sáng lên, các ô đã vượt qua thì đánh dấu; hai thanh tim và xu
+function moonRender(d) {
+  const ui = moonEls();
+  const cur = d.place?.key;
+  for (const [key, { el, o }] of ui.opts) {
+    el.classList.toggle('on', key === cur);
+    el.classList.toggle('passed', key !== cur && o.price < (d.place?.price || 0)); // các nơi rẻ hơn nơi đang chọn (kể cả chỗ miễn phí) mờ đi
+  }
+  ui.bg.style.background = moonScene(cur);
+  const paid = (d.options || []).filter(o => o.price > 0).sort((a, b) => a.price - b.price);
+  const next = paid.find(o => o.price > (d.coins || 0));
+  ui.hearts.textContent = d.heartsDone || (d.coins || 0) > 0 ? `❤ đã có vé đi ${moonName(paid[0]?.name)}` : `❤ ${fmt(d.progress || 0)} / ${fmt(d.target || 0)} tim là đi ${moonName(paid[0]?.name)}`;
+  ui.coins.textContent = next ? `🎁 Tổng quà ${fmt(d.coins || 0)} xu · mốc kế: ${moonName(next.name)} ${fmt(next.price)} xu` : `🎁 Tổng quà ${fmt(d.coins || 0)} xu · đã tới nơi sang nhất`;
+}
+function moonStart(d) {
+  moonClose(true);
+  const ui = moonEls();
+  const g = d.groom || roleName('groom');
+  const b = d.bride || roleName('bride');
+  mn = { deadline: performance.now() + (Number(d.remainingMs) || 0), key: d.place?.key, groom: g, bride: b, timers: [], d: { ...d } };
+  dpActive = true; // cảnh tràn màn hình: các bảng mời quà, hàng người tặng quà tạm nhường chỗ như lúc động phòng
+  sceneLock++;
+  moonGrid(d);
+  moonRender(d);
+  ui.root.className = 'on';
+  playFanfare();
+  emojiRain(['✈️', '🧳', '💕', '🌴'], 26, 3200);
+  if (d.line) speak(d.line, { priority: true });
+  updateTag();
+}
+// Server gửi state: cập nhật thanh tim, số xu, đồng hồ
+function moonSync(m) {
+  if (!mn || !m) return;
+  mn.deadline = performance.now() + (Number(m.remainingMs) || 0);
+  mn.d = { ...mn.d, ...m };
+  if (!moonEls().root.classList.contains('reveal')) moonRender(mn.d);
+}
+// Có người đổi vé (hoặc cả rạp đủ tim): ô của nơi mới sáng lên, nền mờ đổi theo
+function moonUp(d) {
+  if (!mn) return;
+  const ui = moonEls();
+  mn.key = d.place?.key;
+  mn.d = { ...mn.d, ...d };
+  moonRender(mn.d);
+  const hit = ui.opts.get(mn.key)?.el;
+  if (hit) {
+    hit.classList.remove('hit');
+    void hit.offsetWidth;
+    hit.classList.add('hit');
+  }
+  playFanfare();
+  screenFlash('#fff3c4');
+  emojiRain(d.tier === 2 ? ['✈️', '💎', '🥂', '✨'] : ['🧳', '🏖️', '💕', '✨'], 26, 2600);
+  if (d.by?.name) showToast(`✈️ ${d.by.name} chọn ${moonName(d.place?.name)} cho đôi trẻ!`, d.by.avatar, d.by.name);
+  if (d.line) speak(d.line, { priority: true });
+}
+// Hết giờ: "tách!", danh sách thu lại, tấm ảnh check-in có đôi trẻ hiện rõ nét kèm thẻ ghi nơi đến và nhà tài trợ
+function moonEnd(d) {
+  if (!mn) return;
+  if (d.aborted) return moonClose();
+  const ui = moonEls();
+  const key = d.place?.key;
+  const p = MOON_UI.places[key] || MOON_UI.places.trada;
+  mn.deadline = 0;
+  ui.full.style.background = moonFull(key);
+  const baked = moonBaked(key);
+  ui.couple.style.backgroundImage = baked ? 'none' : moonCoupleImg(key);
+  ui.emoji.textContent = baked || theme.data.events?.moon?.[key] ? '' : p.emoji;
+  ui.stamp.textContent = MOON_UI.stamps[d.tier] || MOON_UI.stamps[0];
+  ui.who.textContent = `${mn.groom} 💕 ${mn.bride} đang ở`;
+  ui.place.textContent = `📍 ${moonName(d.place?.name)}`;
+  ui.cap.textContent = p.cap;
+  ui.by.textContent = d.sponsor ? `✈️ Vé do ${d.sponsor.name} tài trợ` : d.tier ? '❤ Vé do cả rạp góp' : '';
+  ui.root.classList.toggle('baked', baked);
+  ui.root.classList.add('reveal');
+  playShutter();
+  screenFlash('#ffffff');
+  mn.timers.push(setTimeout(playPop, 280));
+  if (d.tier) mn.timers.push(setTimeout(() => emojiRain(['📸', '💖', '✨', '🎉'], 30, 3000), 500));
+  if (d.line) mn.timers.push(setTimeout(() => speak(d.line, { priority: true }), 450));
+  mn.timers.push(setTimeout(() => moonClose(), 5400));
+}
+function moonClose(silent = false) {
+  if (!mn) return;
+  mn.timers.forEach(clearTimeout);
+  mn = null;
+  dpActive = false;
+  sceneLock = Math.max(0, sceneLock - 1);
+  moonEls().root.className = '';
+  if (!silent) updateTag();
+}
+setInterval(() => {
+  if (!mn) return;
+  const ui = moonEls();
+  const sec = Math.ceil(Math.max(0, mn.deadline - performance.now()) / 1000);
+  ui.timer.textContent = mn.deadline ? mmss(sec) : '';
+  ui.timer.classList.toggle('urgent', mn.deadline > 0 && sec <= 5);
+  // Server hết chuyến mà màn hình lỡ mất sự kiện kết thúc (rớt mạng): tự dọn
+  if (mn.deadline && performance.now() > mn.deadline + 6000) moonClose();
+}, 250);
+
+// ========================================================
+// TUNG HOA CƯỚI: cô dâu tung hoa, bó hoa lơ lửng trên đầu cả rạp; khán giả gõ "chụp" để giơ tay, tặng quà là chụp chắc.
+// Hết giờ hoa bay tới tay người bắt được: người đó lên làm cô dâu / chú rể lượt sau.
+// ========================================================
+let tossUi = null;
+let ts = null; // lượt tung hoa đang hiện: { deadline, timers, open }
+function tossEls() {
+  if (tossUi) return tossUi;
+  const mk = (tag, cls, parent, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; parent.append(e); return e; };
+  const frame = $('#frame');
+  const ui = {};
+  ui.panel = mk('div', '', frame);
+  ui.panel.id = 'toss-panel';
+  const head = mk('div', 'ts-head', ui.panel);
+  mk('span', 'ts-tape', head, '💐 CÔ DÂU TUNG HOA!');
+  ui.timer = mk('b', 'ts-timer', head);
+  const doors = mk('div', 'ts-doors', ui.panel);
+  const free = mk('div', 'ts-door free', doors);
+  mk('b', '', free, 'GÕ: CHỤP 🙌');
+  mk('span', '', free, 'để bắt hoa');
+  const gift = mk('div', 'ts-door gift', doors);
+  mk('b', '', gift, 'TẶNG QUÀ 🎁');
+  mk('span', '', gift, 'chụp chắc bó hoa');
+  ui.prize = mk('div', 'ts-prize', ui.panel, 'Bắt được hoa: lượt sau lên làm cô dâu, chú rể');
+  ui.count = mk('div', 'ts-count', ui.panel);
+  ui.bouquet = mk('div', 'ts-bouquet', frame, '💐');
+  return (tossUi = ui);
+}
+function tossCount(d) {
+  const ui = tossEls();
+  const n = Number(d.count) || 0;
+  ui.count.textContent = d.top?.name ? `🎁 ${d.top.name} đang chụp chắc · 🙌 ${fmt(n)} người giơ tay` : n ? `🙌 ${fmt(n)} người đang giơ tay` : '🙌 Chưa ai giơ tay, gõ CHỤP đi nào!';
+}
+function tossStart(d) {
+  tossClose();
+  const ui = tossEls();
+  ts = { deadline: performance.now() + (Number(d.remainingMs) || 0), timers: [], open: true };
+  const old = $('#ceremony-alert-banner');
+  if (old) old.hidden = true;
+  tossCount(d);
+  ui.panel.classList.add('on');
+  ui.bouquet.classList.remove('on');
+  void ui.bouquet.offsetWidth;
+  ui.bouquet.classList.add('on');
+  coupleDo(['bouquet', 'wave'], 3600);
+  playChime();
+  guestsReact(26, ['hop', 'look', 'hop']);
+  if (d.line) speak(d.line, { priority: true });
+  updateTag();
+}
+// Có người giơ tay (bình luận "chụp") hoặc tặng quà chụp chắc
+function tossGrabFx(d) {
+  if (!ts) return;
+  tossCount(d);
+  showChatBubble(d.id, d.sure ? '🎁 Chụp chắc!' : '🙌 Chụp!', { hold: false });
+  guestReact(guestNodes.get(d.id), 'hop');
+  if (d.sure) { playCoins(); showToast(`🎁 ${d.name} tặng quà: chụp chắc bó hoa!`); }
+  else sfx(ctx => tone(ctx, { freq: 880 + Math.random() * 400, type: 'triangle', dur: 0.08, gain: 0.05 }));
+}
+async function tossEnd(d) {
+  if (!ts) return;
+  const ui = tossEls();
+  ts.open = false;
+  ts.deadline = 0;
+  ui.panel.classList.remove('on');
+  ui.bouquet.classList.remove('on');
+  if (d.aborted) return tossClose();
+  const w = d.winner;
+  if (d.line) ts.timers.push(setTimeout(() => speak(d.line, { priority: true }), 500));
+  // Bó hoa rời chỗ lơ lửng, bay tới tay người bắt được (không ai chụp thì rơi xuống thảm)
+  const from = { x: 540, y: 980 };
+  const to = w ? seatPoint(w.id) : { x: 540, y: 1560 };
+  const el = document.createElement('div');
+  el.className = 'flying-bouquet';
+  el.textContent = '💐';
+  $('#hearts-layer').append(el);
+  const peak = Math.min(from.y, to.y) - (w ? 260 : 60);
+  await el.animate([
+    { transform: `translate(${from.x - 36}px, ${from.y - 36}px) rotate(0deg) scale(1.5)` },
+    { transform: `translate(${(from.x + to.x) / 2 - 36}px, ${peak}px) rotate(360deg) scale(1.5)`, offset: 0.45 },
+    { transform: `translate(${to.x - 36}px, ${to.y - 36}px) rotate(720deg) scale(1)` }
+  ], { duration: w ? 1300 : 900, easing: w ? 'ease-in-out' : 'ease-in', fill: 'forwards' }).finished;
+  el.remove();
+  if (!ts) return;
+  if (w) {
+    const role = w.role === 'bride' ? 'cô dâu' : 'chú rể';
+    spawnHearts(16, { x: to.x, y: to.y, spread: 130, emojis: ['💐', '🌸', '💖', '✨'] });
+    playWeddingBell();
+    playFanfare();
+    showChatBubble(w.id, '💐 Bắt được rồi!');
+    guestReact(guestNodes.get(w.id), 'hop');
+    guestsReact(20, ['clap', 'look', 'clap']);
+    const sub = w.position > 1 ? `Xếp hàng chờ số ${w.position} để làm ${role}` : `Lượt sau lên làm ${role}!`;
+    showCeremonyBanner(`${String(w.name).toUpperCase()} BẮT ĐƯỢC HOA!`, sub, 'bride', 4400, w.byGift ? '🎁 CHỤP CHẮC BẰNG QUÀ' : '💐 CHỤP ĐƯỢC HOA CƯỚI');
+    showToast(`💐 ${w.name} bắt được hoa cưới · ${sub}`, w.avatar, w.name);
+  } else {
+    playSadTrombone();
+    showCeremonyBanner('HOA RƠI XUỐNG ĐẤT!', 'Không ai chụp · MC nhặt về cắm bình', 'auction', 3800, '💐 TUNG HOA CƯỚI');
+  }
+  ts.timers.push(setTimeout(tossClose, 4600));
+}
+function tossClose() {
+  if (!ts) return;
+  ts.timers.forEach(clearTimeout);
+  ts = null;
+  const ui = tossEls();
+  ui.panel.classList.remove('on', 'urgent');
+  ui.bouquet.classList.remove('on');
+  updateTag();
+}
+// Server gửi state: số người giơ tay, đồng hồ
+function tossSync(t) {
+  if (!ts || !t || !ts.open) return;
+  ts.deadline = performance.now() + (Number(t.remainingMs) || 0);
+  tossCount(t);
+}
+setInterval(() => {
+  if (!ts) return;
+  const ui = tossEls();
+  const sec = Math.ceil(Math.max(0, ts.deadline - performance.now()) / 1000);
+  ui.timer.textContent = ts.open ? mmss(sec) : '';
+  ui.panel.classList.toggle('urgent', ts.open && sec <= 3);
+  // Server hết lượt mà màn hình lỡ mất sự kiện kết thúc (rớt mạng): tự dọn
+  if (ts.open && performance.now() > ts.deadline + 6000) tossClose();
+}, 250);
+
+realtime.addEventListener('toss', e => {
+  try {
+    const d = JSON.parse(e.data);
+    if (d.phase === 'start') tossStart(d);
+    else if (d.phase === 'grab') tossGrabFx(d);
+    else if (d.phase === 'end') tossEnd(d);
+  } catch (err) { console.warn('toss error', err); }
+});
+
+realtime.addEventListener('moon', e => {
+  try {
+    const d = JSON.parse(e.data);
+    if (d.phase === 'start') moonStart(d);
+    else if (d.phase === 'up') moonUp(d);
+    else if (d.phase === 'end') moonEnd(d);
+  } catch (err) { console.warn('moon error', err); }
 });
 
 // Sinh con: có người vừa nhận đỡ đầu (ô sáng lên), hoặc hết giờ (mở cửa khoe em bé)

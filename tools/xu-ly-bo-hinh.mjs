@@ -43,6 +43,13 @@
 //   bc_uncle, bc_kid, bc_friends   nhân vật của sự cố trong tiệc mừng: ông chú giành mic lúc cụng ly, Bé Tí quẹt sập bánh
 //                            cưới, hội bạn thân chặn cửa phòng tân hôn (ảnh nền xanh quay về bên TRÁI, thêm video nếu có).
 //                            Bố vợ chặn hôn dùng lại bc_bovo.
+//   moon_<mã>.jpg            điểm đến của tuần trăng mật (ảnh 9:16 đủ cảnh, không người). Mã: trada, santhuong, hocau (gần nhà),
+//                            dalat, phuquoc, halong (trong nước), maldives, paris, tokyo, seoul (nước ngoài).
+//   checkin_<mã>.jpg         tấm check-in trọn cảnh: đôi trẻ đã nằm trong cảnh của điểm đến đó, đúng trang phục (tạo bằng hai ảnh
+//                            tham chiếu: moon_<mã>.jpg và couple_idle.png). Có ảnh này thì không cần trip_ nữa.
+//   trip_<bộ>.png            (cách cũ, vẫn chạy) đôi trẻ trong trang phục của điểm đến (sửa từ couple_idle, nền xanh): home (đồ bộ ở nhà, cho ba chỗ
+//                            gần nhà), dalat, beach (Phú Quốc, Hạ Long, Maldives), paris, tokyo, seoul. Đặt trip_<mã điểm đến>
+//                            (vd trip_maldives) nếu muốn một nơi có bộ riêng.
 //   bc_dark.jpg              hội trường lúc cúp điện (ảnh 9:16 đủ cảnh, cùng bố cục với phông lúc đủ đôi)
 //   bc_fx_<tên>.mp4          hiệu ứng tràn màn hình 9:16, phát một lượt: shatter (kính vỡ lúc "KHOAN ĐÃ"),
 //                            lightning (sét lúc cúp điện), goldrain (mưa vàng khi bố vợ gật đầu), shield (che chắn thành công).
@@ -65,7 +72,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ONLY = (process.argv.find(a => a.startsWith('--chi='))?.slice(6) || '').split(',').map(s => s.trim()).filter(Boolean);
 // --chi=bc : mọi hình của biến cố (người yêu cũ, bố vợ, hội trường tối, hiệu ứng tràn màn hình)
 const ONLY_EVENTS = ONLY.includes('bc');
-if (ONLY_EVENTS) ONLY.push('bc_ex_m', 'bc_ex_f', 'bc_bovo', 'bc_baby', 'bc_uncle', 'bc_kid', 'bc_friends');
+if (ONLY_EVENTS) ONLY.push('bc_ex_m', 'bc_ex_f', 'bc_bovo', 'bc_baby', 'bc_uncle', 'bc_kid', 'bc_friends', 'trip');
 const ARGV = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const SRC = path.resolve(ARGV[0] || path.join(ROOT, 'bo-hinh-moi'));
 const THEME_ID = (ARGV[1] || 'ban-thuc-3d').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'ban-thuc-3d';
@@ -95,7 +102,9 @@ const GROUPS = {
   // Nhân vật của các sự cố trong tiệc mừng: ông chú giành mic, Bé Tí quẹt bánh, hội bạn thân chặn cửa phòng
   bc_uncle: { test: n => n === 'bc_uncle', imgH: 900, vidH: 640 },
   bc_kid: { test: n => n === 'bc_kid', imgH: 900, vidH: 640 },
-  bc_friends: { test: n => n === 'bc_friends', imgH: 900, vidH: 640 }
+  bc_friends: { test: n => n === 'bc_friends', imgH: 900, vidH: 640 },
+  // Đôi trẻ trong trang phục của từng điểm đến tuần trăng mật: dùng chung một khung cắt để đổi đồ không bị nhảy hình
+  trip: { test: n => /^trip_[a-z0-9]+$/.test(n), imgH: 900, vidH: 600 }
 };
 
 // Cỡ hiển thị mặc định trên khung 1080x1920 (chiều cao, px) ở mức 100%.
@@ -572,6 +581,9 @@ async function main() {
   // Em bé của đôi trẻ (mở cửa phòng tân hôn): bc_baby_boy, bc_baby_girl
   const babyArt = pickStates('bc_baby', 'bc_baby_');
   if (babyArt && Object.keys(babyArt.states).length) events.baby = babyArt;
+  // Trang phục của đôi trẻ theo điểm đến tuần trăng mật: trip_home, trip_dalat, trip_beach, trip_paris, trip_tokyo, trip_seoul
+  const tripArt = pickStates('trip', 'trip_');
+  if (tripArt && Object.keys(tripArt.states).length) events.trip = tripArt;
   // Nhân vật của sự cố trong tiệc mừng (mỗi nhân vật một ảnh, thêm video cùng tên nếu có)
   for (const [gid, key] of [['bc_uncle', 'uncle'], ['bc_kid', 'kid'], ['bc_friends', 'friends']]) {
     const g = groupOut[gid];
@@ -583,6 +595,22 @@ async function main() {
       await makeBackground(dark.file, path.join(OUT, 'bc_dark.jpg'));
       events.dark = 'bc_dark.jpg';
       console.log('✓ biến cố: hội trường lúc cúp điện');
+    }
+    // Tấm check-in trọn cảnh của tuần trăng mật: checkin_<mã>.jpg, ảnh 9:16 có sẵn đôi trẻ trong cảnh (ngồi ghế, ngồi xích đu...).
+    // Có ảnh này thì màn hình dùng nó thay cho moon_<mã> + ảnh đôi trẻ ghép lên.
+    for (const m of items.filter(i => i.kind === 'img' && /^checkin_[a-z0-9]+$/.test(i.name))) {
+      const key = m.name.slice('checkin_'.length);
+      await makeBackground(m.file, path.join(OUT, `${m.name}.jpg`));
+      (events.checkin ||= {})[key] = `${m.name}.jpg`;
+      console.log(`✓ tuần trăng mật: tấm check-in ${key}`);
+    }
+    // (trang phục trăng mật trip_<mã> được gom ở dưới, cùng chỗ với các nhân vật khác)
+    // Điểm đến của tuần trăng mật: moon_<mã>.jpg, ảnh 9:16 đủ cảnh, không người (đôi trẻ được ghép lên phía trước)
+    for (const m of items.filter(i => i.kind === 'img' && /^moon_[a-z0-9]+$/.test(i.name))) {
+      const key = m.name.slice('moon_'.length);
+      await makeBackground(m.file, path.join(OUT, `${m.name}.jpg`));
+      (events.moon ||= {})[key] = `${m.name}.jpg`;
+      console.log(`✓ tuần trăng mật: điểm đến ${key}`);
     }
     for (const v of items.filter(i => i.kind === 'vid' && /^bc_fx_[a-z0-9]+$/.test(i.name))) {
       const out = `${v.name}.webm`;

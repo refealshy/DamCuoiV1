@@ -312,6 +312,10 @@ $('#btn-save-couple')?.addEventListener('click', async () => {
     treatQuietSeconds: Math.min(3600, Math.max(0, Math.round(Number($('#cfg-treat-quiet')?.value ?? 60) || 0))),
     twistEvery: Math.min(50, Math.max(0, Math.round(Number($('#cfg-twist-every')?.value ?? 3) || 0))),
     babySeconds: Math.min(60, Math.max(0, Math.round(Number($('#cfg-baby-seconds')?.value ?? 15) || 0))),
+    tossSeconds: Math.min(30, Math.max(0, Math.round(Number($('#cfg-toss-seconds')?.value ?? 9) || 0))),
+    moonSeconds: Math.min(60, Math.max(0, Math.round(Number($('#cfg-moon-seconds')?.value ?? 12) || 0))),
+    moonPrices: Object.fromEntries(String($('#cfg-moon-prices')?.value || '').split(',').map(x => x.split('=').map(t => t.trim().toLowerCase()))
+      .filter(([k, v]) => k && Number(v) > 0).map(([k, v]) => [k, Math.round(Number(v))])),
     hitchEvery: Math.min(50, Math.max(0, Math.round(Number($('#cfg-hitch-every')?.value ?? 2) || 0))),
     partyFree: $('#cfg-party-free')?.value !== 'false',
     twists: Object.fromEntries(['ex', 'dowry', 'blackout', 'mass', 'roach', 'ring', 'kiss', 'cake', 'cheers', 'room'].map(k => [k, $(`#cfg-twist-${k}`)?.value !== 'false'])),
@@ -944,6 +948,9 @@ function fillForms(cfg, goals) {
   setVal('#cfg-treat-quiet', cfg.treatQuietSeconds ?? 60);
   setVal('#cfg-twist-every', cfg.twistEvery ?? 3);
   setVal('#cfg-hitch-every', cfg.hitchEvery ?? 2);
+  setVal('#cfg-moon-seconds', cfg.moonSeconds ?? 12);
+  setVal('#cfg-toss-seconds', cfg.tossSeconds ?? 9);
+  if (cfg.moonPrices) setVal('#cfg-moon-prices', Object.entries(cfg.moonPrices).sort((a, b) => a[1] - b[1]).map(([k, v]) => `${k}=${v}`).join(', '));
   setVal('#cfg-party-free', cfg.partyFree !== false);
   setVal('#cfg-baby-seconds', cfg.babySeconds ?? 15);
   for (const k of ['ex', 'dowry', 'blackout', 'mass', 'roach', 'ring', 'kiss', 'cake', 'cheers', 'room']) setVal(`#cfg-twist-${k}`, cfg.twists?.[k] !== false);

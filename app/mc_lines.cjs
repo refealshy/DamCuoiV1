@@ -1178,6 +1178,148 @@ const MC_GROUPS = [
     ]
   },
   {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossStart',
+    label: 'Tung hoa cưới: cô dâu tung hoa, cả rạp chụp',
+    vars: '{groom} {bride}',
+    lines: [
+      'Cô dâu tung hoa! Gõ chụp để bắt, lượt sau lên xe hoa!',
+      'Hoa cưới bay rồi! Ai chụp được là cưới lượt sau!',
+      'Hội ế giơ tay lên! Chụp được hoa là thoát ế!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossByGift',
+    label: 'Tung hoa cưới: có người tặng quà mời cô dâu tung hoa',
+    vars: '{name} {gift} {bride}',
+    lines: [
+      '{name} tặng {gift}, mời cô dâu tung hoa! Cả rạp chụp nào!',
+      'Nhờ {name}, hoa cưới bay rồi! Ai chụp được nào?'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossGift',
+    label: 'Tung hoa cưới: có người tặng quà để chụp chắc',
+    vars: '{name} {gift}',
+    lines: [
+      '{name} tặng {gift}, nhảy lên chụp chắc bó hoa!',
+      '{name} chơi lớn, {gift} bay ra là hoa về tay!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossWin',
+    label: 'Tung hoa cưới: một khán giả gõ chụp bắt được hoa',
+    vars: '{name} {role}',
+    lines: [
+      '{name} chụp được hoa! Lượt sau lên làm {role} nha!',
+      'Hoa vô tay {name} rồi! Chuẩn bị làm {role} đi!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossWinGift',
+    label: 'Tung hoa cưới: người tặng quà bắt được hoa',
+    vars: '{name} {role}',
+    lines: [
+      '{name} chụp gọn bó hoa! Đứng đầu hàng chờ làm {role}!',
+      'Hoa về tay {name}! Lượt sau {name} lên làm {role} luôn!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'tossNone',
+    label: 'Tung hoa cưới: không ai chụp',
+    vars: '{groom} {bride}',
+    lines: [
+      'Không ai chụp! Hoa rơi xuống đất, MC nhặt về cắm bình!',
+      'Hoa rơi cái bịch! Hội ế hôm nay lười quá!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonStart',
+    label: 'Tuần trăng mật: mở màn ở một chỗ gần nhà',
+    vars: '{groom} {bride} {place}',
+    lines: [
+      'Tuần trăng mật tới rồi! {groom} và {bride} check-in tại {place}!',
+      'Cưới xong hết tiền, đôi trẻ trăng mật tạm ở {place}!',
+      'Trăng mật ở {place} thôi à? Thương đôi trẻ ghê!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonUpFree',
+    label: 'Tuần trăng mật: cả rạp thả tim, bình luận đủ, đổi vé đi trong nước',
+    vars: '{groom} {bride} {place}',
+    lines: [
+      'Cả rạp góp vé! Đôi trẻ bay thẳng tới {place}!',
+      'Đủ tim rồi! Đổi vé đi {place} thôi!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonUpGift',
+    label: 'Tuần trăng mật: có người tặng quà, đổi vé đi trong nước',
+    vars: '{name} {gift} {place}',
+    lines: [
+      '{name} tặng {gift}, đổi vé cho đôi trẻ đi {place}!',
+      'Nhờ {name}, đôi trẻ xách vali đi {place} liền!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonUpAbroad',
+    label: 'Tuần trăng mật: quà đủ lớn, bay ra nước ngoài',
+    vars: '{name} {gift} {place}',
+    lines: [
+      'Chơi lớn! {name} bao trọn chuyến {place} cho đôi trẻ!',
+      '{name} tặng {gift}, đôi trẻ bay thẳng sang {place}!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonGift',
+    label: 'Tuần trăng mật: có người tặng thêm quà (chưa đổi nấc)',
+    vars: '{name} {gift} {place}',
+    lines: [
+      '{name} góp {gift} vào quỹ trăng mật của đôi trẻ!',
+      '{name} tặng {gift}, thêm tiền tiêu vặt cho đôi trẻ!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonEndHome',
+    label: 'Tuần trăng mật: chụp ảnh check-in ở chỗ gần nhà',
+    vars: '{groom} {bride} {place}',
+    lines: [
+      'Check-in tại {place}! Nghèo mà vui, quan trọng là có nhau!',
+      'Trăng mật tại {place}, sống ảo vẫn phải đẹp!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonEndDomestic',
+    label: 'Tuần trăng mật: chụp ảnh check-in trong nước',
+    vars: '{groom} {bride} {place} {hero}',
+    lines: [
+      'Check-in {place} xong rồi! Ảnh đẹp hết nấc!',
+      'Trăng mật {place} quá chill! Cảm ơn {hero} nha!'
+    ]
+  },
+  {
+    section: 'Lễ thành hôn & động phòng',
+    key: 'moonEndAbroad',
+    label: 'Tuần trăng mật: chụp ảnh check-in ở nước ngoài',
+    vars: '{groom} {bride} {place} {hero}',
+    lines: [
+      'Check-in {place} sang chảnh! Cảm ơn nhà tài trợ {hero}!',
+      'Flex nhẹ chuyến {place}! Vé do {hero} bao trọn!'
+    ]
+  },
+  {
     section: 'Biến cố & vai phụ',
     key: 'twistHero',
     label: 'Vinh danh người tặng quà cứu đám cưới (đọc nối sau câu kết của biến cố)',
