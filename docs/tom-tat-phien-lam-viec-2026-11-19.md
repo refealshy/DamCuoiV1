@@ -99,7 +99,16 @@ Mục đích: cho khán giả tương tác nhiều hơn, và có một cửa mi�
 
 Món quà "tung hoa cưới" cũng mở màn này khi tắt tiệc mừng tự diễn; còn khi bật thì lượt nào cũng đã có bước tung hoa.
 
-### 2.7 Việc nhỏ khác
+### 2.7 Chọn "yêu" hay "không yêu" lúc cô dâu hóa gián (thêm ngày 20/11/2026)
+
+Thêm tương tác cho màn con gián mà không biến nó thành hai phe đấu phiếu (kiểu đó nằm trong danh sách xin quà trá hình theo bài tóm tắt quy định của TikFinity: cho hai phe đối đầu rồi kêu người xem chọn phe bằng quà, tim hoặc bình luận):
+
+- Mỗi khán giả tự chọn và tự nhận kết quả của mình. Gõ "yêu" thì góp sức như cũ. Gõ "không yêu", "không", "chạy", "sợ" thì không góp và cũng không trừ điểm: người đó bị gián rượt, bạn gián quay sang "nhớ mặt", và nhận thẻ "Sợ gián". Đổi ý nói yêu thì được gỡ tên.
+- Kết cục vẫn chỉ tùy cả rạp nói yêu đủ hay chưa. Màn hình có dòng đếm "mấy người nói yêu, mấy người bỏ chạy" để xem cho vui.
+- Riêng chú rể là người được hỏi nên câu trả lời của chú rể có tính quyết định: gõ "yêu" là qua ngay, gõ "không yêu" là thua ngay (chú rể do MC chọn thì bỏ chạy; chú rể tự nhận vai thì chỉ bị phạt ngủ sô pha).
+- Bình luận chuyện khác có chữ "không" không bị tính nhầm: lời chê chỉ tính khi đi kèm chữ yêu hoặc là câu rất ngắn.
+
+### 2.8 Việc nhỏ khác
 
 - Thời gian chờ khi sân khấu trống trước khi MC ghép đôi ngẫu nhiên: 8 giây lên 60 giây.
 - Câu MC giữ trong khoảng 14 từ trở xuống (trừ các bài thơ).

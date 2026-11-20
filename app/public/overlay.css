@@ -3790,3 +3790,7 @@ html, body {
 .ts-bouquet.on { opacity: 1; animation: ts-rise 1.2s cubic-bezier(0.2, 0.9, 0.3, 1) both, ts-drift 2.6s ease-in-out 1.2s infinite alternate; }
 @keyframes ts-rise { from { transform: translate(470px, 800px) scale(0.5) rotate(-40deg); } to { transform: translate(250px, 900px) scale(1) rotate(-14deg); } }
 @keyframes ts-drift { 0% { transform: translate(250px, 900px) rotate(-14deg); } 50% { transform: translate(470px, 850px) rotate(8deg); } 100% { transform: translate(690px, 900px) rotate(18deg); } }
+
+/* Con gián: dòng đếm số người chọn yêu / không yêu, nằm dưới thanh tiến độ */
+.tw-tally { margin-top: 6px; padding: 3px 14px 5px; border-radius: 999px; background: rgba(0, 0, 0, 0.35); color: #ffe9a8; font-size: 25px; font-weight: 800; text-align: center; white-space: nowrap; }
+.tw-tally[hidden] { display: none; }

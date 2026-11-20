@@ -4452,7 +4452,7 @@ const TWIST_UI = {
   },
   roach: {
     slam: 'HÓA GIÁN!', slamSub: 'NẾU EM BIẾN THÀNH CON GIÁN?', tape: '🪳 THỬ LÒNG CHÚ RỂ', unit: '❤',
-    free: 'GÕ: YÊU', freeSub: 'cho cô dâu trở lại', gift: 'tiếp sức tình yêu', heroIcon: '💘', heroRole: 'Thần tình yêu'
+    free: 'YÊU hay KHÔNG?', freeSub: 'gõ: yêu · hoặc: không yêu', gift: 'tiếp sức tình yêu', heroIcon: '💘', heroRole: 'Thần tình yêu'
   },
   // ----- SỰ CỐ: một bước vốn miễn phí bị chặn lại. title / stake: chữ trên bảng; actor: nhân vật bước ra (art = tên nhóm
   // hình trong bộ hình, chưa có thì mượn hình khách và che mặt bằng badge); end: bảng tin kết cục thắng / thua -----
@@ -4619,6 +4619,7 @@ function twistEls() {
   ui.bar = mk('div', 'tw-bar', ui.panel);
   ui.fill = mk('i', '', ui.bar);
   ui.num = mk('b', '', ui.bar);
+  ui.tally = mk('div', 'tw-tally', ui.panel); // con gián: bao nhiêu người chọn yêu, bao nhiêu người bỏ chạy
   ui.slots = mk('div', 'tw-slots', ui.panel);
   const foot = mk('div', 'tw-foot', ui.panel);
   ui.stake = mk('span', 'tw-stake', foot);
@@ -4845,6 +4846,7 @@ function twistRender(d) {
     : 'Ai gõ trước được trước!';
   ui.panel.dataset.kind = d.kind;
   ui.bar.hidden = d.kind === 'mass';
+  ui.tally.hidden = d.kind !== 'roach';
   ui.slots.hidden = d.kind !== 'mass';
   ui.top.dataset.key = '';
   ui.top.replaceChildren();
@@ -4902,6 +4904,7 @@ function twistProgress(d) {
     ui.stake.textContent = left ? `Còn ${left} suất · ai gõ trước được trước!` : 'Đủ suất rồi, chốt đơn!';
     return;
   }
+  if (d.kind === 'roach') ui.tally.textContent = `💘 ${fmt(d.yes || 0)} người nói yêu · 🏃 ${fmt(d.no || 0)} người bỏ chạy`;
   const ratio = d.target > 0 ? Math.min(1, d.progress / d.target) : 0;
   ui.fill.style.width = `${(ratio * 100).toFixed(1)}%`;
   ui.num.textContent = d.kind === 'blackout' ? `⚡ ${Math.round(ratio * 100)}%` : `${fmt(d.progress)} / ${fmt(d.target)} ${TWIST_UI[d.kind].unit}`;
@@ -4915,7 +4918,7 @@ let twistPopAt = 0;
 function twistPop(last, kind) {
   const now = performance.now();
   const isGift = last.kind === 'coin' || last.kind === 'vip';
-  const big = isGift || last.kind === 'proof';
+  const big = isGift || last.kind === 'proof' || last.kind === 'refuse';
   if (!big && now - twistPopAt < 110) return; // tim đổ dồn dập: không vẽ quá dày
   twistPopAt = now;
   const ui = twistEls();
@@ -4926,6 +4929,9 @@ function twistPop(last, kind) {
   el.textContent = last.kind === 'claim' ? `💍 ${last.name} cưới ké!`
     : last.kind === 'vip' ? `👑 ${last.name}: suất hạng nhất!`
     : last.kind === 'proof' ? `💋 ${last.name} nói yêu rồi!`
+    : last.kind === 'refuse' ? `💔 ${last.name} nói KHÔNG YÊU!`
+    : last.kind === 'no' ? `🏃 ${last.name}: không yêu!`
+    : last.love ? `💘 ${last.name}: yêu!`
     : isGift ? `${k.heroIcon || '🎁'} ${last.name} ${k.gift || 'tặng quà'}!`
     : `+${fmt(last.pts)} ${icon} ${last.name}`;
   // Bay lên ở hai bên phía dưới bảng thử thách, chừa khoảng giữa cho cặp đôi
@@ -4937,6 +4943,18 @@ function twistPop(last, kind) {
   ui.pops.append(el);
   while (ui.pops.childElementCount > 10) ui.pops.firstElementChild.remove();
   setTimeout(() => el.remove(), big ? 2300 : 1250);
+  // Con gián: ai chọn "không yêu" thì bị gián rượt cho vui (kết cục không đổi vì lựa chọn này)
+  if (last.kind === 'no') {
+    const p = last.id ? seatPoint(last.id) : null;
+    if (last.id) {
+      showChatBubble(last.id, 'Á! Gián rượt! 🏃', { hold: false });
+      guestReact(guestNodes.get(last.id), 'hop');
+    }
+    if (p) spawnHearts(5, { x: p.x, y: p.y, spread: 70, emojis: ['🪳', '💨'] });
+    twistReply(`Nhớ mặt ${last.name} nha! 😤`, 2000);
+    return sfx(ctx => tone(ctx, { freq: 300, to: 160, type: 'sawtooth', dur: 0.18, gain: 0.05 }));
+  }
+  if (last.kind === 'refuse') return playSadTrombone();
   if (!isGift) return sfx(ctx => tone(ctx, { freq: 880 + Math.random() * 520, type: 'triangle', dur: 0.07, gain: 0.05 }));
   // Hiệu ứng riêng khi có quà: vệ sĩ dựng khiên, bố vợ phản ứng theo cỡ quà, nến sáng lên, tim hôn bay
   playCoins();
@@ -5247,7 +5265,7 @@ function twistEnd(d) {
       // Tình yêu thắng: gián biến lại thành cô dâu
       later(700, () => { twistRoachOff(true); playChime(); });
       if (d.proved) banner(`${up(groom)} HÔN LUÔN CON GIÁN!`, 'Chồng quốc dân là đây · cô dâu xinh trở lại rồi', 'gold', 5000, '💋 QUA BÀI THỬ LÒNG');
-      else banner('TÌNH YÊU THẮNG!', `Gián cũng yêu · cô dâu xinh trở lại rồi${hero}`, 'gold', 5000, '💘 CẢ RẠP LÀM CHỨNG');
+      else banner('TÌNH YÊU THẮNG!', `Gián cũng yêu · cô dâu xinh trở lại rồi${hero}${d.no ? ` · 🏃 ${fmt(d.no)} người bị gián rượt` : ''}`, 'gold', 5000, '💘 CẢ RẠP LÀM CHỨNG');
       later(900, () => {
         playFanfare();
         emojiRain(['💘', '💋', '✨', '🪳'], 40, 3600);
@@ -5257,10 +5275,11 @@ function twistEnd(d) {
     } else if (d.kick) {
       later(500, () => twistRoachOff(false));
       later(650, () => twistKickFx(d));
-      banner(`${up(d.previous)} BỎ CHẠY MẤT DÉP!`, 'Không yêu đương gì tầm này · cô dâu chờ rể mới', 'cancel', 5400, '🏃 THẤY GIÁN LÀ CHUỒN');
+      if (d.refused) banner(`${up(d.previous)} NÓI KHÔNG YÊU!`, 'Phũ thật sự · cô dâu chờ rể mới', 'cancel', 5400, '💔 CHÊ GIÁN RA MẶT');
+      else banner(`${up(d.previous)} BỎ CHẠY MẤT DÉP!`, 'Không yêu đương gì tầm này · cô dâu chờ rể mới', 'cancel', 5400, '🏃 THẤY GIÁN LÀ CHUỒN');
     } else {
       later(1800, () => twistRoachOff(true));
-      banner('CHÚ RỂ ĐỨNG HÌNH!', `Cưới thì vẫn cưới · phạt ${groom} ngủ sô pha một tháng`, 'auction', 5000, '🛋️ CHƯA NÓI ĐƯỢC LỜI YÊU');
+      banner(d.refused ? 'CHÚ RỂ CHÊ GIÁN!' : 'CHÚ RỂ ĐỨNG HÌNH!', `Cưới thì vẫn cưới · phạt ${groom} ngủ sô pha một tháng`, 'auction', 5000, d.refused ? '💔 DÁM NÓI KHÔNG YÊU' : '🛋️ CHƯA NÓI ĐƯỢC LỜI YÊU');
       later(900, () => { playSadTrombone(); guestsReact(16, ['look', 'hop']); });
     }
   } else if (k.end) {

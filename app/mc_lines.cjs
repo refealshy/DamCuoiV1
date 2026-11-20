@@ -934,6 +934,16 @@ const MC_GROUPS = [
   },
   {
     section: 'Biến cố & vai phụ',
+    key: 'twistRoachRefuse',
+    label: 'Con gián: chính chú rể (do MC chọn) nói không yêu rồi bỏ chạy',
+    vars: '{groom} {bride}',
+    lines: [
+      '{groom} nói thẳng không yêu rồi chạy mất dép luôn!',
+      'Phũ thật sự! {groom} chê gián, {bride} chờ rể khác nha!'
+    ]
+  },
+  {
+    section: 'Biến cố & vai phụ',
     key: 'twistRoachSoft',
     label: 'Con gián: không đủ lời yêu nhưng chú rể đã tự nhận vai, chỉ bị phạt vui',
     vars: '{groom} {bride}',

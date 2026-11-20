@@ -1572,6 +1572,7 @@ const MASS_MAX_SLOTS = 6;
 const LOVE_WORDS = ['yêu', 'iu', 'yeu', 'hôn', 'hun', 'thương', 'love'];
 const LOVE_ANSWERS = ['có', 'còn', 'co', 'con']; // chú rể trả lời "còn yêu không?"
 const LOVE_DENIALS = ['không', 'ko', 'hông', 'hong', 'hok', 'khum', 'chẳng', 'chả'];
+const ROACH_FLEE = ['chạy', 'chay', 'sợ', 'ghê', 'eo', 'ewww', 'kinh']; // cũng tính là chọn "không yêu"
 // Điện về là lộ: một khách bị "bắt quả tang" (chuyện vui vô hại, không chê bai ai)
 const BLACKOUT_GAGS = [
   { text: 'ăn vụng cỗ', tag: '🍗 Ăn vụng cỗ' },
@@ -1717,6 +1718,8 @@ function startTwist() {
     // Cô dâu hóa gián, chú rể là người bị thử lòng
     t.role = 'bride';
     t.tested = String(state.roles.groom.id);
+    t.yes = new Set();   // những người đã chọn "yêu"
+    t.noes = new Map();  // những người đã chọn "không yêu" (bị gián rượt cho vui)
     t.canSteal = !realHolder('groom');
     t.target = twistTarget('roach', ms);
     line = pickLine('twistRoachStart', v);
@@ -1754,6 +1757,7 @@ function twistPublic() {
     introMs: Math.max(0, t.opensAt - now), remainingMs: Math.max(0, t.endsAt - now),
     progress: Math.min(t.target, Math.floor(t.progress)), target: t.target,
     cast: t.cast || null, role: t.role || '', canSteal: Boolean(t.canSteal),
+    yes: t.yes ? t.yes.size : 0, no: t.noes ? t.noes.size : 0, // con gián: số người chọn yêu / không yêu
     slots: t.slots || 0, claims: (t.claims || []).map(u => ({ name: u.name, avatar: u.avatar, vip: Boolean(u.vip) })),
     top: [...t.contrib.values()].sort((a, b) => b.pts - a.pts).slice(0, 3).map(x => ({ name: x.name, avatar: x.avatar, pts: Math.round(x.pts) })),
     // Người hùng: những người đã tặng quà trong màn này, nhiều xu đứng trước
@@ -1794,10 +1798,15 @@ function twistAdd(user, kind, amount = 1, meta = {}) {
   t.progress += pts;
   if (meta.match) t.progress = Math.max(t.progress, t.target); // món quà của đúng bước đang bị chặn: gỡ ngay
   // Con gián: chính chú rể nói yêu (hoặc tặng quà) là qua bài thử lòng ngay
-  const proved = t.kind === 'roach' && key === t.tested && !t.proved && (kind === 'coin' || (kind === 'chat' && (meta.love || meta.answer)));
+  const proved = t.kind === 'roach' && key === t.tested && !t.proved && !t.refused && (kind === 'coin' || (kind === 'chat' && (meta.love || meta.answer)));
   if (proved) {
     t.proved = true;
     t.progress = Math.max(t.progress, t.target);
+  }
+  if (t.kind === 'roach' && key !== 'anon' && (meta.love || meta.answer)) {
+    t.yes.add(key);
+    // Trước đó chê gián mà giờ đổi ý nói yêu: gỡ tên khỏi danh sách bỏ chạy, đổi luôn thẻ tên
+    if (t.noes.delete(key)) { const me = personOf(key); if (me && key !== t.tested) me.baseTag = '💘 Yêu cả gián'; }
   }
   if (key !== 'anon') {
     const x = t.contrib.get(key) || { id: key, name: user.name || 'Khách', avatar: user.avatar || '', pts: 0 };
@@ -1808,10 +1817,30 @@ function twistAdd(user, kind, amount = 1, meta = {}) {
     if (kind === 'coin') twistNoteGift(t, user, amount, meta.gift);
   }
   t.last = {
-    name: user.name || 'Khách', avatar: user.avatar || '', pts: Math.max(1, Math.round(pts)), kind: proved ? 'proof' : kind, n: ++t.n,
+    name: user.name || 'Khách', avatar: user.avatar || '', pts: Math.max(1, Math.round(pts)), kind: proved ? 'proof' : kind, n: ++t.n, love: Boolean(meta.love || meta.answer),
     gift: kind === 'coin' ? String(meta.gift || '') : '', coins: kind === 'coin' ? amount : 0
   };
   if (!full && t.progress >= t.target) twistFinishSoon(kind === 'coin' ? TWIST_GIFT_FINISH_MS : 0);
+  broadcastState();
+  return true;
+}
+
+// Con gián: một người chọn "không yêu". Khán giả: ghi vào danh sách "bỏ chạy" (đổi ý nói yêu sau đó thì được gỡ tên).
+// Chính chú rể nói không yêu thì khỏi chờ nữa: chốt luôn là không qua bài thử lòng.
+function twistRoachNo(user) {
+  const t = twist;
+  if (!t || t.kind !== 'roach' || !user?.id) return false;
+  const key = String(user.id);
+  if (holderIds().has('tik-' + key) && key !== t.tested) return false; // cô dâu (đang là gián) không tự chê mình
+  t.yes.delete(key);
+  const isNew = !t.noes.has(key);
+  t.noes.set(key, { id: key, name: user.name || 'Khách', avatar: user.avatar || '' });
+  const me = personOf(key);
+  if (me && key !== t.tested) me.baseTag = '🪳 Sợ gián';
+  const groomSaidNo = key === t.tested && !t.proved && !t.refused;
+  if (groomSaidNo) t.refused = true;
+  if (isNew || groomSaidNo) t.last = { name: user.name || 'Khách', avatar: user.avatar || '', pts: 0, kind: groomSaidNo ? 'refuse' : 'no', n: ++t.n, gift: '', coins: 0, id: 'tik-' + key };
+  if (groomSaidNo) twistFinishSoon(1200);
   broadcastState();
   return true;
 }
@@ -1871,7 +1900,7 @@ function resolveTwist() {
   clearTimeout(twistTimer);
   if (!twistStageOk(t)) return abortTwist();
   twist = null;
-  const win = t.kind === 'mass' || t.progress >= t.target;
+  const win = t.kind === 'mass' || (t.progress >= t.target && !t.refused); // chú rể tự nói không yêu thì cả rạp nói yêu mấy cũng không qua
   // Người hùng của màn: ai tặng quà nhiều xu nhất; không ai tặng quà thì người góp tim, bình luận nhiều nhất
   const patron = [...t.gifts.values()].sort((a, b) => b.coins - a.coins)[0] || null;
   const top = [...t.contrib.values()].sort((a, b) => b.pts - a.pts)[0] || null;
@@ -1935,11 +1964,13 @@ function resolveTwist() {
       line = pickLine(t.proved ? 'twistRoachProved' : 'twistRoachWin', v);
     } else if (!realHolder('groom')) {
       twistKickGroom(out, '🏃 Thấy gián là chạy');
-      line = pickLine('twistRoachFlee', { ...v, groom: groom.name });
+      line = pickLine(t.refused ? 'twistRoachRefuse' : 'twistRoachFlee', { ...v, groom: groom.name });
     } else {
       out.soft = true;
       line = pickLine('twistRoachSoft', v);
     }
+    out.refused = Boolean(t.refused);
+    Object.assign(out, { yes: t.yes.size, no: t.noes.size, noNames: [...t.noes.values()].filter(u => u.id !== t.tested).slice(0, 3).map(u => u.name) });
   } else if (HITCH[t.kind]) {
     line = pickLine(`twist${HITCH[t.kind].name}${win ? 'Win' : 'Lose'}`, { ...v, dad: t.cast?.name || '' });
   } else {
@@ -3099,12 +3130,21 @@ function processChatEvent(chat) {
   if (twist) {
     const low = comment.toLowerCase().normalize('NFC');
     // "không yêu", "hong có" là lời chối: không tính là nói yêu
-    const no = twist.kind === 'roach' && LOVE_DENIALS.some(w => hasWord(low, w));
-    const love = twist.kind === 'roach' && !no && LOVE_WORDS.some(w => hasWord(low, w));
+    const roach = twist.kind === 'roach';
+    const loveWord = roach && LOVE_WORDS.some(w => hasWord(low, w));
+    const no = roach && LOVE_DENIALS.some(w => hasWord(low, w));
+    const love = loveWord && !no;
     const answer = twist.kind === 'roach' && !no && LOVE_ANSWERS.some(w => hasWord(low, w));
     const dad = twist.kind === 'dowry' && /(^| )(bo|ba|cuoi)( |$)/.test(norm(comment).replace(/[^a-z0-9 ]+/g, ' '));
     const word = Boolean(HITCH[twist.kind]?.words.some(w => hasWord(low, w))); // từ khóa của sự cố ("hôn", "xuống", "mở"...)
-    twistAdd(user, 'chat', love || dad || word ? 2 : 1, { love, answer });
+    // Con gián: mỗi người tự chọn. "Yêu" thì góp sức như cũ; "không yêu" (hoặc "chạy", "sợ") thì không góp, người đó bị
+    // gián rượt cho vui. Hai lựa chọn không đấu nhau: kết cục vẫn chỉ tùy cả rạp nói yêu đủ hay chưa.
+    // Lời chối chỉ tính khi đi kèm chữ yêu ("không yêu") hoặc là một câu thật ngắn ("không", "hong nha"), để bình luận
+    // chuyện khác có chữ "không" không bị hiểu nhầm
+    const short = low.trim().split(/\s+/).length <= 3;
+    const flee = roach && !love && ((no && (loveWord || short)) || (!loveWord && ROACH_FLEE.some(w => hasWord(low, w))));
+    if (flee) twistRoachNo(user);
+    else twistAdd(user, 'chat', love || dad || word ? 2 : 1, { love, answer });
     twistClaim(user, comment);
   }
   moonAdd(user, 'chat', 1);
